@@ -22,6 +22,8 @@ import DashboardEmploeeDBPage from "./Pages/employers-dashboard/dashboard";
 import PostJobsEmploeeDBPage from "./Pages/employers-dashboard/post-jobs";
 import ManageJobsEmploeeDBPage from "./Pages/employers-dashboard/manage-jobs";
 import AllApplicantsEmploeesPage from "./Pages/employers-dashboard/all-applicants";
+import EditJobsEmployeeDBPage from "./Pages/employers-dashboard/edit-job";
+import JobSingle1 from "./Pages/General/JobSingle1";
 
 function App() {
   useEffect(() => {
@@ -52,6 +54,10 @@ function App() {
                   />
                   <Route path="post-jobs" element={<PostJobsEmploeeDBPage />} />
                   <Route
+                    path="edit-job/:jobId"
+                    element={<EditJobsEmployeeDBPage />}
+                  />
+                  <Route
                     path="manage-jobs"
                     element={<ManageJobsEmploeeDBPage />}
                   />
@@ -74,6 +80,7 @@ function App() {
                     element={<ChangePasswordEmploeeDBPage />}
                   /> */}
                 </Route>
+                <Route path="job/:id" element={<JobSingle1 />} />
               </Route>
             </Routes>
             <ScrollTopBehaviour />

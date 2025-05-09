@@ -37,14 +37,16 @@ const FormContent = () => {
           password: formData.password,
         }
       );
-      const { token } = response.data;
+      const { token, userId, role, capabilities, email } = response.data;
+      console.log(response.data);
       console.log(token);
 
       // Store user data and token in Zustand
       login({
-        email: formData.email,
-        name: formData.name,
-        phoneNumber: formData.phoneNumber,
+        email,
+        userId,
+        role,
+        capabilities,
         token,
       });
 
@@ -52,9 +54,12 @@ const FormContent = () => {
       if (formData.rememberMe) {
         localStorage.setItem("token", token);
       }
-
+      if (role === "employer") {
+        navigate("/employers-dashboard/dashboard"); // Adjust the route as per your app
+      } else {
+        navigate("/dashboard"); // Adjust the route as per your app
+      }
       // Redirect to a dashboard or home page
-      navigate("/dashboard"); // Adjust the route as per your app
     } catch (error) {
       console.error("Login error:", error.response?.data || error.message);
       alert(error.response?.data?.message || "Login failed");
@@ -118,6 +123,9 @@ const FormContent = () => {
             className="theme-btn btn-style-one"
             type="submit"
             name="log-in"
+            data-dismiss="modal"
+            aria-label="Close"
+            data-bs-dismiss="modal"
           >
             Log In
           </button>

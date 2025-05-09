@@ -1,4 +1,3 @@
-
 import PostJob from "@/components/dashboard-pages/employers-dashboard/post-jobs";
 
 import MetaComponent from "@/components/common/MetaComponent";
@@ -11,10 +10,10 @@ const metadata = {
 const PostJobsEmploeeDBPage = () => {
   return (
     <>
-    <MetaComponent meta={metadata} />
+      <MetaComponent meta={metadata} />
       <PostJob />
     </>
   );
 };
 
-export default PostJobsEmploeeDBPage
+export default PostJobsEmploeeDBPage;

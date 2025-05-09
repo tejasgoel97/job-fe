@@ -1,125 +1,200 @@
-
-
-
+import { useState } from "react";
 import Select from "react-select";
+import axios from "axios";
 
-const FormInfoBox = () => {
-    const catOptions = [
-        { value: "Banking", label: "Banking" },
-        { value: "Digital & Creative", label: "Digital & Creative" },
-        { value: "Retail", label: "Retail" },
-        { value: "Human Resources", label: "Human Resources" },
-        { value: "Managemnet", label: "Managemnet" },
-        { value: "Accounting & Finance", label: "Accounting & Finance" },
-        { value: "Digital", label: "Digital" },
-        { value: "Creative Art", label: "Creative Art" },
-    ];
+const castingOptions = [
+  { value: "Sand Casting", label: "Sand Casting" },
+  { value: "Die Casting", label: "Die Casting" },
+  { value: "Investment Casting", label: "Investment Casting" },
+  { value: "Shell Molding", label: "Shell Molding" },
+];
 
-    return (
-        <form className="default-form">
-            <div className="row">
-                {/* <!-- Input --> */}
-                <div className="form-group col-lg-6 col-md-12">
-                    <label>Company name (optional)</label>
-                    <input
-                        type="text"
-                        name="name"
-                        placeholder="Invisionn"
-                        required
-                    />
-                </div>
+const FormInfoBox = ({ formData, setFormData }) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-                {/* <!-- Input --> */}
-                <div className="form-group col-lg-6 col-md-12">
-                    <label>Email address</label>
-                    <input
-                        type="text"
-                        name="name"
-                        placeholder="ib-themes"
-                        required
-                    />
-                </div>
+  const handleCastingChange = (selectedOptions) => {
+    setFormData({ ...formData, typeOfCasting: selectedOptions });
+  };
 
-                {/* <!-- Input --> */}
-                <div className="form-group col-lg-6 col-md-12">
-                    <label>Phone</label>
-                    <input
-                        type="text"
-                        name="name"
-                        placeholder="0 123 456 7890"
-                        required
-                    />
-                </div>
+  return (
+    <form className="default-form">
+      <div className="row">
+        {/* Company Name */}
+        <div className="form-group col-lg-6 col-md-12">
+          <label>Company Name</label>
+          <input
+            type="text"
+            name="companyName"
+            value={formData.companyName}
+            onChange={handleChange}
+            placeholder="Enter company name"
+            required
+          />
+        </div>
 
-                {/* <!-- Input --> */}
-                <div className="form-group col-lg-6 col-md-12">
-                    <label>Website</label>
-                    <input
-                        type="text"
-                        name="name"
-                        placeholder="www.invision.com"
-                        required
-                    />
-                </div>
+        {/* Address */}
+        <div className="form-group col-lg-12 col-md-12">
+          <label>About Company</label>
+          <textarea
+            name="aboutCompany"
+            value={formData.aboutCompany}
+            onChange={handleChange}
+            placeholder="About the Company"
+            required
+          />
+        </div>
 
-                {/* <!-- Input --> */}
-                <div className="form-group col-lg-6 col-md-12">
-                    <label>Est. Since</label>
-                    <input
-                        type="text"
-                        name="name"
-                        placeholder="06.04.2020"
-                        required
-                    />
-                </div>
+        {/* GST No. */}
+        <div className="form-group col-lg-6 col-md-12">
+          <label>GST No.</label>
+          <input
+            type="text"
+            name="gstNo"
+            value={formData.gstNo}
+            onChange={handleChange}
+            placeholder="Enter GST Number"
+          />
+        </div>
+        {/* Factory License No. */}
+        <div className="form-group col-lg-6 col-md-12">
+          <label>Factory License No.</label>
+          <input
+            type="text"
+            name="factoryLicenseNo"
+            value={formData.factoryLicenseNo}
+            onChange={handleChange}
+            placeholder="Enter License Number"
+          />
+        </div>
+        {/* Contact Details */}
+        <div className="form-group col-lg-6 col-md-12">
+          <label>Contact Person</label>
+          <input
+            type="text"
+            name="contactPerson"
+            value={formData.contactPerson}
+            onChange={handleChange}
+            placeholder="Enter Contact Person Name"
+            required
+          />
+        </div>
+        <div className="form-group col-lg-6 col-md-12">
+          <label>Contact Phone Number</label>
+          <input
+            type="number"
+            name="contactNumber"
+            value={formData.contactNumber}
+            onChange={handleChange}
+            placeholder="Enter Contact Person Name"
+            required
+          />
+        </div>
+        <div className="form-group col-lg-6 col-md-12">
+          <label>Email</label>
+          <input
+            type="text"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Enter Contact email"
+            required
+          />
+        </div>
 
-                {/* <!-- Input --> */}
-                <div className="form-group col-lg-6 col-md-12">
-                    <label>Team Size</label>
-                    <select className="chosen-single form-select" required>
-                        <option>50 - 100</option>
-                        <option>100 - 150</option>
-                        <option>200 - 250</option>
-                        <option>300 - 350</option>
-                        <option>500 - 1000</option>
-                    </select>
-                </div>
+        {/* Other Details */}
+        <div className="form-group col-lg-12 col-md-12">
+          <label>Other Details</label>
+          <textarea
+            name="otherDetails"
+            value={formData.otherDetails}
+            onChange={handleChange}
+            placeholder="Enter Other Details"
+          />
+        </div>
 
-                {/* <!-- Search Select --> */}
-                <div className="form-group col-lg-6 col-md-12">
-                    <label>Multiple Select boxes </label>
-                    <Select
-                        defaultValue={[catOptions[2]]}
-                        isMulti
-                        name="colors"
-                        options={catOptions}
-                        className="basic-multi-select"
-                        classNamePrefix="select"
-                    />
-                </div>
+        {/* Type of Casting */}
+        <div className="form-group col-lg-6 col-md-12">
+          <label>Type of Casting</label>
+          <Select
+            isMulti
+            name="typeOfCasting"
+            options={castingOptions}
+            className="basic-multi-select"
+            classNamePrefix="select"
+            onChange={handleCastingChange}
+          />
+        </div>
 
-                {/* <!-- Input --> */}
-                <div className="form-group col-lg-6 col-md-12">
-                    <label>Allow In Search & Listing</label>
-                    <select className="chosen-single form-select">
-                        <option>Yes</option>
-                        <option>No</option>
-                    </select>
-                </div>
+        {/* Manufacturing Capacity */}
+        <div className="form-group col-lg-6 col-md-12">
+          <label>Manufacturing Capacity (Tons/Month)</label>
+          <input
+            type="number"
+            name="manufacturingCapacity"
+            value={formData.manufacturingCapacity}
+            onChange={handleChange}
+            placeholder="Enter Capacity"
+          />
+        </div>
 
-                {/* <!-- About Company --> */}
-                <div className="form-group col-lg-12 col-md-12">
-                    <label>About Company</label>
-                    <textarea placeholder="Spent several years working on sheep on Wall Street. Had moderate success investing in Yugo's on Wall Street. Managed a small team buying and selling Pogo sticks for farmers. Spent several years licensing licorice in West Palm Beach, FL. Developed several new methods for working it banjos in the aftermarket. Spent a weekend importing banjos in West Palm Beach, FL.In this position, the Software Engineer collaborates with Evention's Development team to continuously enhance our current software solutions as well as create new solutions to eliminate the back-office operations and management challenges present"></textarea>
-                </div>
+        {/* Year of Establishment */}
+        <div className="form-group col-lg-6 col-md-12">
+          <label>Year of Establishment</label>
+          <input
+            type="number"
+            name="yearOfEstablishment"
+            value={formData.yearOfEstablishment}
+            onChange={handleChange}
+            placeholder="e.g., 1995"
+          />
+        </div>
 
-                {/* <!-- Input --> */}
-                <div className="form-group col-lg-6 col-md-12">
-                    <button className="theme-btn btn-style-one">Save</button>
-                </div>
-            </div>
-        </form>
-    );
+        {/* ISO Certifications */}
+        <div className="form-group col-lg-12 col-md-12">
+          <label>ISO Certification Details</label>
+          <textarea
+            name="isoCertifications"
+            value={formData.isoCertifications}
+            onChange={handleChange}
+            placeholder="Enter ISO Certification details"
+          />
+        </div>
+
+        {/* Key Products */}
+        <div className="form-group col-lg-12 col-md-12">
+          <label>Key Products</label>
+          <textarea
+            name="keyProducts"
+            value={formData.keyProducts}
+            onChange={handleChange}
+            placeholder="Enter Key Products"
+          />
+        </div>
+
+        {/* Website */}
+        <div className="form-group col-lg-12 col-md-12">
+          <label>Website</label>
+          <input
+            type="text"
+            name="website"
+            value={formData.website}
+            onChange={handleChange}
+            placeholder="Enter website URL"
+          />
+        </div>
+
+        {/* Save Button */}
+        <div className="form-group col-lg-6 col-md-12">
+          <button type="submit" className="theme-btn btn-style-one">
+            Save
+          </button>
+        </div>
+      </div>
+    </form>
+  );
 };
 
 export default FormInfoBox;

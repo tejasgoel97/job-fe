@@ -5,7 +5,9 @@ import PostJobSteps from "./components/PostJobSteps";
 import PostBoxForm from "./components/PostBoxForm";
 import MenuToggler from "../../MenuToggler";
 
-const index = () => {
+const index = ({ jobId, mode, initialData }) => {
+  console.log(initialData);
+  console.log(jobId);
   return (
     <div className="page-wrapper dashboard">
       <span className="header-span"></span>
@@ -35,7 +37,11 @@ const index = () => {
                   <div className="widget-content">
                     <PostJobSteps />
                     {/* End job steps form */}
-                    <PostBoxForm />
+                    <PostBoxForm
+                      initialData={initialData}
+                      mode={mode}
+                      jobId={jobId}
+                    />
                     {/* End post box form */}
                   </div>
                 </div>

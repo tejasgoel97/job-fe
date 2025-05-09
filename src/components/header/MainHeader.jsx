@@ -13,8 +13,15 @@ export default function HeaderLayout() {
 
   return (
     <>
-      <LoginPopup />
-      {isLoggedIn ? <DashboardHeader /> : <DefaulHeader />}
+      {isLoggedIn ? (
+        <DashboardHeader />
+      ) : (
+        <>
+          <LoginPopup />
+
+          <DefaulHeader />
+        </>
+      )}
       <MobileMenu />
     </>
   );
