@@ -20,6 +20,8 @@ import ScrollTopBehaviour from "./components/common/ScrollTopBehaviour";
 import CompanyProfileEmploeeDBPage from "./Pages/employers-dashboard/company-profile";
 import DashboardEmploeeDBPage from "./Pages/employers-dashboard/dashboard";
 import PostJobsEmploeeDBPage from "./Pages/employers-dashboard/post-jobs";
+import EditContractEmploeeDBPage from "./Pages/employers-dashboard/edit-contract";
+import PostContractEmploeeDBPage from "./Pages/employers-dashboard/post-contract";
 import ManageJobsEmploeeDBPage from "./Pages/employers-dashboard/manage-jobs";
 import AllApplicantsEmploeesPage from "./Pages/employers-dashboard/all-applicants";
 import EditJobsEmployeeDBPage from "./Pages/employers-dashboard/edit-job";
@@ -33,6 +35,11 @@ import MyResumePage from "./Pages/CandidateDashboard/my-resume";
 import CandidateSingle1 from "./Pages/General/CandidateSingle1";
 import CompanySingle1 from "./Pages/General/CompanySingle1";
 import JobList4 from "./Pages/General/JobList4";
+
+import ContractorProfilePage from "./Pages/contractor-dashboard/contractor-profile";
+import ContractorCompanyPage from "./Pages/contractor-dashboard/contractor-company";
+
+
 
 function App() {
   useEffect(() => {
@@ -62,6 +69,14 @@ function App() {
                     element={<CompanyProfileEmploeeDBPage />}
                   />
                   <Route path="post-jobs" element={<PostJobsEmploeeDBPage />} />
+                  <Route
+                    path="post-contract"
+                    element={<PostContractEmploeeDBPage />}
+                  />
+                  <Route
+                    path="edit-contract/:contractId"
+                    element={<EditContractEmploeeDBPage />}
+                  />
                   <Route
                     path="edit-job/:jobId"
                     element={<EditJobsEmployeeDBPage />}
@@ -100,6 +115,17 @@ function App() {
                   <Route path="my-profile" element={<MyProfilePage />} />
                   <Route path="my-resume" element={<MyResumePage />} />
                 </Route>
+
+                    {/* ROUTES FOR THE CONTRACTOR */}
+
+                <Route path ='contractor-dashboard'>
+                  <Route path="dashboard" element={<DashboardPage />} />
+                  <Route path="my-profile" element={<ContractorProfilePage />} />
+                  <Route path="my-company" element={<ContractorCompanyPage />} />
+                </Route>
+
+
+
                 <Route path="job/:id" element={<JobSingle1 />} />
                 <Route path='candidate/:id' element={<CandidateSingle1 />} />
                 <Route path="company/:id" element={<CompanySingle1 />} />

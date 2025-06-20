@@ -20,6 +20,13 @@ const employerMenu = [
     routePath: "/employers-dashboard/post-jobs",
     active: "",
   },
+    {
+    id: 33,
+    name: "Post a New Contract",
+    icon: "la-paper-plane",
+    routePath: "/employers-dashboard/post-contract",
+    active: "",
+  },
   {
     id: 4,
     name: "Manage Jobs",
