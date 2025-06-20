@@ -24,6 +24,15 @@ import ManageJobsEmploeeDBPage from "./Pages/employers-dashboard/manage-jobs";
 import AllApplicantsEmploeesPage from "./Pages/employers-dashboard/all-applicants";
 import EditJobsEmployeeDBPage from "./Pages/employers-dashboard/edit-job";
 import JobSingle1 from "./Pages/General/JobSingle1";
+import DashboardPage from "./Pages/CandidateDashboard/dashboard";
+// import AppliedJobsPage from "./Pages/CandidateDashboard/applied-jobs";
+// import ChangePasswordPage from "./Pages/CandidateDashboard/change-password";
+// import JobAlertPage from "./Pages/CandidateDashboard/job-alerts";
+import MyProfilePage from "./Pages/CandidateDashboard/my-profile";
+import MyResumePage from "./Pages/CandidateDashboard/my-resume";
+import CandidateSingle1 from "./Pages/General/CandidateSingle1";
+import CompanySingle1 from "./Pages/General/CompanySingle1";
+import JobList4 from "./Pages/General/JobList4";
 
 function App() {
   useEffect(() => {
@@ -80,7 +89,21 @@ function App() {
                     element={<ChangePasswordEmploeeDBPage />}
                   /> */}
                 </Route>
+                <Route path="candidates-dashboard">
+                  <Route path="dashboard" element={<DashboardPage />} />
+                  {/* <Route path="applied-jobs" element={<AppliedJobsPage />} /> */}
+                  {/* <Route
+                    path="change-password"
+                    element={<ChangePasswordPage />}
+                  /> */}
+                  {/* <Route path="job-alerts" element={<JobAlertPage />} /> */}
+                  <Route path="my-profile" element={<MyProfilePage />} />
+                  <Route path="my-resume" element={<MyResumePage />} />
+                </Route>
                 <Route path="job/:id" element={<JobSingle1 />} />
+                <Route path='candidate/:id' element={<CandidateSingle1 />} />
+                <Route path="company/:id" element={<CompanySingle1 />} />
+                <Route path='job-list' element = {<JobList4 />} />  
               </Route>
             </Routes>
             <ScrollTopBehaviour />

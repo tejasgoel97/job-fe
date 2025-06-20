@@ -61,24 +61,11 @@ const ExpertiseSection = ({ initialData }) => {
         // Initial state setup
         const initialSelection = JSON.parse(JSON.stringify(initialData));
         data.data.expertiseList.forEach((cat) => {
-          if (!initialSelection[cat.name]) {
-            initialSelection[cat.name] = {
-              isSelected: false,
-              subcategories: [],
-              processes: [],
-            };
-          } else {
-            initialSelection[cat.name].isSelected = false;
-          }
-          cat.subCategory.forEach((sub) => {
-            if (
-              !initialSelection[cat.name].subcategories.find(
-                (sc) => sc.name === sub.name
-              )
-            ) {
-              initialSelection[cat.name].subcategories.push(sub);
-            }
-          });
+          initialSelection[cat.name] = {
+            isSelected: false,
+            subcategories: [],
+            processes: [],
+          };
         });
         setSelectedExpertise(initialSelection);
       } catch (error) {
@@ -127,9 +114,9 @@ const ExpertiseSection = ({ initialData }) => {
                       className="form-check-input"
                       type="checkbox"
                       id={`sub-${cat.name}-${sub.name}`}
-                      checked={selectedExpertise[cat.name]?.subcategories.find(
-                        (sc) => sc.namesub.name
-                      )}
+                      checked={selectedExpertise[
+                        cat.name
+                      ]?.subcategories.includes(sub.name)}
                       onChange={() => toggleSubcategory(cat.name, sub.name)}
                     />
                     <label

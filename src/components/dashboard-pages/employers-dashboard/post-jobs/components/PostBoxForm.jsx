@@ -515,8 +515,8 @@ const PostBoxForm = ({ jobId, mode, initialData }) => {
           ))}
         </div>
 
-        <h1>New Wxpertise</h1>
-        <ExpertiseSection initialData={initialData} />
+        {/* <h1>New Wxpertise</h1>
+        <ExpertiseSection initialData={initialData} /> */}
 
         <div className="form-group col-lg-12 col-md-12 text-right">
           <button type="submit" className="theme-btn btn-style-one">
