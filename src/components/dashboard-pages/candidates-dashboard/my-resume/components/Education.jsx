@@ -1,27 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 
-const Education = () => {
-  const [educations, setEducations] = useState([
-    {
-      id: 1,
-      degree: "Bachelors in Fine Arts",
-      institution: "Modern College",
-      fromYear: "2012",
-      toYear: "2014",
-      description: "Lorem ipsum dolor sit amet...",
-      editing: false,
-    },
-    {
-      id: 2,
-      degree: "Computer Science",
-      institution: "Harvard University",
-      fromYear: "2008",
-      toYear: "2012",
-      description: "Lorem ipsum dolor sit amet...",
-      editing: false,
-    },
-  ]);
-
+const Education = ({ items: educations, setItems: setEducations }) => {
   const handleEditToggle = (id) => {
     setEducations((prev) =>
       prev.map((edu) =>
@@ -45,7 +24,6 @@ const Education = () => {
   const handleAdd = () => {
     const newId = Date.now();
     setEducations((prev) => [
-      ...prev,
       {
         id: newId,
         degree: "",
@@ -55,6 +33,7 @@ const Education = () => {
         description: "",
         editing: true,
       },
+      ...prev,
     ]);
   };
 

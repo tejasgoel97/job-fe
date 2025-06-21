@@ -1,27 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 
-const Experiences = () => {
-  const [experiences, setExperiences] = useState([
-    {
-      id: 1,
-      title: "Product Designer",
-      company: "Spotify Inc.",
-      fromYear: "2012",
-      toYear: "2014",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-      editing: false,
-    },
-    {
-      id: 2,
-      title: "Sr UX Engineer",
-      company: "Dropbox Inc.",
-      fromYear: "2010",
-      toYear: "2012",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-      editing: false,
-    },
-  ]);
-
+const Experiences = ({ items: experiences, setItems: setExperiences }) => {
   const handleEditToggle = (id) => {
     setExperiences((prev) =>
       prev.map((exp) =>
@@ -45,7 +24,6 @@ const Experiences = () => {
   const handleAdd = () => {
     const newId = Date.now();
     setExperiences((prev) => [
-
       {
         id: newId,
         title: "",
@@ -54,7 +32,8 @@ const Experiences = () => {
         toYear: "",
         description: "",
         editing: true,
-      },...prev
+      },
+      ...prev,
     ]);
   };
 

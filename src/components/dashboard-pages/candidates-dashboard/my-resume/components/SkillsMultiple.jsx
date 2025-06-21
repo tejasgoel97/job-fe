@@ -3,7 +3,7 @@
 
 import Select from "react-select";
 
-const SkillsMultiple = () => {
+const SkillsMultiple = ({ value, onChange }) => {
   const catOptions = [
     { value: "Banking", label: "Banking" },
     { value: "Digital & Creative", label: "Digital & Creative" },
@@ -17,8 +17,9 @@ const SkillsMultiple = () => {
 
   return (
     <Select
-      defaultValue={[catOptions[1]]}
       isMulti
+      value={value}
+      onChange={onChange}
       name="colors"
       options={catOptions}
       className="basic-multi-select"

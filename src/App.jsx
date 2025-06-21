@@ -117,7 +117,11 @@ function App() {
                     element={<ChangePasswordPage />}
                   /> */}
                   {/* <Route path="job-alerts" element={<JobAlertPage />} /> */}
-                  <Route path="my-profile" element={<MyProfilePage />} />
+
+
+                  {/* Will Remove This */}
+                  <Route path="my-profile" element={<MyProfilePage />} /> 
+                  
                   <Route path="my-resume" element={<MyResumePage />} />
                 </Route>
 

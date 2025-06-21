@@ -1,25 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 
-const Awards = () => {
-  const [awards, setAwards] = useState([
-    {
-      id: 1,
-      title: "Perfect Attendance Programs",
-      fromYear: "2012",
-      toYear: "2014",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-      editing: false,
-    },
-    {
-      id: 2,
-      title: "Top Performer Recognition",
-      fromYear: "2010",
-      toYear: "2012",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-      editing: false,
-    },
-  ]);
-
+const Awards = ({ items: awards, setItems: setAwards }) => {
   const handleEditToggle = (id) => {
     setAwards((prev) =>
       prev.map((award) =>
@@ -43,7 +24,6 @@ const Awards = () => {
   const handleAdd = () => {
     const newId = Date.now();
     setAwards((prev) => [
-      ...prev,
       {
         id: newId,
         title: "",
@@ -52,6 +32,7 @@ const Awards = () => {
         description: "",
         editing: true,
       },
+      ...prev,
     ]);
   };
 

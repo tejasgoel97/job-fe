@@ -22,7 +22,7 @@ const CandidateSingle1 = () => {
   let params = useParams();
   const id = params.id;
   const candidate = candidates.find((item) => item.id == id) || candidate[0];
-
+  console.log(candidate)
   return (
     <>
     <MetaComponent meta={metadata} />

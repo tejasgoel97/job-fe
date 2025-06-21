@@ -1,4 +1,10 @@
-const AddPortfolio = () => {
+const AddPortfolio = ({ onFileSelect }) => {
+  const handleFileChange = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      onFileSelect(event.target.files[0]);
+    }
+  };
+
   return (
     <div className="uploading-outer">
       <div className="uploadButton">
@@ -8,7 +14,7 @@ const AddPortfolio = () => {
           name="attachments[]"
           accept="image/*, application/pdf"
           id="upload"
-          multiple
+          onChange={handleFileChange}
         />
         <label className="uploadButton-button ripple-effect" htmlFor="upload">
           Upload CV
