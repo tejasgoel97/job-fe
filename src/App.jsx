@@ -20,6 +20,7 @@ import ScrollTopBehaviour from "./components/common/ScrollTopBehaviour";
 import CompanyProfileEmploeeDBPage from "./Pages/employers-dashboard/company-profile";
 import DashboardEmploeeDBPage from "./Pages/employers-dashboard/dashboard";
 import PostJobsEmploeeDBPage from "./Pages/employers-dashboard/post-jobs";
+import ManageContractsEmploeeDBPage from "./Pages/employers-dashboard/manage-contracts";
 import EditContractEmploeeDBPage from "./Pages/employers-dashboard/edit-contract";
 import PostContractEmploeeDBPage from "./Pages/employers-dashboard/post-contract";
 import ManageJobsEmploeeDBPage from "./Pages/employers-dashboard/manage-jobs";
@@ -84,6 +85,10 @@ function App() {
                   <Route
                     path="manage-jobs"
                     element={<ManageJobsEmploeeDBPage />}
+                  />
+                  <Route
+                    path="manage-contracts"
+                    element={<ManageContractsEmploeeDBPage />}
                   />
                   <Route
                     path="all-applicants"

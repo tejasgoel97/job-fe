@@ -20,6 +20,7 @@ const employerMenu = [
     routePath: "/employers-dashboard/post-jobs",
     active: "",
   },
+  
     {
     id: 33,
     name: "Post a New Contract",
@@ -32,6 +33,13 @@ const employerMenu = [
     name: "Manage Jobs",
     icon: "la-briefcase",
     routePath: "/employers-dashboard/manage-jobs",
+    active: "",
+  },
+    {
+    id: 44,
+    name: "Manage Contracts",
+    icon: "la-file-invoice",
+    routePath: "/employers-dashboard/manage-contracts",
     active: "",
   },
   {
