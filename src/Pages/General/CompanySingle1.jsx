@@ -1,27 +1,86 @@
 
-import employersInfo from "@/data/topCompany";
-
-import JobDetailsDescriptions from "@/components/employer-single-pages/shared-components/JobDetailsDescriptions";
 import RelatedJobs from "@/components/employer-single-pages/related-jobs/RelatedJobs";
-// import MapJobFinder from "@/components/job-listing-pages/components/MapJobFinder";
-import Social from "@/components/employer-single-pages/social/Social";
 import PrivateMessageBox from "@/components/employer-single-pages/shared-components/PrivateMessageBox";
 import {useParams } from "react-router-dom";
 
 import MetaComponent from "@/components/common/MetaComponent";
+import { useEffect, useState } from "react";
+import axiosInstance from "@/utils/api/axiosInstance";
+import CompanyInfo from "@/components/SingleJob/CompanyInfo"; // Re-using this component as it was updated to be dynamic
+import SocialLinks from "@/components/SingleJob/SocialTwo"; // Re-using this component and renaming for clarity
+import ExpertiseList from "@/components/SingleJob/Expertise"; // Assuming you want to display expertise
+import SocialTwo from "@/components/SingleJob/SocialTwo";
 
 const metadata = {
   title:
-    "Employers Single Dyanmic V1 || Superio - Job Borad ReactJs Template",
+    "Company Profile || Superio - Job Board ReactJs Template",
   description: "Superio - Job Borad ReactJs Template",
 };
 
 const CompanySingle1 = () => {
-  let params = useParams();
-  const id = params.id;
+  const { id } = useParams();
+  const [company, setCompany] = useState(null); // Initialize as null
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const employer =
-    employersInfo.find((item) => item.id == id) || employersInfo[0];
+  useEffect(() => {
+    const fetchCompany = async () => {
+      if (!id) {
+        setLoading(false);
+        return;
+      }
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await axiosInstance.get(`/company/get-by-id/${id}`);
+        if (response.data && response.data.success) {
+          setCompany(response.data.company); // Assuming API returns { success: true, company: { ... } }
+        } else {
+          setError("Company not found or an error occurred.");
+        }
+      } catch (err) {
+        console.error("Failed to fetch company:", err);
+        setError("Failed to load company details. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCompany();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <section className="job-detail-section">
+        <div className="auto-container">
+          <div className="text-center py-5">Loading company details...</div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="job-detail-section">
+        <div className="auto-container">
+          <div className="text-center py-5 text-danger">{error}</div>
+        </div>
+      </section>
+    );
+  }
+
+  if (!company) {
+    return (
+      <section className="job-detail-section">
+        <div className="auto-container">
+          <div className="text-center py-5">Company not found.</div>
+        </div>
+      </section>
+    );
+  }
+
+  const companyLocation = `${company.contactData?.addressLine1 || ""}${company.contactData?.addressLine2 ? `, ${company.contactData.addressLine2}` : ""}, ${company.contactData?.city || ""}, ${company.contactData?.state || ""}, ${company.contactData?.pinCode || ""}, ${company.contactData?.country || ""}`;
+  const companyWebsite = company.infoData?.website;
 
   return (
     <>
@@ -31,7 +90,7 @@ const CompanySingle1 = () => {
 
       {/* End MobileMenu */}
 
-      {/* <!-- Job Detail Section --> */}
+      {/* <!company Detail Section --> */}
       <section className="job-detail-section">
         {/* <!-- Upper Box --> */}
         <div className="upper-box">
@@ -39,111 +98,174 @@ const CompanySingle1 = () => {
             <div className="job-block-seven">
               <div className="inner-box">
                 <div className="content">
-                  <span className="company-logo">
+                  <span className="company-logo d-flex align-items-center justify-content-center">
                     <img
-                     
-                      src={employer?.img}
-                      alt="logo"
+                      src={company.infoData?.logo || "https://media.istockphoto.com/id/1386750813/vector/metallurgy-liquid-steel-and-metallurgical-ladle-iron-molten-metal-pouring-in-gear-heavy.jpg?s=612x612&w=0&k=20&c=wTcNcwbW0WB4NvopZJdfy13e94nT16D57UjbTappFkY="} // Fallback for logo
+                      alt={`${company.infoData?.companyName} logo`}
                     />
                   </span>
-                  <h4>{employer?.name}</h4>
+                  <h4>{company?.infoData.companyName}</h4>
 
                   <ul className="job-info">
                     <li>
                       <span className="icon flaticon-map-locator"></span>
-                      {employer?.location}
+                      {companyLocation}
                     </li>
                     {/* compnay info */}
-                    <li>
-                      <span className="icon flaticon-briefcase"></span>
-                      {employer?.jobType}
-                    </li>
+                    {company.infoData?.typeOfCasting && company.infoData.typeOfCasting.length > 0 && (
+                      <li>
+                        <span className="icon flaticon-briefcase"></span>
+                        Type of Casting: {company.infoData.typeOfCasting.join(", ")}
+                      </li>
+                    )}
                     {/* location info */}
-                    <li>
-                      <span className="icon flaticon-telephone-1"></span>
-                      {employer?.phone}
-                    </li>
+                    {company.infoData?.contactNumber && (
+                      <li>
+                        <span className="icon flaticon-telephone-1"></span>
+                        {company.infoData.contactNumber}
+                      </li>
+                    )}
                     {/* time info */}
-                    <li>
-                      <span className="icon flaticon-mail"></span>
-                      {employer?.email}
-                    </li>
+                    {company.infoData?.email && (
+                      <li>
+                        <span className="icon flaticon-mail"></span>
+                        {company.infoData.email}
+                      </li>
+                    )}
                     {/* salary info */}
                   </ul>
                   {/* End .job-info */}
 
                   <ul className="job-other-info">
-                    <li className="time">Open Jobs – {employer.jobNumber}</li>
+                    {company.infoData?.manufacturingCapacity && (
+                      <li className="time">Manufacturing Capacity: {company.infoData.manufacturingCapacity}</li>
+                    )}
+                    {company.infoData?.yearOfEstablishment && (
+                      <li className="time">Established: {company.infoData.yearOfEstablishment}</li>
+                    )}
+                    {company.infoData?.gstNo && (
+                      <li className="time">GST No: {company.infoData.gstNo}</li>
+                    )}
+                    {company.infoData?.factoryLicenseNo && (
+                      <li className="time">Factory License No: {company.infoData.factoryLicenseNo}</li>
+                    )}
+                    {company.infoData?.isoCertifications && (
+                      <li className="time">ISO Certifications: {company.infoData.isoCertifications}</li>
+                    )}
                   </ul>
                   {/* End .job-other-info */}
                 </div>
                 {/* End .content */}
-
-                <div className="btn-box">
-                  <button
-                    className="theme-btn btn-style-one"
-                    data-bs-toggle="modal"
-                    data-bs-target="#privateMessage"
-                  >
-                    Private Message
-                  </button>
-                  <button className="bookmark-btn">
-                    <i className="flaticon-bookmark"></i>
-                  </button>
-                </div>
-                {/* End btn-box */}
-
-                {/* <!-- Modal --> */}
-                <div
-                  className="modal fade"
-                  id="privateMessage"
-                  tabIndex="-1"
-                  aria-hidden="true"
-                >
-                  <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                    <div className="apply-modal-content modal-content">
-                      <div className="text-center">
-                        <h3 className="title">
-                          Send message to {employer.name}
-                        </h3>
-                        <button
-                          type="button"
-                          className="closed-modal"
-                          data-bs-dismiss="modal"
-                          aria-label="Close"
-                        ></button>
-                      </div>
-                      {/* End modal-header */}
-
-                      <PrivateMessageBox />
-                      {/* End PrivateMessageBox */}
-                    </div>
-                    {/* End .send-private-message-wrapper */}
-                  </div>
-                </div>
-                {/* End .modal */}
               </div>
             </div>
-            {/* <!-- Job Block --> */}
+            {/* <!company Block --> */}
           </div>
         </div>
         {/* <!-- Upper Box --> */}
 
-        {/* <!-- job-detail-outer--> */}
+        {/* <!company-detail-outer--> */}
         <div className="job-detail-outer">
           <div className="auto-container">
             <div className="row">
               <div className="content-column col-lg-8 col-md-12 col-sm-12">
-                {/*  job-detail */}
-                <JobDetailsDescriptions />
-                {/* End job-detail */}
+                {/* About the Company */}
+                {company.infoData?.aboutCompany && (
+                  <div className="job-detail-outer">
+                    <div className="auto-container">
+                      <div className="row">
+                        <div className="content-column col-lg-12 col-md-12 col-sm-12">
+                          <div className="job-detail">
+                            <h4>About Company</h4>
+                            <p>{company.infoData.aboutCompany}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
+                {/* Other Details */}
+                {company.infoData?.otherDetails && (
+                  <div className="job-detail-outer">
+                    <div className="job-detail">
+                      <h4>Other Details</h4>
+                      <p>{company.infoData.otherDetails}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Expertise */}
+                <ExpertiseList expertise={company.expertise} />
+
+
+              </div>
+              {/* End .content-column */}
+
+              <div className="sidebar-column col-lg-4 col-md-12 col-sm-12 my-5">
+                <aside className="sidebar">
+                  <div className="sidebar-widget company-widget">
+                    <div className="widget-content">
+                      <div className="company-title">
+                        <div className="company-logo d-flex align-items-center justify-content-center">
+                          <img
+                            src={company.infoData?.logo || "https://media.istockphoto.com/id/1386750813/vector/metallurgy-liquid-steel-and-metallurgical-ladle-iron-molten-metal-pouring-in-gear-heavy.jpg?s=612x612&w=0&k=20&c=wTcNcwbW0WB4NvopZJdfy13e94nT16D57UjbTappFkY="}
+                            alt={`${company.infoData?.companyName} logo`}
+                          />
+                        </div>
+                        <h5 className="company-name">{company.infoData?.companyName}</h5>
+                        {/* Assuming there's a route for company profile */}
+                        {/* <Link to={`/company/${company._id}`} className="profile-link">
+                          View company profile
+                        </Link> */}
+                      </div>
+                      {/* End company title */}
+
+                      <CompanyInfo companyDetails={company} />
+
+                      {companyWebsite && (
+                        <div className="btn-box">
+                          <a
+                            href={companyWebsite.startsWith("http") ? companyWebsite : `https://${companyWebsite}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="theme-btn btn-style-three"
+                          >
+                            {companyWebsite}
+                          </a>
+                        </div>
+                      )}
+                      {/* btn-box */}
+                    </div>
+                  </div>
+                  {/* End company-widget */}
+
+                  {/* <div className="sidebar-widget">
+                    {company.contactData?.googleMapLink && (
+                      <>
+                        <h4 className="widget-title">Company Location on Map</h4>
+                        <div className="widget-content">
+                          <div style={{ height: "300px", width: "100%" }}>
+                            <iframe
+                              src={company.contactData.googleMapLink}
+                              width="100%"
+                              height="300"
+                              style={{ border: 0 }}
+                              allowFullScreen=""
+                              loading="lazy"
+                              referrerPolicy="no-referrer-when-downgrade"
+                            ></iframe>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div> */}
+                  {/* End sidebar-widget */}
                 {/* <!-- Related Jobs --> */}
-                <div className="related-jobs">
+                <div className="related-jobs container pt-10 my-10">
                   <div className="title-box">
-                    <h3>3 Others jobs available</h3>
+                    <h3 className="my-5">Related Jobs</h3> {/* Changed from "3 Others jobs available" */}
                     <div className="text">
-                      2020 jobs live - 293 added today.
+                      Find other jobs from {company.infoData?.companyName}.
                     </div>
                   </div>
                   {/* End .title-box */}
@@ -151,66 +273,16 @@ const CompanySingle1 = () => {
                   <RelatedJobs />
                   {/* End RelatedJobs */}
                 </div>
-                {/* <!-- Related Jobs --> */}
+                  {/* Social Network */}
+                  <div className="other-options">
+                <div className="social-share">
+                  <h5>Share this job</h5>
+                  <SocialTwo />
+                </div>
               </div>
-              {/* End .content-column */}
 
-              <div className="sidebar-column col-lg-4 col-md-12 col-sm-12">
-                <aside className="sidebar">
-                  <div className="sidebar-widget company-widget">
-                    <div className="widget-content">
-                      {/*  compnay-info */}
-                      <ul className="company-info mt-0">
-                        <li>
-                          Primary industry: <span>Software</span>
-                        </li>
-                        <li>
-                          Company size: <span>501-1,000</span>
-                        </li>
-                        <li>
-                          Founded in: <span>2011</span>
-                        </li>
-                        <li>
-                          Phone: <span>{employer?.phone}</span>
-                        </li>
-                        <li>
-                          Email: <span>{employer?.email}</span>
-                        </li>
-                        <li>
-                          Location: <span>{employer?.location}</span>
-                        </li>
-                        <li>
-                          Social media:
-                          <Social />
-                        </li>
-                      </ul>
-                      {/* End compnay-info */}
-
-                      <div className="btn-box">
-                        <a
-                          href="#"
-                          className="theme-btn btn-style-three"
-                          style={{ textTransform: "lowercase" }}
-                        >
-                          www.{employer?.name}.com
-                        </a>
-                      </div>
-                      {/* btn-box */}
-                    </div>
-                  </div>
-                  {/* End company-widget */}
-
-                  <div className="sidebar-widget">
-                    {/* <!-- Map Widget --> */}
-                    {/* <h4 className="widget-title">Job Location</h4> */}
-                    <div className="widget-content">
-                      <div style={{ height: "300px", width: "100%" }}>
-                        {/* <MapJobFinder /> */}
-                      </div>
-                    </div>
-                    {/* <!--  Map Widget --> */}
-                  </div>
-                  {/* End sidebar-widget */}
+                  {/* Private Message Box - Keep as is if it's a generic message box */}
+                  
                 </aside>
                 {/* End .sidebar */}
               </div>
@@ -218,7 +290,7 @@ const CompanySingle1 = () => {
             </div>
           </div>
         </div>
-        {/* <!-- job-detail-outer--> */}
+        {/* <!company-detail-outer--> */}
       </section>
       {/* <!-- End Job Detail Section --> */}
 

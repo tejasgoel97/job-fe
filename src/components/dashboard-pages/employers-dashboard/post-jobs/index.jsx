@@ -19,7 +19,7 @@ const index = ({ jobId, mode, initialData }) => {
       {/* <!-- Dashboard --> */}
       <section className="user-dashboard">
         <div className="dashboard-outer">
-          <BreadCrumb title="Post a New Job!" />
+          <BreadCrumb title={mode === "edit" ? "Edit Job" : "Post a New Job!"} />
           {/* breadCrumb */}
 
           <MenuToggler />
@@ -31,7 +31,7 @@ const index = ({ jobId, mode, initialData }) => {
               <div className="ls-widget">
                 <div className="tabs-box">
                   <div className="widget-title">
-                    <h4>Post Job</h4>
+                    {mode === "edit" ? <h4>Edit Job</h4> : <h4>Post Job</h4>}
                   </div>
 
                   <div className="widget-content">

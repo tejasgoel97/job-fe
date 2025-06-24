@@ -2,6 +2,7 @@ import useAuthStore from "@/utils/authStoreZusland";
 import { useEffect, useState } from "react";
 import Select from "react-select";
 import ExpertiseSection from "./ExpertiseSection";
+import JobAndContractExpertiseSelector from "@/components/dashboard-pages/comman/job-contract-expertise-selector/JobAndContractExpertiseSelector";
 
 const salaryRangesOptions = [
   { value: "30000-40000", label: "$30,000 - $40,000" },
@@ -56,8 +57,7 @@ const jobTitleOptions = [
 
 const PostBoxForm = ({ jobId, mode, initialData }) => {
   const [formData, setFormData] = useState({});
-  const [expertiseData, setExpertiseData] = useState([]);
-  const [allExpertise, setAllExpertise] = useState([]);
+
   const [selectedExpertise, setSelectedExpertise] = useState([]);
   const [jobTitle, setJobTitle] = useState("");
   const [customJobTitle, setCustomJobTitle] = useState("");
@@ -65,20 +65,23 @@ const PostBoxForm = ({ jobId, mode, initialData }) => {
   const [loading, setLoading] = useState(false);
   const { user } = useAuthStore();
   // Foundry-specific dropdown options
-  console.log({ selectedExpertise });
+  console.log({ initialData });
   useEffect(() => {
     if (mode === "edit" && initialData) {
       setFormData({
         description: initialData.description || "",
-        salary: initialData.salary || "",
         jobType: initialData.jobType || "",
         qualification: initialData.qualification || "",
-        experience: initialData.experience || "",
+        minExperience: initialData.minExperience || "",
+        salaryFrom: initialData.salaryFrom || "",
+        salaryTo: initialData.salaryTo || "",
         deadline: initialData.deadline
           ? initialData.deadline.split("T")[0]
           : "", // remove time part
         country: initialData.country || "",
         city: initialData.city || "",
+        state: initialData.state || "",
+        pinCode: initialData.pinCode || "",
         address: initialData.address || "",
       });
       setJobTitle(initialData.title || "");
@@ -97,77 +100,6 @@ const PostBoxForm = ({ jobId, mode, initialData }) => {
       }
     }
   }, [mode, initialData]);
-  useEffect(() => {
-    const fetchExpertise = async () => {
-      try {
-        const res = await fetch(
-          "http://localhost:3000/api/expertise/get-all-expertise"
-        );
-        const data = await res.json();
-        setExpertiseData(data.data.expertiseList);
-        // Initial state setup
-        const initialSelection = {};
-        data.data.expertiseList.forEach((cat) => {
-          initialSelection[cat.name] = {
-            isSelected: false,
-            subcategories: [],
-            processes: [],
-          };
-        });
-        setSelectedExpertise(initialSelection);
-      } catch (error) {
-        console.error("Failed to load expertise", error);
-      }
-    };
-
-    fetchExpertise();
-  }, []);
-  const toggleCategory = (catName) => {
-    setSelectedExpertise((prev) => {
-      const isSelected = prev[catName].isSelected;
-      return {
-        ...prev,
-        [catName]: {
-          isSelected: !isSelected,
-          subcategories: [],
-          processes: [],
-        },
-      };
-    });
-  };
-  const toggleSubcategory = (catName, subName) => {
-    setSelectedExpertise((prev) => {
-      const currentSubs = prev[catName].subcategories;
-      const isSelected = currentSubs.includes(subName);
-
-      return {
-        ...prev,
-        [catName]: {
-          ...prev[catName],
-          subcategories: isSelected
-            ? currentSubs.filter((s) => s !== subName)
-            : [...currentSubs, subName],
-        },
-      };
-    });
-  };
-
-  const toggleProcess = (catName, procName) => {
-    setSelectedExpertise((prev) => {
-      const currentProcs = prev[catName].processes;
-      const isSelected = currentProcs.includes(procName);
-
-      return {
-        ...prev,
-        [catName]: {
-          ...prev[catName],
-          processes: isSelected
-            ? currentProcs.filter((p) => p !== procName)
-            : [...currentProcs, procName],
-        },
-      };
-    });
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -182,7 +114,7 @@ const PostBoxForm = ({ jobId, mode, initialData }) => {
       return;
     }
 
-    if (!formData.salary) {
+    if (!formData.salaryFrom || !formData.salaryTo) {
       alert("Salary Range is required");
       return;
     }
@@ -316,20 +248,6 @@ const PostBoxForm = ({ jobId, mode, initialData }) => {
         </div>
 
         <div className="form-group col-lg-6 col-md-12">
-          <label>Salary Range</label>
-          <Select
-            name="salary"
-            options={salaryRangesOptions}
-            className="basic-select"
-            classNamePrefix="select"
-            value={salaryRangesOptions.find(
-              (option) => option.value === formData.salary
-            )}
-            onChange={handleSelectChange("salary")}
-          />
-        </div>
-
-        <div className="form-group col-lg-6 col-md-12">
           <label>Job Type</label>
           <select
             className="chosen-single form-select"
@@ -359,29 +277,114 @@ const PostBoxForm = ({ jobId, mode, initialData }) => {
           />
         </div>
 
+        {/* Salary Range */}
         <div className="form-group col-lg-6 col-md-12">
-          <label>Experience</label>
+          <label>Salary Range (Monthly)</label>
+          <div className="row">
+            <div className="col-6">
+              <select
+                className="form-select"
+                value={formData.salaryFrom || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, salaryFrom: e.target.value })
+                }
+              >
+                <option value="">From</option>
+                {[...Array(100)].map((_, i) => {
+                  const value = (i + 1) * 1000;
+                  return (
+                    <option key={value} value={value}>
+                      ₹{value.toLocaleString()}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+            <div className="col-6">
+              <select
+                className="form-select"
+                value={formData.salaryTo || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, salaryTo: e.target.value })
+                }
+              >
+                <option value="">To</option>
+                {[...Array(100)].map((_, i) => {
+                  const value = (i + 1) * 1000;
+                  return (
+                    <option key={value} value={value}>
+                      ₹{value.toLocaleString()}
+                    </option>
+                  );
+                })}
+              </select>
+            </div>
+          </div>
+        </div>
+
+        {/* Experience */}
+        <div className="form-group col-lg-6 col-md-12">
+          <label>Minimum Experience (Years)</label>
           <select
-            className="chosen-single form-select"
-            name="experience"
-            value={formData.experience || ""}
+            className="form-select"
+            name="minExperience"
+            value={formData.minExperience || ""}
             onChange={handleInputChange}
           >
             <option value="">Select</option>
-            {experienceOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
+            {[...Array(11)].map((_, i) => (
+              <option key={i} value={i === 10 ? "10+" : i}>
+                {i === 10 ? "10+ years" :i===0 ? "Fresher" : `${i} year${i !== 1 ? "s" : ""}`}
               </option>
             ))}
           </select>
         </div>
 
-        <div className="form-group col-lg-12 col-md-12">
+        {/* Deadline */}
+        <div className="form-group col-lg-6 col-md-12">
           <label>Application Deadline Date</label>
           <input
             type="date"
+            className="form-control"
             name="deadline"
             value={formData.deadline || ""}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        {/* Address */}
+        <div className="form-group col-lg-12 col-md-12">
+          <label>Address Line</label>
+          <input
+            type="text"
+            className="form-control"
+            name="address"
+            placeholder="Enter foundry address"
+            value={formData.address || ""}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        <div className="form-group col-lg-6 col-md-12">
+          <label>State</label>
+          <input
+            type="text"
+            className="form-control"
+            name="state"
+            placeholder="Enter State"
+            value={formData.state || ""}
+            onChange={handleInputChange}
+          />
+        </div>
+
+        <div className="form-group col-lg-6 col-md-12">
+          <label>Pin Code</label>
+          <input
+            type="text"
+            className="form-control"
+            name="pinCode"
+            placeholder="Enter Pin Code"
+            value={formData.pinCode || ""}
             onChange={handleInputChange}
           />
         </div>
@@ -434,9 +437,14 @@ const PostBoxForm = ({ jobId, mode, initialData }) => {
             <strong>Expertise Selection</strong>
           </label>
 
-          {expertiseData.map((cat) => (
+          <JobAndContractExpertiseSelector
+            initialExpertise={initialData.expertise}
+            setSelectedExpertise={setSelectedExpertise}
+            selectedExpertise={selectedExpertise}
+          />
+
+          {/* {expertiseData.map((cat) => (
             <div key={cat.name} className="border rounded p-2 mb-3">
-              {/* Category Checkbox */}
               <div className="form-check">
                 <input
                   className="form-check-input"
@@ -453,10 +461,8 @@ const PostBoxForm = ({ jobId, mode, initialData }) => {
                 </label>
               </div>
 
-              {/* Subcategories and Processes appear ONLY if Category selected */}
               {selectedExpertise[cat.name]?.isSelected && (
                 <div className="ms-4 mt-2">
-                  {/* Subcategories */}
                   <div>
                     <label className="mb-1">
                       <strong>Subcategories:</strong>
@@ -482,7 +488,6 @@ const PostBoxForm = ({ jobId, mode, initialData }) => {
                     ))}
                   </div>
 
-                  {/* Processes */}
                   {cat.keyProcesses.length > 0 && (
                     <div className="mt-2">
                       <label className="mb-1">
@@ -511,8 +516,9 @@ const PostBoxForm = ({ jobId, mode, initialData }) => {
                   )}
                 </div>
               )}
-            </div>
+            </div> 
           ))}
+            */}
         </div>
 
         {/* <h1>New Wxpertise</h1>

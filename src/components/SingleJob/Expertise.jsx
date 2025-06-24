@@ -3,7 +3,7 @@ import "./Expertise.css";
 
 const ExpertiseList = ({ expertise }) => {
   return (
-    <div className="expertise-section">
+    <div className="expertise-section my-10">
       <h2 className="expertise-section-title">Required Job Expertise</h2>
       <div className="expertise-grid">
         {expertise && expertise.length > 0 ? (

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"; // <-- very important
-import PostJob from "@/components/dashboard-pages/employers-dashboard/post-jobs/index2";
+import PostJob from "@/components/dashboard-pages/employers-dashboard/post-jobs/index";
 import PostJob3 from "@/components/dashboard-pages/employers-dashboard/post-jobs/index3";
 // import PostJob from "@/components/dashboard-pages/employers-dashboard/post-jobs";
 import MetaComponent from "@/components/common/MetaComponent";
@@ -59,7 +59,7 @@ const EditJobsEmployeeDBPage = () => {
         <div style={{marginTop: "100px", display: "flex", justifyContent: "center"}}>
         
         <PostJob jobId={jobId} initialData={initialData} mode="edit" />
-        <PostJob3 jobId={jobId} initialData={initialData} mode="edit" />
+        {/* <PostJob3 jobId={jobId} initialData={initialData} mode="edit" /> */}
         
         </div>
       )}

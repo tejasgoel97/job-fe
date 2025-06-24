@@ -7,7 +7,7 @@ import JobSkills from "@/components/SingleJob/JobSkills";
 import SocialTwo from "@/components/SingleJob/SocialTwo";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../utils/api/axiosInstance"; // Import axiosInstance
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const JobSingle1 = () => {
   const { id } = useParams();
@@ -52,6 +52,7 @@ const JobSingle1 = () => {
 
     fetchJob();
   }, [id]);
+  console.log(job)
   return (
     <section className="job-detail-section">
       <div className="upper-box">
@@ -79,7 +80,7 @@ const JobSingle1 = () => {
                   </li>
                   <li>
                     <span className="icon flaticon-money"></span>
-                    Salary: {job.salary}
+                    Salary: {job.fromSalary} - {job.toSalary}
                   </li>
                   {/* salary info */}
                 </ul>
@@ -89,6 +90,7 @@ const JobSingle1 = () => {
                   <li className={`part-time`}>Job Type: {job.jobType}</li>
                 </ul>
                 {/* End .job-other-info */}
+                
               </div>
               {/* End .content */}
 
@@ -169,17 +171,6 @@ const JobSingle1 = () => {
                   <h4 className="widget-title">Job Overview</h4>
                   <JobOverView job={job} />
 
-                  {/* <!-- Map Widget --> */}
-                  <h4 className="widget-title mt-5">Job Location</h4>
-                  <div className="widget-content">
-                    <div className="map-outer">
-                      <div style={{ height: "300px", width: "100%" }}>
-                        <h1>We will show addess Here</h1>
-                      </div>
-                    </div>
-                  </div>
-                  {/* <!--  Map Widget --> */}
-
                   <h4 className="widget-title">Job Skills</h4>
                   <div className="widget-content">
                     <JobSkills />
@@ -187,21 +178,39 @@ const JobSingle1 = () => {
                   {/* <!-- Job Skills --> */}
                 </div>
                 {/* End .sidebar-widget */}
+                <div className="sidebar-widget company-widget">
+                  <div className="widget-content">
+                    {/* End company title */}
 
+                    <ul className="company-info">
+                      <li>
+                        Address Line: <span>{job.address}</span>
+                      </li>
+                      <li>
+                        Job City: <span>{job.city}</span>
+                      </li>
+                      <li>
+                        Job State, Country: <span>{job.state}, {job.country}</span>
+                      </li>
+                    </ul>
+
+                    {/* End btn-box */}
+                  </div>
+                </div>
                 <div className="sidebar-widget company-widget">
                   <div className="widget-content">
                     <div className="company-title">
                       <div className="company-logo">
                         <img src={company.logo} alt="resource" />
                       </div>
-                      <h5 className="company-name">{company.company}</h5>
-                      <a href="#" className="profile-link">
+                      <h5 className="company-name">{job?.companyDetails?.infoData?.companyName || "null"}</h5>
+                      <Link to={`/company/${job?.companyDetails?._id}`} className="profile-link">
                         View company profile
-                      </a>
+                      </Link>
                     </div>
                     {/* End company title */}
 
-                    <CompanyInfo />
+                    <CompanyInfo companyDetails={job.companyDetails}/>
 
                     <div className="btn-box">
                       <a
