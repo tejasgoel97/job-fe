@@ -18,7 +18,6 @@ const LogoUpload = () => {
                         name="attachments[]"
                         accept="image/*"
                         id="upload"
-                        required
                         onChange={logImgHander}
                     />
                     <label

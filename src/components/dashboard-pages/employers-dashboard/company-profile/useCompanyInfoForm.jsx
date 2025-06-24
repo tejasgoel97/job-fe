@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axiosInstance from "../../../../utils/api/axiosInstance"; // Adjusted path
+import { fi } from "@faker-js/faker";
 
 const useCompanyInfoForm = () => {
   const [infoData, setInfoData] = useState({
@@ -11,7 +12,7 @@ const useCompanyInfoForm = () => {
     email: "aa",
     otherDetails: "aa",
     factoryLicenseNo: "aa",
-    typeOfCasting: [],
+    // typeOfCasting: [],
     manufacturingCapacity: "aa",
     yearOfEstablishment: "aa",
     isoCertifications: "aa",
@@ -37,24 +38,34 @@ const useCompanyInfoForm = () => {
   });
 
   const [errors, setErrors] = useState({});
-  const [isExistingCompany, setIsExistingCompany] = useState(false);
-  console.log(errors);
-  // ✅ Fetch my company info on mount
-  useEffect(() => {
-    const fetchCompanyInfo = async () => {
-      try {
-        const res = await axiosInstance.get("/company/get-my-company-info");
+  const [companyId, setCompanyId] = useState("");
+  const [compnayVerifiedToUser, setCompanyVerifiedToUser] = useState(false);
+  const [linkingLoading, setLinkingLoading] = useState(false);
+  const [selectedExpertise, setSelectedExpertise] =useState([])
+  const [initialExpertise, setInitialExpertise] = useState([])
 
-        const { infoData, contactData, socialData } = res.data.company; // Assuming structure remains the same
+      const fetchCompanyInfo = async () => {
+      try {
+        const res = await axiosInstance.get("/company/get-my-company-info");        
+        if(!res.data.success){
+          setCompanyId(false);
+          return;
+        }
+        const { infoData, contactData, socialData, compayVerifiedToUser, _id: companyId, expertise } = res.data.company; // Assuming structure remains the same
         setInfoData(infoData);
         setContactData(contactData);
         setSocialData(socialData);
-        setIsExistingCompany(true);
+        setCompanyId(companyId);
+        setInitialExpertise(expertise);
+        setCompanyVerifiedToUser(compayVerifiedToUser);
       } catch (error) {
         console.log("No existing company found or failed to fetch.");
-        setIsExistingCompany(false);
+        setCompanyId(false);
       }
     };
+  // ✅ Fetch my company info on mount
+  useEffect(() => {
+
     fetchCompanyInfo();
   }, []);
 
@@ -98,25 +109,33 @@ const useCompanyInfoForm = () => {
   };
 
   const handleSubmit = async () => {
+    console.log("In handle Sumbit")
     if (!validateForm()) {
       alert("Please correct the form errors.");
       return false;
     }
-
+    const finalExpertise = Object.entries(selectedExpertise)
+      .filter(([key, value]) => value.isSelected) // Only selected categories
+      .map(([key, value]) => ({
+        category: key,
+        subcategories: value.subcategories,
+        processes: value.processes,
+      }));
+      console.log({finalExpertise})
     const payload = {
       infoData,
       contactData,
       socialData,
+      expertise: finalExpertise,
     };
 
     try {
-      if (isExistingCompany) {
+      if (companyId) {
         await axiosInstance.put("/company/update-company-info", payload);
         alert("Company Information Updated Successfully!");
       } else {
         await axiosInstance.post("/company/create-company-info", payload);
         alert("Company Information Created Successfully!");
-        setIsExistingCompany(true); // For future updates
       }
 
       return true;
@@ -127,6 +146,26 @@ const useCompanyInfoForm = () => {
     }
   };
 
+  const linkUserToCompany = async (companyId) => {
+    setLinkingLoading(true);
+    try {
+      const res = await axiosInstance.post("/company/link-user-to-company", {companyId});
+      if (res.data.success) {
+        alert("Company linked successfully!");
+
+        fetchCompanyInfo();
+      } else {
+        alert("Something went wrong. Try again.");
+      }
+
+    } catch (error) {
+      console.error("Error linking company to user:", error);
+      alert("Something went wrong. Try again.");
+  }finally{
+    setLinkingLoading(false);
+  }
+}
+
   return {
     infoData,
     setInfoData,
@@ -134,9 +173,16 @@ const useCompanyInfoForm = () => {
     setContactData,
     socialData,
     setSocialData,
+    selectedExpertise,
+    setSelectedExpertise,
+    initialExpertise,
+    setInitialExpertise,
     errors,
     handleSubmit,
-    isExistingCompany,
+    companyId,
+    linkUserToCompany,
+    linkingLoading,
+    compnayVerifiedToUser
   };
 };
 

@@ -9,7 +9,7 @@ const castingOptions = [
   { value: "Shell Molding", label: "Shell Molding" },
 ];
 
-const FormInfoBox = ({ formData, setFormData }) => {
+const FormInfoBox = ({ formData, setFormData, errors = {} }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -20,7 +20,7 @@ const FormInfoBox = ({ formData, setFormData }) => {
   };
 
   return (
-    <form className="default-form">
+    <div className="default-form">
       <div className="row">
         {/* Company Name */}
         <div className="form-group col-lg-6 col-md-12">
@@ -33,6 +33,9 @@ const FormInfoBox = ({ formData, setFormData }) => {
             placeholder="Enter company name"
             required
           />
+          {errors.companyName && (
+            <div style={{ color: "red", marginTop: "5px" }}>{errors.companyName}</div>
+          )}
         </div>
 
         {/* Address */}
@@ -91,6 +94,9 @@ const FormInfoBox = ({ formData, setFormData }) => {
             placeholder="Enter Contact Person Name"
             required
           />
+          {errors.contactNumber && (
+            <div style={{ color: "red", marginTop: "5px" }}>{errors.contactNumber}</div>
+          )}
         </div>
         <div className="form-group col-lg-6 col-md-12">
           <label>Email</label>
@@ -185,15 +191,8 @@ const FormInfoBox = ({ formData, setFormData }) => {
             placeholder="Enter website URL"
           />
         </div>
-
-        {/* Save Button */}
-        <div className="form-group col-lg-6 col-md-12">
-          <button type="submit" className="theme-btn btn-style-one">
-            Save
-          </button>
-        </div>
       </div>
-    </form>
+    </div>
   );
 };
 

@@ -1,89 +1,131 @@
-import Map from "../../../Map";
+const ContactInfoBox = ({ contactData, setContactData, errors = {} }) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setContactData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
-const ContactInfoBox = () => {
   return (
-    <form className="default-form">
+    <div className="default-form">
       <div className="row">
-        {/* <!-- Input --> */}
+        {/* Country */}
         <div className="form-group col-lg-6 col-md-12">
           <label>Country</label>
-          <select className="chosen-single form-select" required>
-            <option>Australia</option>
-            <option>Pakistan</option>
-            <option>Chaina</option>
-            <option>Japan</option>
-            <option>India</option>
-          </select>
+          <input
+            type="text"
+            name="country"
+            value={contactData?.country || ""}
+            onChange={handleChange}
+            placeholder="e.g. India"
+            required
+          />
+          {errors.country && (
+            <div style={{ color: "red", marginTop: "5px" }}>
+              {errors.country}
+            </div>
+          )}
         </div>
 
-        {/* <!-- Input --> */}
+        {/* State */}
+        <div className="form-group col-lg-6 col-md-12">
+          <label>State</label>
+          <input
+            type="text"
+            name="state"
+            value={contactData?.state || ""}
+            onChange={handleChange}
+            placeholder="e.g. Maharashtra"
+            required
+          />
+          {errors.state && (
+            <div style={{ color: "red", marginTop: "5px" }}>{errors.state}</div>
+          )}
+        </div>
+
+        {/* City */}
         <div className="form-group col-lg-6 col-md-12">
           <label>City</label>
-          <select className="chosen-single form-select" required>
-            <option>Melbourne</option>
-            <option>Pakistan</option>
-            <option>Chaina</option>
-            <option>Japan</option>
-            <option>India</option>
-          </select>
-        </div>
-
-        {/* <!-- Input --> */}
-        <div className="form-group col-lg-12 col-md-12">
-          <label>Complete Address</label>
           <input
             type="text"
-            name="name"
-            placeholder="329 Queensberry Street, North Melbourne VIC 3051, Australia."
+            name="city"
+            value={contactData?.city || ""}
+            onChange={handleChange}
+            placeholder="e.g. Mumbai"
             required
           />
+          {errors.city && (
+            <div style={{ color: "red", marginTop: "5px" }}>{errors.city}</div>
+          )}
         </div>
 
-        {/* <!-- Input --> */}
+        {/* Pin Code */}
         <div className="form-group col-lg-6 col-md-12">
-          <label>Find On Map</label>
+          <label>Pin Code</label>
           <input
             type="text"
-            name="name"
-            placeholder="329 Queensberry Street, North Melbourne VIC 3051, Australia."
+            name="pinCode"
+            value={contactData?.pinCode || ""}
+            onChange={handleChange}
+            placeholder="e.g. 400001"
             required
+          />
+          {errors.pinCode && (
+            <div style={{ color: "red", marginTop: "5px" }}>
+              {errors.pinCode}
+            </div>
+          )}
+        </div>
+
+        {/* Address Line 1 */}
+        <div className="form-group col-lg-12 col-md-12">
+          <label>Address Line 1</label>
+          <input
+            type="text"
+            name="addressLine1"
+            value={contactData?.addressLine1 || ""}
+            onChange={handleChange}
+            placeholder="House No., Street Name"
+            required
+          />
+          {errors.addressLine1 && (
+            <div style={{ color: "red", marginTop: "5px" }}>
+              {errors.addressLine1}
+            </div>
+          )}
+        </div>
+
+        {/* Address Line 2 */}
+        <div className="form-group col-lg-12 col-md-12">
+          <label>Address Line 2 (Optional)</label>
+          <input
+            type="text"
+            name="addressLine2"
+            value={contactData?.addressLine2 || ""}
+            onChange={handleChange}
+            placeholder="Apartment, suite, etc."
           />
         </div>
 
-        {/* <!-- Input --> */}
-        <div className="form-group col-lg-3 col-md-12">
-          <label>Latitude</label>
-          <input type="text" name="name" placeholder="Melbourne" required />
-        </div>
-
-        {/* <!-- Input --> */}
-        <div className="form-group col-lg-3 col-md-12">
-          <label>Longitude</label>
-          <input type="text" name="name" placeholder="Melbourne" required />
-        </div>
-
-        {/* <!-- Input --> */}
+        {/* Google Map Link */}
         <div className="form-group col-lg-12 col-md-12">
-          <button className="theme-btn btn-style-three">Search Location</button>
-        </div>
-
-        <div className="form-group col-lg-12 col-md-12">
-          <div className="map-outer">
-            <div style={{ height: "420px", width: "100%" }}>
-              <Map />
+          <label>Google Map Link (Optional)</label>
+          <input
+            type="text"
+            name="googleMapLink"
+            value={contactData?.googleMapLink || ""}
+            onChange={handleChange}
+            placeholder="Paste Google Map URL"
+          />
+          {errors.googleMapLink && (
+            <div style={{ color: "red", marginTop: "5px" }}>
+              {errors.googleMapLink}
             </div>
-          </div>
-        </div>
-        {/* End MapBox */}
-
-        {/* <!-- Input --> */}
-        <div className="form-group col-lg-12 col-md-12">
-          <button type="submit" className="theme-btn btn-style-one">
-            Save
-          </button>
+          )}
         </div>
       </div>
-    </form>
+    </div>
   );
 };
 

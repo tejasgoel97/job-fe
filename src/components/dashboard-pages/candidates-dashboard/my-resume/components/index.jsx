@@ -7,14 +7,17 @@ import Experiences from "./Experiences";
 import SkillsMultiple from "./SkillsMultiple";
 import SocialNetworkBox from "./SocialNetworkBox";
 import axiosInstance from "@/utils/api/axiosInstance";
+import OtherDetails from "./OtherDetails";
 
 const Resume = ({ initialData }) => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [resumeExists, setResumeExists] = useState(!!initialData);
 
   const [portfolioFile, setPortfolioFile] = useState(null);
- const [name, setName] = useState(initialData?.name || "");
-  const [description, setDescription] = useState(initialData?.description || "");
+  const [name, setName] = useState(initialData?.name || "");
+  const [description, setDescription] = useState(
+    initialData?.description || ""
+  );
   const [skills, setSkills] = useState(
     initialData?.skills?.map((skill) => ({ value: skill, label: skill })) || []
   );
@@ -38,9 +41,29 @@ const Resume = ({ initialData }) => {
 
   // State for Education, Experiences, and Awards
   const [education, setEducation] = useState(initialData?.education || []);
-  const [experiences, setExperiences] = useState(initialData?.experiences || []);
+  const [experiences, setExperiences] = useState(
+    initialData?.experiences || []
+  );
   const [awards, setAwards] = useState(initialData?.awards || []);
-
+  const [age, setAge] = useState(initialData?.age || "");
+  const [totalExperienceYears, setTotalExperienceYears] = useState(
+    initialData?.totalExperienceYears || ""
+  );
+  const [totalExperienceMonths, setTotalExperienceMonths] = useState(
+    initialData?.totalExperienceMonths || ""
+  );
+  const [currentlyWorking, setCurrentlyWorking] = useState(
+    initialData?.currentlyWorking || false
+  );
+  const [currentSalary, setCurrentSalary] = useState(
+    initialData?.currentSalary || ""
+  );
+  const [expectedSalary, setExpectedSalary] = useState(
+    initialData?.expectedSalary || ""
+  );
+  const [languages, setLanguages] = useState(
+    initialData?.languages?.map((lang) => ({ value: lang, label: lang })) || []
+  );
   const handleContactInfoChange = (field, value) => {
     setContactInfo((prev) => ({ ...prev, [field]: value }));
   };
@@ -53,7 +76,7 @@ const Resume = ({ initialData }) => {
     event.preventDefault();
 
     // Basic checks
-    if (!name){
+    if (!name) {
       alert("Name is required.");
       return;
     }
@@ -66,15 +89,11 @@ const Resume = ({ initialData }) => {
       alert("Please select at least one skill.");
       return;
     }
-    if (
-      !contactInfo.phoneNumber 
-      || !contactInfo.email
-    ) {
+    if (!contactInfo.phoneNumber || !contactInfo.email) {
       alert("Please Phone Number and email in  contact information fields.");
       return;
     }
-      if (
-
+    if (
       !contactInfo.country ||
       !contactInfo.city ||
       !contactInfo.completeAddress
@@ -84,30 +103,37 @@ const Resume = ({ initialData }) => {
     }
 
     // Consolidate all data
-// Use FormData to handle file uploads along with other data
+    // Use FormData to handle file uploads along with other data
 
     if (portfolioFile) {
       formData.append("portfolioFile", portfolioFile);
     }
     const body = {
       portfolioFile,
-        name,
-        description,
-        education,
-        experiences,
-        awards,
-        skills: skills.map((s) => s.value), // Extracting just the value
-        contactInfo,
-        socialNetworks,
-      }
-
+     name,
+      description,
+      age,
+      totalExperienceYears,
+      totalExperienceMonths,
+      currentlyWorking,
+      currentSalary,
+      expectedSalary,
+      languages: languages.map((l) => l.value),
+      education,
+      experiences,
+      awards,
+      skills: skills.map((s) => s.value),
+      contactInfo,
+      socialNetworks,
+    };
+    console.log("Request Body:", body);
 
     setSubmitLoading(true);
     try {
       let response;
       if (resumeExists) {
         // Update existing resume
-        response = await axiosInstance.post("/resume", body, );
+        response = await axiosInstance.post("/resume", body);
         alert("Resume updated successfully!");
       } else {
         // Create new resume
@@ -119,7 +145,10 @@ const Resume = ({ initialData }) => {
       }
       console.log("Server Response:", response.data);
     } catch (error) {
-      console.error("Error submitting resume:", error.response ? error.response.data : error.message);
+      console.error(
+        "Error submitting resume:",
+        error.response ? error.response.data : error.message
+      );
       alert("Failed to save resume. Please check the console for details.");
     } finally {
       setSubmitLoading(false);
@@ -128,9 +157,7 @@ const Resume = ({ initialData }) => {
 
   return (
     <form className="default-form" onSubmit={handleSubmit}>
-      
       <div className="row">
-
         <div className="form-group col-lg-6 col-md-12">
           <AddPortfolio onFileSelect={setPortfolioFile} />
         </div>
@@ -151,7 +178,7 @@ const Resume = ({ initialData }) => {
         <div className="form-group col-lg-12 col-md-12">
           <label>Description</label>
           <textarea
-          required
+            required
             name="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -159,7 +186,22 @@ const Resume = ({ initialData }) => {
           ></textarea>
         </div>
         {/* <!-- About Company --> */}
-
+        <OtherDetails
+          age={age}
+          setAge={setAge}
+          totalExperienceYears={totalExperienceYears}
+          setTotalExperienceYears={setTotalExperienceYears}
+          totalExperienceMonths={totalExperienceMonths}
+          setTotalExperienceMonths={setTotalExperienceMonths}
+          currentlyWorking={currentlyWorking}
+          setCurrentlyWorking={setCurrentlyWorking}
+          languages={languages}
+          setLanguages={setLanguages}
+          currentSalary={currentSalary}
+          setCurrentSalary={setCurrentSalary}
+          expectedSalary={expectedSalary}
+          setExpectedSalary={setExpectedSalary}
+        />
         <div className="form-group col-lg-12 col-md-12">
           <Education items={education} setItems={setEducation} />
           {/* <!-- Resume / Education --> */}
@@ -208,11 +250,7 @@ const Resume = ({ initialData }) => {
             className="theme-btn btn-style-one"
             disabled={submitLoading}
           >
-            {submitLoading
-              ? "Saving..."
-              : resumeExists
-              ? "Update"
-              : "Save"}
+            {submitLoading ? "Saving..." : resumeExists ? "Update" : "Save"}
           </button>
         </div>
         {/* <!-- Input --> */}

@@ -9,46 +9,47 @@ import DashboardContractorSidebar from "@/components/header/DashboardContractorS
 import useCompanyInfoForm from "../../employers-dashboard/company-profile/useCompanyInfoForm";
 import { useEffect, useState } from "react";
 import FormInfoBox from "./components/FormInfoBox";
+import axiosInstance from "@/utils/api/axiosInstance";
+import { info } from "sass";
 
-    const dummyCompanies = [
-      {
-        companyId: "comp1",
-        companyName: "MetalCast Pvt Ltd",
-        address: "Plot 12, Industrial Area, Pune",
-        aboutCompany: "Leading manufacturer of sand castings.",
-        gstNo: "gstInput",
-        factoryLicenseNo: "LIC12345",
-        contactPerson: "Rajeev Sharma",
-        contactNumber: "9876543210",
-        email: "contact@metalcast.com",
-        otherDetails: "",
-        typeOfCasting: [],
-        manufacturingCapacity: 150,
-        yearOfEstablishment: 1998,
-        isoCertifications: "ISO 9001:2015",
-        keyProducts: "Cast Iron Manifolds, Pump Bodies",
-        website: "https://metalcast.com",
-      },
-      {
-        companyId: "comp2",
-        companyName: "Precision Foundries",
-        address: "Sector 22, Faridabad",
-        aboutCompany: "Expertise in die casting for automotive.",
-        gstNo: "gstInput",
-        factoryLicenseNo: "LIC7890",
-        contactPerson: "Meera Nair",
-        contactNumber: "9822334455",
-        email: "info@precisionfoundries.com",
-        otherDetails: "",
-        typeOfCasting: [],
-        manufacturingCapacity: 200,
-        yearOfEstablishment: 2005,
-        isoCertifications: "ISO 14001",
-        keyProducts: "Aluminum Auto Parts, Engine Blocks",
-        website: "https://precisionfoundries.com",
-      },
-    ];
-
+const dummyCompanies = [
+  {
+    companyId: "comp1",
+    companyName: "MetalCast Pvt Ltd",
+    address: "Plot 12, Industrial Area, Pune",
+    aboutCompany: "Leading manufacturer of sand castings.",
+    gstNo: "gstInput",
+    factoryLicenseNo: "LIC12345",
+    contactPerson: "Rajeev Sharma",
+    contactNumber: "9876543210",
+    email: "contact@metalcast.com",
+    otherDetails: "",
+    typeOfCasting: [],
+    manufacturingCapacity: 150,
+    yearOfEstablishment: 1998,
+    isoCertifications: "ISO 9001:2015",
+    keyProducts: "Cast Iron Manifolds, Pump Bodies",
+    website: "https://metalcast.com",
+  },
+  {
+    companyId: "comp2",
+    companyName: "Precision Foundries",
+    address: "Sector 22, Faridabad",
+    aboutCompany: "Expertise in die casting for automotive.",
+    gstNo: "gstInput",
+    factoryLicenseNo: "LIC7890",
+    contactPerson: "Meera Nair",
+    contactNumber: "9822334455",
+    email: "info@precisionfoundries.com",
+    otherDetails: "",
+    typeOfCasting: [],
+    manufacturingCapacity: 200,
+    yearOfEstablishment: 2005,
+    isoCertifications: "ISO 14001",
+    keyProducts: "Aluminum Auto Parts, Engine Blocks",
+    website: "https://precisionfoundries.com",
+  },
+];
 
 const index = () => {
   const {
@@ -58,9 +59,16 @@ const index = () => {
     setContactData,
     socialData,
     setSocialData,
-    isExistingCompany,
+    selectedExpertise,
+    setSelectedExpertise,
+    initialExpertise,
+    setInitialExpertise,
+    companyId,
+    compnayVerifiedToUser,
     errors,
     handleSubmit,
+    linkUserToCompany,
+    linkingLoading,
   } = useCompanyInfoForm();
 
   const [gstInput, setGstInput] = useState("");
@@ -68,20 +76,33 @@ const index = () => {
   const [companyList, setCompanyList] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState(null);
 
+  {
+    /*
+    if initital  we ask the customer to add the GST
+    if choose - we show the options fot the user to choose the GST
+    if status - the user has submitted the company but pending approval
+    if form - eiter user asked to create one or update
+  */
+  }
+  console.log({ mode });
   useEffect(() => {
-    if (infoData && infoData.companyName) {
-      setMode("form");
-    } else if (infoData && infoData.verifiedCompanyToUser) {
+    console.log(companyId, compnayVerifiedToUser);
+    if (!companyId) {
+      setMode("initial");
+    } else if (companyId && compnayVerifiedToUser === false) {
       setMode("status");
+    } else if (companyId && compnayVerifiedToUser === true) {
+      setMode("form");
     }
-  }, [infoData]);
+  }, [companyId, compnayVerifiedToUser]);
 
   const handleGstSubmit = async () => {
     try {
-      // const res = await axios.get(`/api/company/by-gst?gst=${gstInput}`);
-      const res = {data: dummyCompanies}
-      if (res.data && res.data.length > 0) {
-        setCompanyList(res.data);
+      const res = await axiosInstance.get(
+        `/company/search-by-gst?gstNo=${gstInput}`
+      );
+      if (res.data && res.data.success) {
+        setCompanyList([res.data.company]);
         setMode("choose");
       } else {
         alert("No companies found with this GST.");
@@ -95,20 +116,17 @@ const index = () => {
   const handleCompanySelect = (company) => {
     setInfoData({
       ...company,
-      verifiedCompanyToUser: "pending",
+      compnayVerifiedToUser: "pending",
     });
   };
-  const handleConfirmCompany = () => {
+  const handleConfirmCompany = async () => {
     if (!selectedCompany) return alert("Please select a company.");
 
-    const selectedData = companyList.find((c) => c.companyId === selectedCompany);
+    const selectedData = companyList.find(
+      (c) => c.companyId === selectedCompany
+    );
     if (!selectedData) return alert("Selected company not found.");
-
-    setInfoData({
-      ...selectedData,
-      verifiedCompanyToUser: "pending",
-    });
-    setMode("status");
+    linkUserToCompany(selectedData.companyId);
   };
   const onSubmit = (e) => {
     e.preventDefault();
@@ -133,15 +151,15 @@ const index = () => {
       {/* <!-- Dashboard --> */}
       <section className="user-dashboard">
         <div className="dashboard-outer">
-          <BreadCrumb title="My Profile!" />
+          <BreadCrumb title="My Company!" />
           {/* breadCrumb */}
 
           <MenuToggler />
           {/* Collapsible sidebar button */}
 
-
           <ContentRenderer
             mode={mode}
+            setMode={setMode}
             onSubmit={onSubmit}
             handleGstSubmit={handleGstSubmit}
             handleCompanySelect={handleCompanySelect}
@@ -152,7 +170,11 @@ const index = () => {
             setContactData={setContactData}
             socialData={socialData}
             setSocialData={setSocialData}
-            isExistingCompany={isExistingCompany}
+            selectedExpertise={selectedExpertise}
+            setSelectedExpertise={setSelectedExpertise}
+            initialExpertise={initialExpertise}
+            setInitialExpertise={setInitialExpertise}
+            companyId={companyId}
             gstInput={gstInput}
             setGstInput={setGstInput}
             companyList={companyList}
@@ -160,6 +182,8 @@ const index = () => {
             selectedCompany={selectedCompany}
             setSelectedCompany={setSelectedCompany}
             handleConfirmCompany={handleConfirmCompany}
+            linkingLoading={linkingLoading}
+            compnayVerifiedToUser={compnayVerifiedToUser}
           />
           {/* End .row */}
         </div>
@@ -176,6 +200,7 @@ const index = () => {
 
 const ContentRenderer = ({
   mode,
+  setMode,
   onSubmit,
   handleGstSubmit,
   handleCompanySelect,
@@ -183,16 +208,27 @@ const ContentRenderer = ({
   errors,
   infoData,
   setInfoData,
+  contactData,
+  setContactData,
+  socialData,
+  setSocialData,
+  initialExpertise,
+  selectedExpertise,
+  setSelectedExpertise,
+  companyId,
   gstInput,
   setGstInput,
   setCompanyList,
   selectedCompany,
   setSelectedCompany,
-  handleConfirmCompany
+  handleConfirmCompany,
+  linkingLoading,
+  compnayVerifiedToUser,
 }) => {
+
   return (
     <div className="widget-content">
-      {(mode === "initial" || mode ==="choose") && (
+      {(mode === "initial" || mode === "choose") && (
         <div className="form-group col-lg-6 col-md-12">
           <label>Enter GST Number</label>
           <input
@@ -202,16 +238,22 @@ const ContentRenderer = ({
             onChange={(e) => setGstInput(e.target.value)}
             placeholder="Enter GST Number"
           />
-          <button
-            onClick={handleGstSubmit}
-            className="theme-btn btn-style-one mt-2"
-          >
-            Submit
-          </button>
+          <div className="row mt-2">
+            <div className="col-auto">
+              <button onClick={handleGstSubmit} className="btn btn-primary">
+                Search
+              </button>
+            </div>
+            <div className="col-auto">
+              <button onClick={() => setMode("form")} className="btn btn-success">
+                Create New
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
-     {mode === "choose" && (
+      {mode === "choose" && (
         <div className="col-lg-12">
           <div className="form-group">
             <label>Select your Company</label>
@@ -223,7 +265,9 @@ const ContentRenderer = ({
               <option value="">-- Select Company --</option>
               {companyList.map((company) => (
                 <option key={company.companyId} value={company.companyId}>
-                  {company.companyName} - {company.address}
+                  {company.infoData.companyName} -{" "}
+                  {company.contactData.addressLine1}, {company.contactData.city}
+                  , {company.contactData.state}, {company.contactData.pinCode}
                 </option>
               ))}
             </select>
@@ -231,22 +275,28 @@ const ContentRenderer = ({
           <button
             onClick={handleConfirmCompany}
             className="theme-btn btn-style-one mt-2"
+            disabled={!selectedCompany || linkingLoading}
           >
-            Submit for Verification
+            {linkingLoading ? "Sumbitting" : "Submit for Verification"}
           </button>
         </div>
       )}
       {mode === "form" && (
-                  <div className="row">
+        <form onSubmit={onSubmit}>
+          <div className="row">
             <div className="col-lg-12">
               <div className="ls-widget">
                 <div className="tabs-box">
                   <div className="widget-title">
-                    <h4>My Contractor Profile</h4>
+                    <h4>{companyId ? "Update" : "Create"}  Company Profile</h4>
                   </div>
                   <MyContractorCompany_2
                     infoData={infoData}
                     setInfoData={setInfoData}
+                    selectedExpertise={selectedExpertise}
+                    setSelectedExpertise={setSelectedExpertise}
+                    initialExpertise={initialExpertise}
+                    errors={errors}
                   />
                 </div>
               </div>
@@ -260,7 +310,11 @@ const ContentRenderer = ({
                   {/* End widget-title */}
 
                   <div className="widget-content">
-                    <SocialNetworkBox />
+                    <SocialNetworkBox
+                      socialData={socialData}
+                      setSocialData={setSocialData}
+                      errors={errors}
+                    />
                   </div>
                 </div>
               </div>
@@ -273,25 +327,41 @@ const ContentRenderer = ({
                   </div>
                   {/* End widget-title */}
                   <div className="widget-content">
-                    <ContactInfoBox />
+                    <ContactInfoBox
+                      contactData={contactData}
+                      setContactData={setContactData}
+                      errors={errors}
+                    />
                   </div>
                 </div>
               </div>
               {/* <!-- Ls widget --> */}
             </div>
           </div>
+          <div className="row">
+            <div className="form-group col-lg-12 col-md-12">
+              <button type="submit" className="theme-btn btn-style-one">
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </form>
       )}
 
       {mode === "status" && (
         <div className="alert alert-info mt-3">
-          {infoData.verifiedCompanyToUser === "pending" && (
-            <span>✅ Your company is submitted for verification.</span>
-          )}
-          {infoData.verifiedCompanyToUser === "rejected" && (
-            <span>❌ Your company verification was rejected.</span>
-          )}
-          {infoData.verifiedCompanyToUser === "verified" && (
-            <span>🎉 Your company is verified!</span>
+          {!compnayVerifiedToUser && (
+            <>
+              <span>✅ Your company is submitted for verification.</span>
+              <div>Company Name: {infoData.companyName}</div>
+              <div>GST Number: {infoData.gstNo}</div>
+              <div>Contact Person: {infoData.contactPerson}</div>
+              <div>Contact Number: {infoData.contactNumber}</div>
+              <div>
+                Address: {contactData.addressLine1}, {contactData.city},{" "}
+                {contactData.state}, {contactData.pinCode}
+              </div>
+            </>
           )}
         </div>
       )}
