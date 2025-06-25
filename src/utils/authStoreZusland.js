@@ -6,7 +6,7 @@ const useAuthStore = create(
     (set) => ({
       user: null,
       login: (userData) => set({ user: userData, token: userData.token }),
-      logout: () => set({ user: null }),
+      logout: () => set({ user: null, token: null }),
     }),
     { name: "auth-storage" } // Saves to localStorage
   )

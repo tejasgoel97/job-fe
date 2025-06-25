@@ -93,11 +93,15 @@ const Resume = ({ initialData }) => {
       alert("Please Phone Number and email in  contact information fields.");
       return;
     }
-    if (
-      !contactInfo.country ||
-      !contactInfo.city ||
-      !contactInfo.completeAddress
-    ) {
+    if (!contactInfo.country) {
+      alert("Please choose a country in contact information fields.");
+      return;
+    }
+    if (!contactInfo.city) {
+      alert("Please choose a city in contact information fields");
+      return;
+    }
+    if (!contactInfo.completeAddress) {
       alert("Please fill proper address contact information fields.");
       return;
     }
@@ -110,7 +114,7 @@ const Resume = ({ initialData }) => {
     }
     const body = {
       portfolioFile,
-     name,
+      name,
       description,
       age,
       totalExperienceYears,
@@ -137,7 +141,7 @@ const Resume = ({ initialData }) => {
         alert("Resume updated successfully!");
       } else {
         // Create new resume
-        response = await axiosInstance.post("/resume", formData, {
+        response = await axiosInstance.post("/resume", body, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         alert("Resume saved successfully!");

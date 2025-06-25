@@ -8,13 +8,16 @@ import SocialTwo from "@/components/SingleJob/SocialTwo";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../utils/api/axiosInstance"; // Import axiosInstance
 import { Link, useParams } from "react-router-dom";
+import useAuthStore from "@/utils/authStoreZusland";
 
 const JobSingle1 = () => {
   const { id } = useParams();
   const [job, setJob] = useState({});
   const [company, setCompany] = useState({});
   const [loading, setLoading] = useState(true);
-
+  const [hasApplied, setHasApplied] = useState(false);
+  const [checkingStatus, setCheckingStatus] = useState(true);
+  const { user } = useAuthStore();
   useEffect(() => {
     const fetchJob = async () => {
       if (!id) {
@@ -24,9 +27,7 @@ const JobSingle1 = () => {
       setLoading(true); // Ensure loading is true at the start of fetch
       try {
         const response = await axiosInstance.get(`/jobs/get-job/${id}`);
-        // Assuming the API returns an object with 'job' and 'company' properties
-        // e.g., response.data = { job: { ...details... }, company: { ...details... } }
-        // Adjust based on your actual API response structure.
+
 
         if (response.data) {
           if (response.data.job) {
@@ -52,6 +53,51 @@ const JobSingle1 = () => {
 
     fetchJob();
   }, [id]);
+    useEffect(() => {
+    const checkApplicationStatus = async () => {
+      if (!user || !id) {
+        setCheckingStatus(false);
+        return;
+      }
+      try {
+        setCheckingStatus(true);
+        const response = await axiosInstance.get(
+          `/job-application/check-applied/${id}`
+        );
+        if (response.data.success) {
+          setHasApplied(response.data.applied);
+        }
+      } catch (error) {
+        console.error("Failed to check application status:", error);
+        setHasApplied(false);
+      } finally {
+        setCheckingStatus(false);
+      }
+    };
+
+    checkApplicationStatus();
+  }, [id, user]);
+
+  const handleApplicationSuccess = () => {
+    setHasApplied(true);
+  };
+
+  if (loading) {
+    return (
+      <section className="job-detail-section">
+        <div className="auto-container text-center py-5">Loading...</div>
+      </section>
+    );
+  }
+
+  if (!job) {
+    return (
+      <section className="job-detail-section">
+        <div className="auto-container text-center py-5">Job not found.</div>
+      </section>
+    );
+  }
+
   console.log(job)
   return (
     <section className="job-detail-section">
@@ -60,8 +106,8 @@ const JobSingle1 = () => {
           <div className="job-block-seven">
             <div className="inner-box">
               <div className="content">
-                <span className="company-logo">
-                  <img src={company?.logo} alt="logo" />
+                <span className="company-logo d-flex align-items-center justify-content-center">
+                  <img src={job.companyDetails?.infoData?.logo || "/images/resource/company-logo/default.png"} alt="logo" />
                 </span>
                 <h4>{job?.title}</h4>
 
@@ -95,14 +141,28 @@ const JobSingle1 = () => {
               {/* End .content */}
 
               <div className="btn-box">
-                <a
-                  href="#"
-                  className="theme-btn btn-style-one"
-                  data-bs-toggle="modal"
-                  data-bs-target="#applyJobModal"
-                >
-                  Apply For Job
-                </a>
+                {!user ? (
+                  <Link to="/login" className="theme-btn btn-style-one">
+                    Login to Apply
+                  </Link>
+                ) : checkingStatus ? (
+                  <button className="theme-btn btn-style-one" disabled>
+                    Checking Status...
+                  </button>
+                ) : hasApplied ? (
+                  <button className="theme-btn btn-style-one" disabled>
+                    Already Applied
+                  </button>
+                ) : (
+                  <a
+                    href="#"
+                    className="theme-btn btn-style-one"
+                    data-bs-toggle="modal"
+                    data-bs-target="#applyJobModal"
+                  >
+                    Apply For Job
+                  </a>
+                )}
                 <button className="bookmark-btn">
                   <i className="flaticon-bookmark"></i>
                 </button>
@@ -129,8 +189,10 @@ const JobSingle1 = () => {
                     </div>
                     {/* End modal-header */}
 
-                    <ApplyJobModalContent />
-                    {/* End PrivateMessageBox */}
+                    <ApplyJobModalContent
+                      jobId={id}
+                      onApplySuccess={handleApplicationSuccess}
+                    />                    {/* End PrivateMessageBox */}
                   </div>
                   {/* End .send-private-message-wrapper */}
                 </div>

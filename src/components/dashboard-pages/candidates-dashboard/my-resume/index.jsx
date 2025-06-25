@@ -38,7 +38,7 @@ const index = () => {
 
     fetchResumeData();
   }, []); // Empty dependency array ensures this runs only once on component mount
-
+  console.log(resumeData);
   return (
     <div className="page-wrapper dashboard">
       <span className="header-span"></span>
