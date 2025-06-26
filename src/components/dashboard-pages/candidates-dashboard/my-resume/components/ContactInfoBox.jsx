@@ -4,7 +4,7 @@ const ContactInfoBox = ({ data, onChange }) => {
   return (
     <form className="default-form">
       <div className="row">
-         <div className="form-group col-lg-12 col-md-12">
+        <div className="form-group col-lg-12 col-md-12">
           <label>Phone Number</label>
           <input
             type="text"
@@ -15,7 +15,7 @@ const ContactInfoBox = ({ data, onChange }) => {
             required
           />
         </div>
-         <div className="form-group col-lg-12 col-md-12">
+        <div className="form-group col-lg-12 col-md-12">
           <label>Email</label>
           <input
             type="email"
@@ -25,6 +25,56 @@ const ContactInfoBox = ({ data, onChange }) => {
             onChange={(e) => onChange("email", e.target.value)}
             required
           />
+        </div>
+
+        {/* <!-- Input --> */}
+        <div className="form-group col-lg-12 col-md-12">
+          <label>Address Line 1</label>
+          <input
+            type="text"
+            name="name"
+            placeholder=""
+            value={data.addressLine1}
+            onChange={(e) => onChange("addressLine1", e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group col-lg-12 col-md-12">
+          <label>Address Line 2 (Optional)</label>
+          <input
+            type="text"
+            name="name"
+            placeholder="Optional"
+            value={data.addressLine2}
+            onChange={(e) => onChange("addressLine2", e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group col-lg-6 col-md-12">
+          <label>City</label>
+          <input
+            type="text"
+            name="city"
+            placeholder=""
+            value={data.city}
+            onChange={(e) => onChange("city", e.target.value)}
+            required
+          />
+        </div>
+        <div className="form-group col-lg-6 col-md-12">
+          <label>State</label>
+          <select
+            className="chosen-single form-select"
+            required
+            value={data.city}
+            onChange={(e) => onChange("city", e.target.value)}
+          >
+            <option>Haryana</option>
+            <option>Delhi</option>
+            <option>Uttar Pradesh</option>
+            <option>Telangana</option>
+            <option>Punjab</option>
+          </select>
         </div>
         {/* <!-- Input --> */}
         <div className="form-group col-lg-6 col-md-12">
@@ -44,34 +94,6 @@ const ContactInfoBox = ({ data, onChange }) => {
         </div>
 
         {/* <!-- Input --> */}
-        <div className="form-group col-lg-6 col-md-12">
-          <label>City</label>
-          <select
-            className="chosen-single form-select"
-            required
-            value={data.city}
-            onChange={(e) => onChange("city", e.target.value)}
-          >
-            <option>Melbourne</option>
-            <option>Pakistan</option>
-            <option>Chaina</option>
-            <option>Japan</option>
-            <option>India</option>
-          </select>
-        </div>
-
-        {/* <!-- Input --> */}
-        <div className="form-group col-lg-12 col-md-12">
-          <label>Complete Address</label>
-          <input
-            type="text"
-            name="name"
-            placeholder="329 Queensberry Street, North Melbourne VIC 3051, Australia."
-            value={data.completeAddress}
-            onChange={(e) => onChange("completeAddress", e.target.value)}
-            required
-          />
-        </div>
 
         {/* <!-- Input --> */}
         <div className="form-group col-lg-6 col-md-12">
@@ -79,15 +101,12 @@ const ContactInfoBox = ({ data, onChange }) => {
           <input
             type="text"
             name="name"
-            placeholder="329 Queensberry Street, North Melbourne VIC 3051, Australia."
+            placeholder=""
             value={data.googleMapLink}
             onChange={(e) => onChange("googleMapLink", e.target.value)}
             required
           />
         </div>
-
-
-
       </div>
     </form>
   );

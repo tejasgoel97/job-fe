@@ -104,7 +104,7 @@ const JobListingsTable = () => {
                               />
                             </span>
                             <h4>
-                              <Link to={`/edit-job/${item._id}`}>
+                              <Link to={`/job/${item._id}`}>
                                 {item.title}
                               </Link>
                             </h4>

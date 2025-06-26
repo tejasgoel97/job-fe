@@ -15,6 +15,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import MainHeader from "./components/header/MainHeader";
 import Home from "./Pages/Home/Home";
+import ProtectedRoute from "./components/common/ProtectedRoute";
+
 import ScrollTopBehaviour from "./components/common/ScrollTopBehaviour";
 // import DashboardEmploeeDBPage from "./Pages/employers-dashboard/dashboard";
 import CompanyProfileEmploeeDBPage from "./Pages/employers-dashboard/company-profile";
@@ -37,8 +39,13 @@ import CandidateSingle1 from "./Pages/General/CandidateSingle1";
 import CompanySingle1 from "./Pages/General/CompanySingle1";
 import JobList4 from "./Pages/General/JobList4";
 
+import ContractorDashboardPage from "./Pages/contractor-dashboard/dashboard";
+
 import ContractorProfilePage from "./Pages/contractor-dashboard/contractor-profile";
 import ContractorCompanyPage from "./Pages/contractor-dashboard/contractor-company";
+import Logout from "./Pages/authPages/logout";
+import AppliedJobsPage from "./Pages/CandidateDashboard/applied-jobs";
+import ContractSingle1 from "./Pages/contract-single/index";
 
 
 
@@ -61,7 +68,8 @@ function App() {
               <Route path="/">
                 <Route index element={<Home />} />
                 <Route path="login"  element={<Home />}/>
-                <Route path="employers-dashboard">
+                <Route path="logout"  element={<Logout />}/>
+                <Route path="employers-dashboard" element={<ProtectedRoute allowedRoles={["employer"]} />}>
                   <Route
                     path="dashboard"
                     element={<DashboardEmploeeDBPage />}
@@ -110,9 +118,10 @@ function App() {
                     element={<ChangePasswordEmploeeDBPage />}
                   /> */}
                 </Route>
-                <Route path="candidates-dashboard">
+                <Route path="candidates-dashboard" element={<ProtectedRoute allowedRoles={["candidate"]} />}
+>
                   <Route path="dashboard" element={<DashboardPage />} />
-                  {/* <Route path="applied-jobs" element={<AppliedJobsPage />} /> */}
+                  <Route path="applied-jobs" element={<AppliedJobsPage />} />
                   {/* <Route
                     path="change-password"
                     element={<ChangePasswordPage />}
@@ -128,8 +137,9 @@ function App() {
 
                     {/* ROUTES FOR THE CONTRACTOR */}
 
-                <Route path ='contractor-dashboard'>
-                  <Route path="dashboard" element={<DashboardPage />} />
+                <Route path ='contractor-dashboard' element={<ProtectedRoute allowedRoles={["contractor"]} />}
+>
+                  <Route path="dashboard" element={<ContractorDashboardPage />} />
                   <Route path="my-profile" element={<ContractorProfilePage />} />
                   <Route path="my-company" element={<ContractorCompanyPage />} />
                 </Route>
@@ -139,6 +149,7 @@ function App() {
                 <Route path="job/:id" element={<JobSingle1 />} />
                 <Route path='candidate/:id' element={<CandidateSingle1 />} />
                 <Route path="company/:id" element={<CompanySingle1 />} />
+                <Route path="contract/:id" element={<ContractSingle1 />} />
                 <Route path='job-list' element = {<JobList4 />} />  
               </Route>
             </Routes>

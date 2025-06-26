@@ -58,8 +58,8 @@ const RegisterFormContent = () => {
         otp,
       });
 
-      const { token, userId, role, capabilities, email } = response.data;
-      login({ email, userId, role, capabilities, token });
+      const { token, userId, role, capabilities, email, phoneNumber,firstName, lastName } = response.data;
+      login({ email, userId, role, capabilities, token, phoneNumber,firstName, lastName});
 
       if (formData.rememberMe) {
         localStorage.setItem("token", token);

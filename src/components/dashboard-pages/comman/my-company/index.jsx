@@ -14,44 +14,6 @@ import { info } from "sass";
 import DashboardEmployerSidebar from "@/components/header/DashboardEmployerSidebar";
 import DashboardHeader from "@/components/header/DashboardHeader";
 
-const dummyCompanies = [
-  {
-    companyId: "comp1",
-    companyName: "MetalCast Pvt Ltd",
-    address: "Plot 12, Industrial Area, Pune",
-    aboutCompany: "Leading manufacturer of sand castings.",
-    gstNo: "gstInput",
-    factoryLicenseNo: "LIC12345",
-    contactPerson: "Rajeev Sharma",
-    contactNumber: "9876543210",
-    email: "contact@metalcast.com",
-    otherDetails: "",
-    typeOfCasting: [],
-    manufacturingCapacity: 150,
-    yearOfEstablishment: 1998,
-    isoCertifications: "ISO 9001:2015",
-    keyProducts: "Cast Iron Manifolds, Pump Bodies",
-    website: "https://metalcast.com",
-  },
-  {
-    companyId: "comp2",
-    companyName: "Precision Foundries",
-    address: "Sector 22, Faridabad",
-    aboutCompany: "Expertise in die casting for automotive.",
-    gstNo: "gstInput",
-    factoryLicenseNo: "LIC7890",
-    contactPerson: "Meera Nair",
-    contactNumber: "9822334455",
-    email: "info@precisionfoundries.com",
-    otherDetails: "",
-    typeOfCasting: [],
-    manufacturingCapacity: 200,
-    yearOfEstablishment: 2005,
-    isoCertifications: "ISO 14001",
-    keyProducts: "Aluminum Auto Parts, Engine Blocks",
-    website: "https://precisionfoundries.com",
-  },
-];
 
 const index = ({ role = "employer" }) => {
   const {

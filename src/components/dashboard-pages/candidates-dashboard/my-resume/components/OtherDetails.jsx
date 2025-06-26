@@ -27,7 +27,7 @@ const OtherDetails = (props) =>{
         </div>
 
         {/* <!-- Input --> */}
-        <div className="form-group col-lg-4 col-md-12">
+        {/* <div className="form-group col-lg-4 col-md-12">
           <label>Total Experience (Years)</label>
           <input
             type="number"
@@ -36,7 +36,7 @@ const OtherDetails = (props) =>{
             value={totalExperienceYears}
             onChange={(e) => setTotalExperienceYears(e.target.value)}
           />
-        </div>
+        </div> */}
 
         {/* <!-- Input --> */}
         <div className="form-group col-lg-4 col-md-12">
@@ -44,7 +44,7 @@ const OtherDetails = (props) =>{
           <input
             type="number"
             name="experienceMonths"
-            placeholder="e.g. 6"
+            placeholder=""
             value={totalExperienceMonths}
             onChange={(e) => setTotalExperienceMonths(e.target.value)}
           />
@@ -52,7 +52,7 @@ const OtherDetails = (props) =>{
 
         {/* <!-- Input --> */}
         <div className="form-group col-lg-4 col-md-12">
-          <label>Current Salary (per annum, in Rs)</label>
+          <label>Current Salary (per month, in Rs)</label>
           <input
             type="number"
             name="currentSalary"
@@ -64,7 +64,7 @@ const OtherDetails = (props) =>{
 
         {/* <!-- Input --> */}
         <div className="form-group col-lg-4 col-md-12">
-          <label>Expected Salary (per annum, in Rs)</label>
+          <label>Expected Salary (per month, in Rs)</label>
           <input
             type="number"
             name="expectedSalary"
@@ -75,7 +75,7 @@ const OtherDetails = (props) =>{
         </div>
 
         {/* <!-- Input --> */}
-        <div className="form-group col-lg-4 col-md-12">
+        <div className="form-group col-lg-8 col-md-12">
           <label>Languages Known</label>
           <Select
             isMulti

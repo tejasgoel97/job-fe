@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axiosInstance from "../../../../utils/api/axiosInstance"; // Adjusted path
 import { fi } from "@faker-js/faker";
+import { toast } from "react-toastify";
 
 const useCompanyInfoForm = () => {
   const [infoData, setInfoData] = useState({
@@ -43,8 +44,11 @@ const useCompanyInfoForm = () => {
   const [linkingLoading, setLinkingLoading] = useState(false);
   const [selectedExpertise, setSelectedExpertise] =useState([])
   const [initialExpertise, setInitialExpertise] = useState([])
+  const [loadingCompanyInfo, setLoadingCompanyInfo] = useState(true);
 
       const fetchCompanyInfo = async () => {
+          setLoadingCompanyInfo(true);
+
       try {
         const res = await axiosInstance.get("/company/get-my-company-info");        
         if(!res.data.success){
@@ -61,7 +65,9 @@ const useCompanyInfoForm = () => {
       } catch (error) {
         console.log("No existing company found or failed to fetch.");
         setCompanyId(false);
-      }
+      }finally {
+    setLoadingCompanyInfo(false);
+  }
     };
   // ✅ Fetch my company info on mount
   useEffect(() => {
@@ -128,14 +134,17 @@ const useCompanyInfoForm = () => {
       socialData,
       expertise: finalExpertise,
     };
-
+    console.log({payload})
     try {
       if (companyId) {
         await axiosInstance.put("/company/update-company-info", payload);
-        alert("Company Information Updated Successfully!");
+        toast.success("Company Information Updated Successfully!");
+        fetchCompanyInfo();
       } else {
         await axiosInstance.post("/company/create-company-info", payload);
         alert("Company Information Created Successfully!");
+                fetchCompanyInfo();
+
       }
 
       return true;
@@ -182,7 +191,8 @@ const useCompanyInfoForm = () => {
     companyId,
     linkUserToCompany,
     linkingLoading,
-    compnayVerifiedToUser
+    compnayVerifiedToUser,
+    loadingCompanyInfo
   };
 };
 

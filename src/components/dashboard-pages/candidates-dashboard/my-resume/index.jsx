@@ -8,11 +8,12 @@ import Resume from "./components";
 import DashboardCandidatesHeader from "../../../header/DashboardCandidatesHeader";
 import MenuToggler from "../../MenuToggler";
 import axiosInstance from "@/utils/api/axiosInstance";
+import useAuthStore from "@/utils/authStoreZusland";
 
 const index = () => {
     const [initialLoading, setInitialLoading] = useState(true);
-  const [resumeData, setResumeData] = useState(null);
-
+    const [resumeData, setResumeData] = useState(null);
+    const {user} = useAuthStore();
   useEffect(() => {
     const fetchResumeData = async () => {
       try {
@@ -38,7 +39,7 @@ const index = () => {
 
     fetchResumeData();
   }, []); // Empty dependency array ensures this runs only once on component mount
-  console.log(resumeData);
+  console.log({user})
   return (
     <div className="page-wrapper dashboard">
       <span className="header-span"></span>
@@ -64,7 +65,7 @@ const index = () => {
               <div className="ls-widget">
                 <div className="tabs-box">
                   <div className="widget-title">
-                    <h4>My Profile</h4>
+                    <h4>{resumeData ? "Edit" : "Create"}  Resume</h4>
                   </div>
                   {/* End widget-title */}
 
@@ -74,7 +75,7 @@ const index = () => {
                         Loading your resume details...
                       </div>
                     ) : (
-                      <Resume initialData={resumeData} />
+                      <Resume initialData={resumeData} user={user} />
                     )}
                   </div>
                   {/* End widget-content */}

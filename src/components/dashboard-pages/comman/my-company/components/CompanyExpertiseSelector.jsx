@@ -103,7 +103,8 @@ const CompanyExpertiseSelector = ({  initialExpertise, selectedExpertise, setSel
     });
   };
 
-  const handleAddSubcategory = (catName) => {
+  const handleAddSubcategory = (e,catName) => { 
+    e.preventDefault();
     const newSub = newInputs[catName]?.subcategory?.trim();
     if (!newSub) return;
 
@@ -128,7 +129,9 @@ const CompanyExpertiseSelector = ({  initialExpertise, selectedExpertise, setSel
     }));
   };
 
-  const handleAddProcess = (catName) => {
+  const handleAddProcess = (e,catName) => {
+        e.preventDefault();
+
     const newProc = newInputs[catName]?.process?.trim();
     if (!newProc) return;
 
@@ -215,7 +218,7 @@ const CompanyExpertiseSelector = ({  initialExpertise, selectedExpertise, setSel
                   />
                   <button
                     className="btn btn-sm btn-outline-primary"
-                    onClick={() => handleAddSubcategory(cat.name)}
+                    onClick={(e) => handleAddSubcategory(e,cat.name)}
                   >
                     Add
                   </button>
@@ -264,7 +267,7 @@ const CompanyExpertiseSelector = ({  initialExpertise, selectedExpertise, setSel
                     />
                     <button
                       className="btn btn-sm btn-outline-primary"
-                      onClick={() => handleAddProcess(cat.name)}
+                      onClick={(e) => handleAddProcess(e,cat.name)}
                     >
                       Add
                     </button>

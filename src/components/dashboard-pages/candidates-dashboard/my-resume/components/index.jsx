@@ -8,13 +8,15 @@ import SkillsMultiple from "./SkillsMultiple";
 import SocialNetworkBox from "./SocialNetworkBox";
 import axiosInstance from "@/utils/api/axiosInstance";
 import OtherDetails from "./OtherDetails";
+import { toast } from "react-toastify";
 
-const Resume = ({ initialData }) => {
+const Resume = ({ initialData, user }) => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [resumeExists, setResumeExists] = useState(!!initialData);
 
   const [portfolioFile, setPortfolioFile] = useState(null);
-  const [name, setName] = useState(initialData?.name || "");
+  const [firstName, setFirstName] = useState(user?.firstName || "");
+  const [lastName, setLastName] = useState(user?.lastName || "");
   const [description, setDescription] = useState(
     initialData?.description || ""
   );
@@ -26,8 +28,12 @@ const Resume = ({ initialData }) => {
     phoneNumber: initialData?.contactInfo?.phoneNumber || "",
     email: initialData?.contactInfo?.email || "",
     country: initialData?.contactInfo?.country || "",
+    state: initialData?.contactInfo?.state || "",
+    pinCode: initialData?.contactInfo?.pinCode || "",
     city: initialData?.contactInfo?.city || "",
-    completeAddress: initialData?.contactInfo?.completeAddress || "",
+    addressLine1: initialData?.contactInfo?.addressLine1 || "",
+    addressLine2: initialData?.contactInfo?.addressLine2 || "",
+    
     googleMapLink: initialData?.contactInfo?.googleMapLink || "",
   });
 
@@ -76,10 +82,7 @@ const Resume = ({ initialData }) => {
     event.preventDefault();
 
     // Basic checks
-    if (!name) {
-      alert("Name is required.");
-      return;
-    }
+
 
     if (!description.trim()) {
       alert("Description is required.");
@@ -101,7 +104,7 @@ const Resume = ({ initialData }) => {
       alert("Please choose a city in contact information fields");
       return;
     }
-    if (!contactInfo.completeAddress) {
+    if (!contactInfo.addressLine1) {
       alert("Please fill proper address contact information fields.");
       return;
     }
@@ -138,13 +141,16 @@ const Resume = ({ initialData }) => {
       if (resumeExists) {
         // Update existing resume
         response = await axiosInstance.post("/resume", body);
-        alert("Resume updated successfully!");
+        toast.success("Resume updated successfully!");
+                window.scroll(0, 0)
+
       } else {
         // Create new resume
         response = await axiosInstance.post("/resume", body, {
           headers: { "Content-Type": "multipart/form-data" },
         });
-        alert("Resume saved successfully!");
+        toast.success("Resume saved successfully!");
+        window.scroll(0, 0)
         setResumeExists(true); // After a successful save, the resume now exists for future edits.
       }
       console.log("Server Response:", response.data);
@@ -165,17 +171,32 @@ const Resume = ({ initialData }) => {
         <div className="form-group col-lg-6 col-md-12">
           <AddPortfolio onFileSelect={setPortfolioFile} />
         </div>
+         <div className="form-group col-lg-6 col-md-12">
+        </div>
         {/* <!-- Input --> */}
 
-        <div className="form-group col-lg-12 col-md-12">
-          <label>Name</label>
+        <div className="form-group col-lg-6 col-md-6">
+          <label>First Name</label>
           <input
             required
             type="text"
-            name="name"
-            placeholder="John Doe"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            name="first Name"
+            placeholder=""
+            value={firstName}
+            disabled
+            onChange={(e) => setFirstName(e.target.value)}
+          ></input>
+        </div>
+        <div className="form-group col-lg-6 col-md-6">
+          <label>Last Name</label>
+          <input
+            required
+            type="text"
+            name="last Name"
+            placeholder=""
+            disabled
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
           ></input>
         </div>
 
@@ -186,7 +207,7 @@ const Resume = ({ initialData }) => {
             name="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Spent several years working on sheep on Wall Street..."
+            placeholder="Description about yourself"
           ></textarea>
         </div>
         {/* <!-- About Company --> */}

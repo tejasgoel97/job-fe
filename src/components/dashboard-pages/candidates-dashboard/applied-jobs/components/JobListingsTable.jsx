@@ -1,9 +1,9 @@
-
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import jobs from "../../../../../data/job-featured.js";
 
-
-const JobListingsTable = () => {
+const JobListingsTable = ({ applications = [] }) => {
+  console.log({ applications });
+  const navigation = useNavigate()
   return (
     <div className="tabs-box">
       <div className="widget-title">
@@ -35,61 +35,93 @@ const JobListingsTable = () => {
                   <th>Action</th>
                 </tr>
               </thead>
-
               <tbody>
-                {jobs.slice(0, 4).map((item) => (
-                  <tr key={item.id}>
-                    <td>
-                      {/* <!-- Job Block --> */}
-                      <div className="job-block">
-                        <div className="inner-box">
-                          <div className="content">
-                            <span className="company-logo">
-                              <img
-                               
-                                src={item.logo}
-                                alt="logo"
-                              />
-                            </span>
-                            <h4>
-                              <Link to={`/job-single-v3/${item.id}`}>
-                                {item.jobTitle}
-                              </Link>
-                            </h4>
-                            <ul className="job-info">
-                              <li>
-                                <span className="icon flaticon-briefcase"></span>
-                                Segment
-                              </li>
-                              <li>
-                                <span className="icon flaticon-map-locator"></span>
-                                London, UK
-                              </li>
-                            </ul>
+                {applications.map((item) => {
+                  const appliedAt = new Date(item.createdAt).toLocaleString(
+                    "en-IN",
+                    {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    }
+                  );
+                  const getStatusColor = (status) => {
+                    switch (status) {
+                      case "pending":
+                        return "orange";
+                      case "rejected":
+                        return "red";
+                      case "shortlisted":
+                        return "green";
+                      default:
+                        return "gray";
+                    }
+                  };
+                  return (
+                    <tr key={item.id}>
+                      <td>
+                        {/* <!-- Job Block --> */}
+                        <div className="job-block">
+                          <div className="inner-box">
+                            <div className="content">
+                              <span className="company-logo">
+                                <img
+                                  src={
+                                    item.logo ||
+                                    "https://img.freepik.com/free-vector/abstract-company-logo_53876-120501.jpg?semt=ais_items_boosted&w=740"
+                                  }
+                                  alt="logo"
+                                />
+                              </span>
+                              <h4>
+                                <Link to={`/job/${item.jobId._id}`}>
+                                  {item?.jobId?.title} ,{" "}
+                                  {item?.companyId?.infoData?.companyName}
+                                </Link>
+                              </h4>
+                              <ul className="job-info">
+                                <li>
+                                  <span className="icon flaticon-briefcase"></span>
+                                  {item?.jobId?.jobType}
+                                </li>
+                                <li>
+                                  <span className="icon flaticon-map-locator"></span>
+                                  {item?.jobId?.city}
+                                </li>
+                              </ul>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </td>
-                    <td>Dec 5, 2020</td>
-                    <td className="status">Active</td>
-                    <td>
-                      <div className="option-box">
-                        <ul className="option-list">
-                          <li>
-                            <button data-text="View Aplication">
-                              <span className="la la-eye"></span>
-                            </button>
-                          </li>
-                          <li>
-                            <button data-text="Delete Aplication">
-                              <span className="la la-trash"></span>
-                            </button>
-                          </li>
-                        </ul>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                      <td>{appliedAt}</td>
+                      <td
+                        className="status"
+                        style={{ color: getStatusColor(item.currentStatus) }}
+                      >
+                        {item?.currentStatus}
+                      </td>{" "}
+                      <td>
+                        <div className="option-box">
+                          <ul className="option-list">
+                            <li>
+                              <button data-text="View Job Post" onClick={()=>navigation(`/job/${item.jobId._id}`)}>
+                                <span className="la la-eye"></span>
+                              </button>
+                            </li>
+                            <li>
+                              <button data-text="Delete Aplication">
+                                <span className="la la-trash"></span>
+                              </button>
+                            </li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

@@ -7,7 +7,7 @@ const metadata = {
   description: "Superio - Job Borad ReactJs Template",
 };
 
-const PostContractEmploeeDBPage = () => {
+const PostContractEmploerDBPage = () => {
   return (
     <>
       <MetaComponent meta={metadata} />
@@ -16,4 +16,4 @@ const PostContractEmploeeDBPage = () => {
   );
 };
 
-export default PostContractEmploeeDBPage;
+export default PostContractEmploerDBPage;

@@ -9,7 +9,7 @@ const ExpertiseList = ({ expertise }) => {
         {expertise && expertise.length > 0 ? (
           expertise.map((category) => (
             <div key={category._id} className="expertise-category-card">
-              <h3 className="expertise-category-title">{category.category}</h3>
+              <h4 className="expertise-category-title">{category.category}</h4>
 
               {category.subcategories.length > 0 && (
                 <div className="expertise-subsection">

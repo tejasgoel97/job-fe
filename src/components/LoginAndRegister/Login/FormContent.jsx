@@ -36,20 +36,16 @@ const FormContent = () => {
         {
           email: formData.email,
           password: formData.password,
+          role: userType,
         }
       );
-      const { token, userId, role, capabilities, email } = response.data;
+      const { email, userId, role, capabilities, token, phoneNumber,firstName, lastName} = response.data;
+
       console.log(response.data);
       console.log(token);
 
       // Store user data and token in Zustand
-      login({
-        email,
-        userId,
-        role,
-        capabilities,
-        token,
-      });
+              login({ email, userId, role, capabilities, token, phoneNumber,firstName, lastName});
 
       // Optionally save token to localStorage if not using Zustand persist
       if (formData.rememberMe) {

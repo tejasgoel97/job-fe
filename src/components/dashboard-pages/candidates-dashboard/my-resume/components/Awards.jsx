@@ -21,7 +21,8 @@ const Awards = ({ items: awards, setItems: setAwards }) => {
     );
   };
 
-  const handleAdd = () => {
+  const handleAdd = (e) => {
+    e.preventDefault();
     const newId = Date.now();
     setAwards((prev) => [
       {

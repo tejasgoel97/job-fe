@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import Select from "react-select";
 import ExpertiseSection from "./ExpertiseSection";
 import JobAndContractExpertiseSelector from "@/components/dashboard-pages/comman/job-contract-expertise-selector/JobAndContractExpertiseSelector";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const salaryRangesOptions = [
   { value: "30000-40000", label: "$30,000 - $40,000" },
@@ -55,7 +57,7 @@ const jobTitleOptions = [
   "Other",
 ];
 
-const PostBoxForm = ({ jobId, mode, initialData }) => {
+const PostBoxForm = ({ jobId, mode="new", initialData={} }) => {
   const [formData, setFormData] = useState({});
 
   const [selectedExpertise, setSelectedExpertise] = useState([]);
@@ -64,8 +66,9 @@ const PostBoxForm = ({ jobId, mode, initialData }) => {
   const [department, setDepartment] = useState("");
   const [loading, setLoading] = useState(false);
   const { user } = useAuthStore();
+            const navigate = useNavigate();
+
   // Foundry-specific dropdown options
-  console.log({ initialData });
   useEffect(() => {
     if (mode === "edit" && initialData) {
       setFormData({
@@ -160,12 +163,13 @@ const PostBoxForm = ({ jobId, mode, initialData }) => {
       const result = await response.json();
 
       if (response.ok) {
-        alert(
+        toast.success(
           mode === "edit"
             ? "Job updated successfully!"
             : "Job posted successfully!"
         );
         setFormData({});
+        navigate("/employers-dashboard/manage-jobs");
       } else {
         alert(result.message || "Failed to submit job");
       }
