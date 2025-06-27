@@ -1,21 +1,63 @@
-
 import FilterSidebar from "./FilterSidebar";
 import FilterJobBox from "./FilterJobBox";
 import Breadcrumb from "@/components/common/Breadcrumb";
 import CallToActions from "@/components/job-listing-page/CallToActions";
+import SearchForm3 from "./SearchForm3";
 // import CallToAction from "../../call-to-action/CallToAction";
-
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import axios from "axios";
+import axiosInstance from "@/utils/api/axiosInstance";
 const index = () => {
+   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Get initial query params
+  const queryParams = new URLSearchParams(location.search);
+  const initialJobTitle = queryParams.get("jobtitle") || "";
+  const initialLocation = queryParams.get("location") || "";
+  const intialExpertise = queryParams.get("expertise") || "";
+
+  // Local state for form inputs and job results
+
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch jobs when query params change
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        setLoading(true);
+        const response = await axiosInstance.get("/jobs/search-jobs", {
+          params: {
+            searchText: initialJobTitle,
+            locationText: initialLocation,
+            expertise: intialExpertise,
+          },
+        });
+        setJobs(response.data.jobs);
+      } catch (err) {
+        console.error("Error fetching jobs:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, [location.search]);
+
+  // Handle form submit and update URL
+
   return (
     <>
       {/* <!-- Header Span --> */}
       <span className="header-span"></span>
-
       {/* End MobileMenu */}
-
       <Breadcrumb title="Find Jobs" meta="Jobs" />
+      <div className="job-search-form container py-10" data-aos-delay="700" data-aos="fade-up">
+        <SearchForm3 btnStyle="btn-style-two" expertiseData={[]} initialJobTitle={initialJobTitle} initialLocation={initialLocation} intialExpertise={intialExpertise} />
+      </div>
       {/* <!--End Breadcrumb Start--> */}
-
       <section className="ls-section">
         <div className="auto-container">
           <div className="row mb-5">
@@ -30,9 +72,9 @@ const index = () => {
               </div>
             </div>
             {/* <!-- End Filters Column --> */}
-
+              
             <div className="content-column col-lg-12">
-              <FilterJobBox />
+              <FilterJobBox jobs={jobs} loading={loading} />
             </div>
             {/* <!-- End Content Column --> */}
           </div>
@@ -44,7 +86,6 @@ const index = () => {
         {/* End container */}
       </section>
       {/* <!--End Listing Page Section --> */}
-
     </>
   );
 };

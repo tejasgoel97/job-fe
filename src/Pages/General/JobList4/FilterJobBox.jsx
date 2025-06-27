@@ -26,7 +26,7 @@ import {
 } from "../../../features/job/jobSlice";
 
 
-const FilterJobBox = () => {
+const FilterJobBox = ({jobs}) => {
   const { jobList, jobSort } = useSelector((state) => state.filter);
   const {
     keyword,
@@ -41,7 +41,7 @@ const FilterJobBox = () => {
   } = jobList || {};
 
   const { sort, perPage } = jobSort;
-
+  console.log(jobs)
   const dispatch = useDispatch();
 
   // keyword filter on title
@@ -106,20 +106,27 @@ const FilterJobBox = () => {
   // sort filter
   const sortFilter = (a, b) =>
     sort === "des" ? a.id > b.id && -1 : a.id < b.id && -1;
-
+  console.log(jobs)
   let content = jobs
-    ?.filter(keywordFilter)
-    ?.filter(locationFilter)
-    ?.filter(destinationFilter)
-    ?.filter(categoryFilter)
-    ?.filter(jobTypeFilter)
-    ?.filter(datePostedFilter)
-    ?.filter(experienceFilter)
-    ?.filter(salaryFilter)
-    ?.filter(tagFilter)
-    ?.sort(sortFilter)
-    .slice(perPage.start, perPage.end !== 0 ? perPage.end : 16)
-    ?.map((item) => (
+    // ?.filter(keywordFilter)
+    // ?.filter(locationFilter)
+    // ?.filter(destinationFilter)
+    // ?.filter(categoryFilter)
+    // ?.filter(jobTypeFilter)
+    // ?.filter(datePostedFilter)
+    // ?.filter(experienceFilter)
+    // ?.filter(salaryFilter)
+    // ?.filter(tagFilter)
+    // ?.sort(sortFilter)
+    // .slice(perPage.start, perPage.end !== 0 ? perPage.end : 16)
+    ?.map((item) => {
+      const formattedTime = new Date(item.createdAt).toLocaleString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+      
+      return(
       <div className="job-block col-lg-6 col-md-12 col-sm-12" key={item.id}>
         <div className="inner-box">
           <div className="content">
@@ -127,35 +134,41 @@ const FilterJobBox = () => {
               <img  src={item.logo} alt="item brand" />
             </span>
             <h4>
-              <Link to={`/job-single-v1/${item.id}`}>{item.jobTitle}</Link>
+              <Link to={`/job/${item._id}`}>{item.title}, {item.companyDetails.infoData.companyName}</Link>
             </h4>
 
             <ul className="job-info">
               <li>
                 <span className="icon flaticon-briefcase"></span>
-                {item.company}
+                {item.companyDetails.infoData.companyName}
               </li>
               {/* compnay info */}
               <li>
                 <span className="icon flaticon-map-locator"></span>
-                {item.location}
+                {item.city}
               </li>
               {/* location info */}
               <li>
-                <span className="icon flaticon-clock-3"></span> {item.time}
+                <span className="icon flaticon-clock-3"></span> {formattedTime}
               </li>
               {/* time info */}
               <li>
-                <span className="icon flaticon-money"></span> {item.salary}
+                <span className="icon flaticon-money"></span> {item.salaryFrom} - {item.salaryTo}                                                 
               </li>
               {/* salary info */}
             </ul>
             {/* End .job-info */}
 
             <ul className="job-other-info">
-              {item?.jobType?.map((val, i) => (
-                <li key={i} className={`${val.styleClass}`}>
-                  {val.type}
+              <li  className={`privacy`}>
+                  Department: {item.department}
+                </li>
+                <li  className={`required`}>
+                  Type: {item.jobType}
+                </li>
+              {item?.expertise?.map((val, i) => (
+                <li key={i} className={`time`}>
+                  {val.category}
                 </li>
               ))}
             </ul>
@@ -168,7 +181,7 @@ const FilterJobBox = () => {
         </div>
       </div>
       // End all jobs
-    ));
+    )});
 
   // sort handler
   const sortHandler = (e) => {

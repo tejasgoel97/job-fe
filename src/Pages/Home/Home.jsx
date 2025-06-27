@@ -1,9 +1,21 @@
-const Home = () => {
+import React from "react";
+
+import Home from "@/components/home/index";
+
+import MetaComponent from "@/components/common/MetaComponent";
+
+const metadata = {
+  title: "Home-4 || Superio - Job Borad ReactJs Template",
+  description: "Superio - Job Borad ReactJs Template",
+};
+
+const HomePage4 = () => {
   return (
-    <div style={{ minHeight: 1000 }}>
-      <h1>Home component</h1>;<h1>Home component</h1>;
-    </div>
+    <>
+    <MetaComponent meta={metadata} />
+      <Home />
+    </>
   );
 };
 
-export default Home;
+export default HomePage4;
