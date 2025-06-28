@@ -1,3 +1,4 @@
+import ContractTypeSelector from "@/components/dashboard-pages/comman/contract-type-selector/ContractTypeSelector";
 import useAuthStore from "@/utils/authStoreZusland";
 import { useState, useEffect } from "react";
 
@@ -33,7 +34,7 @@ const PostContractBoxForm = ({ contractId, mode, initialData }) => {
   const [loading, setLoading] = useState(false);
   const { user } = useAuthStore();
   const [newFacility, setNewFacility] = useState("");
-
+  const [selectedContractTypes, setSelectedContractTypes] = useState([])
   useEffect(() => {
     if (mode === "edit" && initialData) {
       setTitle(initialData.title || "");
@@ -50,6 +51,16 @@ const PostContractBoxForm = ({ contractId, mode, initialData }) => {
         medicalInsurance: false,
         others: [],
       });
+      if (initialData.expertise) {
+        const contractTypeState = {};
+        initialData.contractTypes.forEach((exp) => {
+          contractTypeState[exp.name] = {
+            isSelected: true,
+            subTypes: exp.subTypes || [],
+          };
+        });
+        setSelectedContractTypes(contractTypeState);
+      }
     }
   }, [mode, initialData]);
 
@@ -84,7 +95,12 @@ const PostContractBoxForm = ({ contractId, mode, initialData }) => {
       alert("Please login to post a contract");
       return;
     }
-
+     const finalContractTypes = Object.entries(selectedContractTypes)
+      .filter(([key, value]) => value.isSelected) // Only selected categories
+      .map(([key, value]) => ({
+        name: key,
+        subTypes: value.subTypes,
+      }));
     const finalFormData = {
       title,
       description,
@@ -94,6 +110,7 @@ const PostContractBoxForm = ({ contractId, mode, initialData }) => {
       facilities,
       createdBy: user.id,
       email: user.email,
+      contractTypes:finalContractTypes
     };
 
     console.log("Submitting Contract Data:", finalFormData);
@@ -320,6 +337,7 @@ const PostContractBoxForm = ({ contractId, mode, initialData }) => {
             onChange={(e) => setAddress({...address, fullAddress: e.target.value})}
           />
         </div>
+            <ContractTypeSelector initialExpertise={initialData?.contractTypes} selectedExpertise={selectedContractTypes} setSelectedExpertise={setSelectedContractTypes}/>
 
         <div className="form-group col-lg-12 col-md-12 text-right">
           <button type="submit" className="theme-btn btn-style-one" disabled={loading}>

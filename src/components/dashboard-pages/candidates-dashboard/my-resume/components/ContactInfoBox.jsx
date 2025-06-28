@@ -1,4 +1,3 @@
-import Map from "../../../Map";
 
 const ContactInfoBox = ({ data, onChange }) => {
   return (

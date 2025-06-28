@@ -6,30 +6,8 @@ import { useEffect, useState } from "react";
 import axiosInstance from "@/utils/api/axiosInstance";
 import { toast } from "react-toastify";
 
-const WidgetContentBox = ({jobId}) => {
-  const [applications, setApplications] = useState([
-    {
-      _id: "685adcc529867aba564eeb2a",
-      jobId: {
-        _id: "681dbff572697f8a3cf91710",
-        title: "Executive",
-      },
-      candidateId: {
-        _id: "685a4ac9724756c255d81156",
-        email: "test@test.com",
-      },
-      candidateResumeId: {
-        _id: "685adcb787250cf0f257809c",
-      },
-      companyId: "681dba739984a5c69804167e",
-      jobCreatorEmployerId: "67d3ddb10858a9eeabb3529d",
-      currentStatus: "applied",
-      createdAt: "2025-06-24T17:13:41.678Z",
-      updatedAt: "2025-06-24T17:13:41.678Z",
-      __v: 0,
-    },
-  ]);
-  const [jobTitle, setJobTitle] = useState("")
+const WidgetContentBoxContractor = ({contractId}) => {
+  const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -37,19 +15,16 @@ const WidgetContentBox = ({jobId}) => {
     const fetchApplications = async () => {
       setLoading(true);
       setError(null);
-      let apiUrl = "/job-application/received-applications";
-      if(jobId){
-        apiUrl = `/job-application/received-applications-for-job/${jobId}`
+       let apiUrl = "/contract-application/received-applications";
+      if(contractId){
+        apiUrl = `/contract-application/received-applications-for-contract/${contractId}`
       }
       console.log(apiUrl)
       try {
         const response = await axiosInstance.get(
-       apiUrl
-        )
-        if(response.data && response.data.success){
-          setJobTitle(response.data.jobTitle)
-          setApplications(response.data.applications || []);
-        }
+          apiUrl
+        );
+        setApplications(response.data.applications || []);
       } catch (err) {
         console.error("Error fetching applications:", err);
         setError("Failed to load applications.");
@@ -94,7 +69,7 @@ const WidgetContentBox = ({jobId}) => {
       <div className="tabs-box">
         <Tabs>
           <div className="aplicants-upper-bar">
-            <h6>All Applications{jobTitle? ` for ${jobTitle}`:""}</h6>
+            <h6>All Applications</h6>
 
             <TabList className="aplicantion-status tab-buttons clearfix">
               <Tab className="tab-btn totals"> Total(s): {total}</Tab>
@@ -125,26 +100,26 @@ const WidgetContentBox = ({jobId}) => {
                         </figure>
                         <div className="d-flex justify-content-between align-items-top">
                         <h4 className="name">
-                          <Link to={`/candidate/${application.candidateResumeId._id}`}>
-                            {application.candidateId.firstName}{" "}
-                            {application.candidateId.lastName}
+                          <Link to={`/contractor/${application.contractorProfileId._id}`}>
+                            {application.contractorId.firstName}{" "}
+                            {application.contractorId.lastName}
                           </Link>
                         </h4>
                         <span className="p-0.5 border rounded color-white text-uppercase">{application.currentStatus}</span>
                             </div>
                         <ul className="candidate-info">
                           <li className="designation">
-                            {application.candidateResumeId.currentDesignation}
+                            {application.contractorProfileId.currentDesignation}
                           </li>
                           <li>
                             <span className="icon flaticon-map-locator"></span>{" "}
-                            {application.candidateResumeId.contactInfo.country}
+                            {application.contractorProfileId.contactInfo.country}
                           </li>
-                          <li>
+                          {/* <li>
                             <span className="icon flaticon-money"></span>Rs.
-                            {application.candidateResumeId.currentSalary ||
+                            {application.contractorProfileId.currentSalary ||
                               "Not Available"}
-                          </li>
+                          </li> */}
                         </ul>
                         {/* End candidate-info */}
 
@@ -359,4 +334,4 @@ const WidgetContentBox = ({jobId}) => {
   );
 };
 
-export default WidgetContentBox;
+export default WidgetContentBoxContractor;

@@ -6,13 +6,13 @@ const candidateMenus = [
     routePath: "/candidates-dashboard/dashboard",
     active: "active",
   },
-  {
-    id: 2,
-    name: "My Profile",
-    icon: "la-user-tie",
-    routePath: "/candidates-dashboard/my-profile",
-    active: "",
-  },
+  // {
+  //   id: 2,
+  //   name: "My Profile",
+  //   icon: "la-user-tie",
+  //   routePath: "/candidates-dashboard/my-profile",
+  //   active: "",
+  // },
   {
     id: 3,
     name: "My Resume",
@@ -34,34 +34,34 @@ const candidateMenus = [
     routePath: "/candidates-dashboard/job-alerts",
     active: "",
   },
-  {
-    id: 6,
-    name: "Shortlisted Jobs",
-    icon: "la-bookmark-o",
-    routePath: "/candidates-dashboard/short-listed-jobs",
-    active: "",
-  },
-  {
-    id: 7,
-    name: "CV manager",
-    icon: "la la-file-invoice",
-    routePath: "/candidates-dashboard/cv-manager",
-    active: "",
-  },
-  {
-    id: 8,
-    name: "Packages",
-    icon: "la-box",
-    routePath: "/candidates-dashboard/packages",
-    active: "",
-  },
-  {
-    id: 9,
-    name: "Messages",
-    icon: "la-comment-o",
-    routePath: "/candidates-dashboard/messages",
-    active: "",
-  },
+  // {
+  //   id: 6,
+  //   name: "Shortlisted Jobs",
+  //   icon: "la-bookmark-o",
+  //   routePath: "/candidates-dashboard/short-listed-jobs",
+  //   active: "",
+  // },
+  // {
+  //   id: 7,
+  //   name: "CV manager",
+  //   icon: "la la-file-invoice",
+  //   routePath: "/candidates-dashboard/cv-manager",
+  //   active: "",
+  // },
+  // {
+  //   id: 8,
+  //   name: "Packages",
+  //   icon: "la-box",
+  //   routePath: "/candidates-dashboard/packages",
+  //   active: "",
+  // },
+  // {
+  //   id: 9,
+  //   name: "Messages",
+  //   icon: "la-comment-o",
+  //   routePath: "/candidates-dashboard/messages",
+  //   active: "",
+  // },
   {
     id: 10,
     name: "Change Password",
@@ -73,7 +73,7 @@ const candidateMenus = [
     id: 11,
     name: "Logout",
     icon: "la-sign-out",
-    routePath: "/login",
+    routePath: "/logout",
     active: "",
   },
   {
@@ -84,4 +84,5 @@ const candidateMenus = [
     active: "",
   },
 ];
+
 export default  candidateMenus

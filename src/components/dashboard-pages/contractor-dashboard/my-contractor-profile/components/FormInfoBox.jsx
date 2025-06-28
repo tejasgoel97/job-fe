@@ -1,21 +1,8 @@
 import React, { useState } from "react";
 import Select from "react-select";
 
-const FormInfoBox = () => {
-  const [name, setName] = useState("");
-  const [lastCompanies, setLastCompanies] = useState([
-    { companyName: "", yearWorked: "", description: "" },
-  ]);
-  const [strengths, setStrengths] = useState("");
-  const [weaknesses, setWeaknesses] = useState("");
-  const [safetyConditions, setSafetyConditions] = useState("");
-  const [photos, setPhotos] = useState([]);
-  const [photoPreviews, setPhotoPreviews] = useState([]);
-  const [socialMedia, setSocialMedia] = useState({
-    linkedin: "",
-    twitter: "",
-    facebook: "",
-  });
+const FormInfoBox = ({name, setName, lastCompanies, setLastCompanies, strengths, setStrengths, weaknesses, setWeaknesses, safetyConditions, setSafetyConditions, photos, setPhotos, photoPreviews, setPhotoPreviews, socialMedia, setSocialMedia}) => {
+
 
   const handlePhotoChange = (e) => {
     const files = Array.from(e.target.files);
@@ -32,7 +19,10 @@ const FormInfoBox = () => {
   };
 
   const addCompany = () => {
-    setLastCompanies([...lastCompanies, { companyName: "", yearWorked: "", description: "" }]);
+    setLastCompanies([
+      ...lastCompanies,
+      { companyName: "", yearWorked: "", description: "" },
+    ]);
   };
 
   const removeCompany = (index) => {
@@ -41,23 +31,9 @@ const FormInfoBox = () => {
     setLastCompanies(updated);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const formPayload = {
-      name,
-      lastCompanies,
-      strengths,
-      weaknesses,
-      safetyConditions,
-      photos,
-      socialMedia,
-    };
-    console.log("Submitting Form: ", formPayload);
-    alert("Form submitted. Check console for data.");
-  };
 
   return (
-    <form className="default-form" onSubmit={handleSubmit}>
+    <form className="default-form" >
       <div className="row">
         {/* Name */}
         <div className="form-group col-lg-6 col-md-12">
@@ -132,33 +108,123 @@ const FormInfoBox = () => {
         </div>
 
         {/* Strengths */}
+        {/* Strengths */}
         <div className="form-group col-lg-12 col-md-12">
           <label>Your Strengths</label>
-          <textarea
-            placeholder="List your key strengths..."
-            value={strengths}
-            onChange={(e) => setStrengths(e.target.value)}
-          />
+          {strengths.map((item, index) => (
+            <div key={index} className="d-flex gap-2 mb-2">
+              <input
+                type="text"
+                value={item}
+                onChange={(e) => {
+                  const updated = [...strengths];
+                  updated[index] = e.target.value;
+                  setStrengths(updated);
+                }}
+                className="form-control"
+                placeholder={`Strength ${index + 1}`}
+              />
+              <button
+                type="button"
+                className="btn btn-danger btn-sm"
+                onClick={() => {
+                  const updated = strengths.filter((_, i) => i !== index);
+                  setStrengths(updated);
+                }}
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            className="btn btn-sm btn-secondary mt-2"
+            onClick={() => setStrengths([...strengths, ""])}
+          >
+            + Add Strength
+          </button>
         </div>
 
         {/* Weaknesses */}
         <div className="form-group col-lg-12 col-md-12">
-          <label>Your Weakness</label>
-          <textarea
-            placeholder="Mention areas of improvement..."
-            value={weaknesses}
-            onChange={(e) => setWeaknesses(e.target.value)}
-          />
+          <label>Your Weaknesses</label>
+          {weaknesses.map((item, index) => (
+            <div key={index} className="d-flex gap-2 mb-2">
+              <input
+                type="text"
+                value={item}
+                onChange={(e) => {
+                  const updated = [...weaknesses];
+                  updated[index] = e.target.value;
+                  setWeaknesses(updated);
+                }}
+                className="form-control"
+                placeholder={`Weakness ${index + 1}`}
+              />
+              <button
+                type="button"
+                className="btn btn-danger btn-sm"
+                onClick={() => {
+                  const updated = weaknesses.filter((_, i) => i !== index);
+                  setWeaknesses(updated);
+                }}
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            className="btn btn-sm btn-secondary mt-2"
+            onClick={() => setWeaknesses([...weaknesses, ""])}
+          >
+            + Add Weakness
+          </button>
         </div>
 
         {/* Safety Conditions */}
         <div className="form-group col-lg-12 col-md-12">
           <label>Safety Conditions at Your Area</label>
-          <textarea
-            placeholder="Describe safety protocols or issues"
-            value={safetyConditions}
-            onChange={(e) => setSafetyConditions(e.target.value)}
-          />
+          {Array.isArray(safetyConditions)
+            ? safetyConditions.map((item, index) => (
+                <div key={index} className="d-flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    value={item}
+                    onChange={(e) => {
+                      const updated = [...safetyConditions];
+                      updated[index] = e.target.value;
+                      setSafetyConditions(updated);
+                    }}
+                    className="form-control"
+                    placeholder={`Condition ${index + 1}`}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-danger btn-sm"
+                    onClick={() => {
+                      const updated = safetyConditions.filter(
+                        (_, i) => i !== index
+                      );
+                      setSafetyConditions(updated);
+                    }}
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))
+            : null}
+          <button
+            type="button"
+            className="btn btn-sm btn-secondary mt-2"
+            onClick={() =>
+              setSafetyConditions((prev) =>
+                Array.isArray(prev) ? [...prev, ""] : [""]
+              )
+            }
+          >
+            + Add Condition
+          </button>
         </div>
 
         {/* Photo Upload */}
@@ -220,12 +286,7 @@ const FormInfoBox = () => {
           />
         </div>
 
-        {/* Submit Button */}
-        <div className="form-group col-lg-12 col-md-12 mt-3">
-          <button type="submit" className="theme-btn btn-style-one">
-            Save
-          </button>
-        </div>
+      
       </div>
     </form>
   );

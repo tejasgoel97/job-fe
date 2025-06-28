@@ -147,7 +147,6 @@ const Resume = ({ initialData, user }) => {
       } else {
         // Create new resume
         response = await axiosInstance.post("/resume", body, {
-          headers: { "Content-Type": "multipart/form-data" },
         });
         toast.success("Resume saved successfully!");
         window.scroll(0, 0)

@@ -1,13 +1,9 @@
 
 import candidates from "@/data/candidates";
-import candidateResume from "@/data/candidateResume";
-// import FooterDefault from "@/components/footer/common-footer";
-import DefaulHeader from "@/components/header/DefaulHeader";
-import Contact from "@/components/candidates-single-pages/shared-components/Contact";
+
 import GalleryBox from "@/components/candidates-single-pages/shared-components/GalleryBox";
 import Social from "@/components/candidates-single-pages/social/Social";
 import JobSkills from "@/components/candidates-single-pages/shared-components/JobSkills";
-import AboutVideo from "@/components/candidates-single-pages/shared-components/AboutVideo";
 import {useParams } from "react-router-dom";
 
 import MetaComponent from "@/components/common/MetaComponent";

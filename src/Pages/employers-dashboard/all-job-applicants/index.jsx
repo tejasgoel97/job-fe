@@ -8,11 +8,11 @@ const metadata = {
   description: "Superio - Job Borad ReactJs Template",
 };
 
-const AllApplicantsEmploeesPage = ({type, id}) => {
+const AllApplicantsEmploeesPage = () => {
   return (
     <>
     <MetaComponent meta={metadata} />
-      <AllApplicants type={type} id={id}/>
+      <AllApplicants />
     </>
   );
 };

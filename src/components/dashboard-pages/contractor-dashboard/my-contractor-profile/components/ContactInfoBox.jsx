@@ -1,86 +1,119 @@
-import Map from "../../../Map";
+import React, { useState } from "react";
 
-const ContactInfoBox = () => {
+const indianStates = [
+  "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+  "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka",
+  "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram",
+  "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
+  "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
+  "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
+  "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
+];
+
+const ContactInfoBox = ({ formData, setFormData }) => {
+
+  const handleChange = (key, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
   return (
     <form className="default-form">
       <div className="row">
-        {/* <!-- Input --> */}
-        <div className="form-group col-lg-6 col-md-12">
-          <label>Country</label>
-          <select className="chosen-single form-select" required>
-            <option>Australia</option>
-            <option>Pakistan</option>
-            <option>Chaina</option>
-            <option>Japan</option>
-            <option>India</option>
-          </select>
+        <div className="form-group col-lg-12 col-md-12">
+          <label>Phone Number</label>
+          <input
+            type="text"
+            placeholder="Enter 10 digit phone number"
+            value={formData.phoneNumber}
+            onChange={(e) => handleChange("phoneNumber", e.target.value)}
+            required
+          />
         </div>
 
-        {/* <!-- Input --> */}
+        <div className="form-group col-lg-12 col-md-12">
+          <label>Email</label>
+          <input
+            type="email"
+            placeholder="Your contact email address"
+            value={formData.email}
+            onChange={(e) => handleChange("email", e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="form-group col-lg-12 col-md-12">
+          <label>Address Line 1</label>
+          <input
+            type="text"
+            value={formData.addressLine1}
+            onChange={(e) => handleChange("addressLine1", e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="form-group col-lg-12 col-md-12">
+          <label>Address Line 2 (Optional)</label>
+          <input
+            type="text"
+            value={formData.addressLine2}
+            onChange={(e) => handleChange("addressLine2", e.target.value)}
+          />
+        </div>
+
         <div className="form-group col-lg-6 col-md-12">
           <label>City</label>
-          <select className="chosen-single form-select" required>
-            <option>Melbourne</option>
-            <option>Pakistan</option>
-            <option>Chaina</option>
-            <option>Japan</option>
-            <option>India</option>
+          <input
+            type="text"
+            value={formData.city}
+            onChange={(e) => handleChange("city", e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="form-group col-lg-6 col-md-12">
+          <label>State</label>
+          <select
+            className="chosen-single form-select"
+            value={formData.state}
+            onChange={(e) => handleChange("state", e.target.value)}
+            required
+          >
+            <option value="">Select a state</option>
+            {indianStates.map((state) => (
+              <option key={state} value={state}>
+                {state}
+              </option>
+            ))}
           </select>
         </div>
 
-        {/* <!-- Input --> */}
-        <div className="form-group col-lg-12 col-md-12">
-          <label>Complete Address</label>
-          <input
-            type="text"
-            name="name"
-            placeholder="329 Queensberry Street, North Melbourne VIC 3051, Australia."
-            required
-          />
-        </div>
-
-        {/* <!-- Input --> */}
         <div className="form-group col-lg-6 col-md-12">
-          <label>Find On Map</label>
+          <label>Country</label>
+          <select
+            className="chosen-single form-select"
+            value={formData.country}
+            onChange={(e) => handleChange("country", e.target.value)}
+            required
+          >
+            <option>India</option>
+            <option>Australia</option>
+            <option>Pakistan</option>
+            <option>China</option>
+            <option>Japan</option>
+          </select>
+        </div>
+
+        <div className="form-group col-lg-6 col-md-12">
+          <label>Google Map Link</label>
           <input
             type="text"
-            name="name"
-            placeholder="329 Queensberry Street, North Melbourne VIC 3051, Australia."
+            value={formData.googleMapLink}
+            onChange={(e) => handleChange("googleMapLink", e.target.value)}
             required
           />
-        </div>
-
-        {/* <!-- Input --> */}
-        <div className="form-group col-lg-3 col-md-12">
-          <label>Latitude</label>
-          <input type="text" name="name" placeholder="Melbourne" required />
-        </div>
-
-        {/* <!-- Input --> */}
-        <div className="form-group col-lg-3 col-md-12">
-          <label>Longitude</label>
-          <input type="text" name="name" placeholder="Melbourne" required />
-        </div>
-
-        {/* <!-- Input --> */}
-        <div className="form-group col-lg-12 col-md-12">
-          <button className="theme-btn btn-style-three">Search Location</button>
-        </div>
-
-        <div className="form-group col-lg-12 col-md-12">
-          <div className="map-outer">
-            <div style={{ height: "420px", width: "100%" }}>
-              <Map />
-            </div>
-          </div>
-        </div>
-        {/* End MapBox */}
-
-        {/* <!-- Input --> */}
-        <div className="form-group col-lg-12 col-md-12">
-          <button type="submit" className="theme-btn btn-style-one">
-            Save
-          </button>
         </div>
       </div>
     </form>

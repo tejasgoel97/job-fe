@@ -44,9 +44,16 @@ const employerMenu = [
   },
   {
     id: 5,
-    name: "All Applicants",
+    name: "All Job Applicants",
     icon: "la-file-invoice",
-    routePath: "/employers-dashboard/all-applicants",
+    routePath: "/employers-dashboard/all-job-applicants",
+    active: "",
+  },
+    {
+    id: 6,
+    name: "All contract Applicants",
+    icon: "la-file-invoice",
+    routePath: "/employers-dashboard/all-contract-applicants",
     active: "",
   },
   // {

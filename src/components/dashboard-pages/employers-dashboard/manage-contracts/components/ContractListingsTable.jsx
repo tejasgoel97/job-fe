@@ -1,3 +1,4 @@
+import axiosInstance from "@/utils/api/axiosInstance";
 import useAuthStore from "@/utils/authStoreZusland";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,7 +10,7 @@ const ContractListingsTable = () => {
   const [timeFilter, setTimeFilter] = useState("Last 6 Months");
   const { user } = useAuthStore();
   const navigate = useNavigate();
-
+  console.log(contracts)
   const fetchContracts = async () => {
     if (!user) {
       setError("Please login to view your contract listings");
@@ -18,17 +19,11 @@ const ContractListingsTable = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/contracts/my-contracts", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-          "Content-Type": "application/json",
-        },
+      const response = await axiosInstance.get("/contracts/my-contracts", {
       });
 
-      const result = await response.json();
-      if (response.ok) {
-        setContracts(result.data);
+      if (response.data && response.data.success) {
+        setContracts(response.data.data);
       } else {
         setError(result.message || "Failed to fetch contracts");
       }
@@ -109,7 +104,7 @@ const ContractListingsTable = () => {
             <thead>
               <tr>
                 <th>Title</th>
-                <th>Type</th>
+                <th>Applicants</th>
                 <th>Created</th>
                 <th>Status</th>
                 <th>Action</th>
@@ -128,7 +123,7 @@ const ContractListingsTable = () => {
                         <div className="inner-box">
                           <div className="content">
                             <h4>
-                              <Link to={`/employers-dashboard/edit-contract/${item._id}`}>
+                              <Link to={`/contract/${item._id}`}>
                                 {item.title}
                               </Link>
                             </h4>
@@ -146,7 +141,10 @@ const ContractListingsTable = () => {
                         </div>
                       </div>
                     </td>
-                    <td>{item.contractType}</td>
+                    <td className="applied">
+                    <Link to={`/employers-dashboard/applicants-by-contract/${item._id}`}>{item.applicationCount} Applied</Link>{" "}
+
+                    </td>
                     <td>{formatDate(item.createdAt)}</td>
                     <td className="status">Active</td> {/* Assuming contracts are always active unless deleted */}
                     <td>

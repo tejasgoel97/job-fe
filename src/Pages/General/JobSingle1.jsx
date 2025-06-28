@@ -103,7 +103,7 @@ const JobSingle1 = () => {
       <div className="upper-box">
         <div className="auto-container pt-4">
           <div className="job-block-seven pt-4">
-            <div className="inner-box">
+            <div className="inner-box"> 
               <div className="content">
                 <span className="company-logo d-flex align-items-center justify-content-center">
                   <img src={job.companyDetails?.infoData?.logo || "https://img.freepik.com/free-vector/abstract-company-logo_53876-120501.jpg?semt=ais_items_boosted&w=740"} alt="logo" />

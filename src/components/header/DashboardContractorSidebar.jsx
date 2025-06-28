@@ -32,7 +32,7 @@ let contractorMenuData  = [
     id: 4,
     name: "Applied Contracts",
     icon: "la-briefcase",
-    routePath: "/contractor-dashboard/applied-jobs",
+    routePath: "/contractor-dashboard/applied-contracts",
     active: "",
   },
   {
@@ -43,13 +43,13 @@ let contractorMenuData  = [
     active: "",
   },
 
-  {
-    id: 9,
-    name: "Messages",
-    icon: "la-comment-o",
-    routePath: "/contractor-dashboard/messages",
-    active: "",
-  },
+  // {
+  //   id: 9,
+  //   name: "Messages",
+  //   icon: "la-comment-o",
+  //   routePath: "/contractor-dashboard/messages",
+  //   active: "",
+  // },
   {
     id: 10,
     name: "Change Password",

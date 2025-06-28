@@ -12,10 +12,10 @@ const SendProposalModalContent = ({ contractId, onProposalSuccess }) => {
     setIsSubmitting(true);
 
     try {
-      const response = await axiosInstance.post(`/proposals/send-proposal`, {
+      const response = await axiosInstance.post(`/contract-application`, {
         contractId,
-        coverLetter,
-        proposedRate,
+        applyingMessageByContractor:coverLetter,
+        proposedRateByContractor:proposedRate,
       });
 
       if (response.data.success) {
@@ -27,6 +27,9 @@ const SendProposalModalContent = ({ contractId, onProposalSuccess }) => {
       }
     } catch (error) {
       console.error("Error sending proposal:", error);
+      if(error?.response?.data?.msg){
+        return toast.error(error.response.data.msg);
+      }
       toast.error(error.response?.data?.message || "An error occurred.");
     } finally {
       setIsSubmitting(false);

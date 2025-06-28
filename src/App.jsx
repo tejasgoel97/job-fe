@@ -45,7 +45,11 @@ import ContractorProfilePage from "./Pages/contractor-dashboard/contractor-profi
 import ContractorCompanyPage from "./Pages/contractor-dashboard/contractor-company";
 import Logout from "./Pages/authPages/logout";
 import AppliedJobsPage from "./Pages/CandidateDashboard/applied-jobs";
+import AppliedContractsPage from "./Pages/contractor-dashboard/applied-contracts";
 import ContractSingle1 from "./Pages/contract-single/index";
+import ContractorProfile from "./Pages/General/ContractorProfileSingle";
+import ApplicantsByJob from "./Pages/employers-dashboard/applicants-by-job";
+import ApplicantsByContract from "./Pages/employers-dashboard/applicants-by-contract";
 
 
 
@@ -100,8 +104,28 @@ function App() {
                     element={<ManageContractsEmploeeDBPage />}
                   />
                   <Route
-                    path="all-applicants"
-                    element={<AllApplicantsEmploeesPage />}
+                    path="all-job-applicants"
+                    element={<AllApplicantsEmploeesPage type={"job"}/>}
+                  />
+                  <Route
+                    path="all-contract-applicants"
+                    element={<AllApplicantsEmploeesPage type={"contract"}/>}
+                  />
+                  <Route
+                    path="applicants-by-job/:jobId"
+                    element={<ApplicantsByJob />}
+                  />
+                   <Route
+                    path="applicants-by-contract/:contractId"
+                    element={<ApplicantsByContract />}
+                  />
+                  <Route
+                    path="manage-jobs/:jobId"
+                    element={<ApplicantsByJob />}
+                  />
+                   <Route
+                    path="manage-contracts/:contractId"
+                    element={<ManageContractsEmploeeDBPage />}
                   />
                   {/* <Route
                     path="shortlisted-resumes"
@@ -142,12 +166,14 @@ function App() {
                   <Route path="dashboard" element={<ContractorDashboardPage />} />
                   <Route path="my-profile" element={<ContractorProfilePage />} />
                   <Route path="my-company" element={<ContractorCompanyPage />} />
+                  <Route path="applied-contracts" element={<AppliedContractsPage />} />
                 </Route>
 
 
 
                 <Route path="job/:id" element={<JobSingle1 />} />
                 <Route path='candidate/:id' element={<CandidateSingle1 />} />
+                <Route path='contractor/:id' element={<ContractorProfile />} />
                 <Route path="company/:id" element={<CompanySingle1 />} />
                 <Route path="contract/:id" element={<ContractSingle1 />} />
                 <Route path='job-list' element = {<JobList4 />} />  

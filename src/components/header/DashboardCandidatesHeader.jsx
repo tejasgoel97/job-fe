@@ -3,7 +3,6 @@
 
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import candidatesMenuData from "../../data/candidatesMenuData";
 import HeaderNavContent from "./HeaderNavContent";
 import { isActiveLink } from "../../utils/linkActiveChecker";
 const candidatesuData = [

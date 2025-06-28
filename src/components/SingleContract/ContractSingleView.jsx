@@ -9,6 +9,7 @@ import useAuthStore from "@/utils/authStoreZusland";
 import axiosInstance from "../../utils/api/axiosInstance";
 import SendProposalModalContent from "./SendProposalModalContent"; // Assumed new component
 import ContractOverView from "./ContractOverView"; // Assumed new component
+import ContractTypes from "./ContractTypes";
 
 const ContractSingleView = () => {
   const { id } = useParams();
@@ -46,7 +47,7 @@ const ContractSingleView = () => {
   const [hasProposed, setHasProposed] = useState(false);
   const [checkingStatus, setCheckingStatus] = useState(true);
   const { user } = useAuthStore();
-
+  console.log(contract)
   useEffect(() => {
     const fetchContract = async () => {
       if (!id) {
@@ -96,10 +97,10 @@ const ContractSingleView = () => {
         setCheckingStatus(true);
         // Assumes an endpoint to check if user has sent a proposal
         const response = await axiosInstance.get(
-          `/proposals/check-proposed/${id}`
+          `/contract-application/check-applied/${id}`
         );
         if (response.data.success) {
-          setHasProposed(response.data.proposed);
+          setHasProposed(response.data.applied);
         }
       } catch (error) {
         console.error("Failed to check proposal status:", error);
@@ -190,9 +191,9 @@ const ContractSingleView = () => {
                   <Link to="/login" className="theme-btn btn-style-one">
                     Login to Send Proposal
                   </Link>
-                ) : !user.role.includes("candidate") ? (
+                ) : !user.role.includes("contractor") ? (
                   <button className="theme-btn btn-style-one" disabled>
-                    Login as Candidate/Freelancer
+                    Login as Contractor
                   </button>
                 ) : checkingStatus ? (
                   <button className="theme-btn btn-style-one" disabled>
@@ -250,7 +251,7 @@ const ContractSingleView = () => {
         <div className="auto-container">
           <div className="row">
             <div className="content-column col-lg-8 col-md-12 col-sm-12">
-              <ExpertiseList expertise={contract.expertise} />
+              <ContractTypes jobTypes={contract.contractTypes} />
               <JobDetailsDescriptions description={contract.description} />
 
               <div className="other-options">
