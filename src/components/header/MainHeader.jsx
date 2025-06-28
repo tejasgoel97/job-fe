@@ -14,7 +14,9 @@ export default function HeaderLayout() {
   return (
     <>
       {isLoggedIn ? (
+        <>
         <DashboardHeader />
+        </>
       ) : (
         <>
           <LoginPopup />

@@ -4,6 +4,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import HeaderNavContent from "./HeaderNavContent";
+import NewHeaderNavContent from "./NewHeaderNavContent";
 import { isActiveLink } from "../../utils/linkActiveChecker";
 const candidatesuData = [
   {
@@ -135,7 +136,7 @@ const DashboardCandidatesHeader = () => {
                         </div>
                         {/* End .logo-box */}
 
-                        <HeaderNavContent />
+                        <NewHeaderNavContent />
                         {/* <!-- Main Menu End--> */}
                     </div>
                     {/* End .nav-outer */}
@@ -145,7 +146,6 @@ const DashboardCandidatesHeader = () => {
                             <span className="count">1</span>
                             <span className="icon la la-heart-o"></span>
                         </button>
-                        {/* wishlisted menu */}
 
                         <button className="menu-btn">
                             <span className="icon la la-bell"></span>

@@ -7,8 +7,12 @@ import CopyrightFooter from "../../CopyrightFooter";
 import JobApplied from "./components/JobApplied";
 import DashboardCandidatesHeader from "../../../header/DashboardCandidatesHeader";
 import MenuToggler from "../../MenuToggler";
+import useAuthStore from "@/utils/authStoreZusland";
 
 const Index = () => {
+
+  const {user} = useAuthStore();
+
   return (
     <div className="page-wrapper dashboard">
       <span className="header-span"></span>
@@ -27,7 +31,7 @@ const Index = () => {
       {/* <!-- Dashboard --> */}
       <section className="user-dashboard">
         <div className="dashboard-outer">
-          <BreadCrumb title="Howdy, Jerome!!" />
+          <BreadCrumb title={`${user.firstName} ${user.lastName}`} />
           {/* breadCrumb */}
 
           <MenuToggler />

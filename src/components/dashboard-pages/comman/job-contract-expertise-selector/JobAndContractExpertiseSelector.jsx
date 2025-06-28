@@ -6,7 +6,7 @@ const JobAndContractExpertiseSelector = ({  initialExpertise, selectedExpertise,
   const [expertiseData, setExpertiseData] = useState([]);
 //   const [selectedExpertise, setSelectedExpertise] = useState({});
   const [newInputs, setNewInputs] = useState({}); // holds temp input values
-
+  console.log(initialExpertise)
   useEffect(() => {
     const fetchExpertise = async () => {
       try {

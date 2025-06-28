@@ -32,7 +32,7 @@ const JobListingMap = ({ jobs }) => {
                         <div className="content">
                           <span className="company-logo">
                             <img
-                              src={item.logo || "/default-logo.png"} // Add a default logo if needed
+                              src={item.logo || "https://i.pinimg.com/736x/b7/6b/43/b76b431d0ab1f268325273af5381a654.jpg"} // Add a default logo if needed
                               alt="logo"
                             />
                           </span>
@@ -70,7 +70,7 @@ const JobListingMap = ({ jobs }) => {
                     <div className="option-box">
                       <ul className="option-list">
                         <li>
-                          <button>
+                          <button data-text="View Job">
                             <span className="la la-eye"></span>
                           </button>
                         </li>

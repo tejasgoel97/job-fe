@@ -3,8 +3,6 @@ import FormInfoBox from "./FormInfoBox";
 import LogoUpload from "./LogoUpload";
 
 const index = ({ infoData, setInfoData, errors,  initialExpertise=[], selectedExpertise=[], setSelectedExpertise }) => {
-    console.log("isSignInWithEmailLink",{initialExpertise})
-  
   return (
     <div className="widget-content">
       <LogoUpload />

@@ -14,7 +14,7 @@ const index = () => {
 
   // Get initial query params
   const queryParams = new URLSearchParams(location.search);
-  const initialJobTitle = queryParams.get("contractTitle") || "";
+  const initialSearchText = queryParams.get("jobtitle") || "";
   const initialLocation = queryParams.get("location") || "";
   const intialExpertise = queryParams.get("expertise") || "";
 
@@ -28,14 +28,14 @@ const index = () => {
     const fetchJobs = async () => {
       try {
         setLoading(true);
-        const response = await axiosInstance.get("/jobs/search-jobs", {
+        const response = await axiosInstance.get("/contracts/search-contracts", {
           params: {
-            searchText: initialJobTitle,
+            searchText: initialSearchText,
             locationText: initialLocation,
             expertise: intialExpertise,
           },
         });
-        setJobs(response.data.jobs);
+        setJobs(response.data.contracts);
       } catch (err) {
         console.error("Error fetching jobs:", err);
       } finally {
@@ -53,9 +53,9 @@ const index = () => {
       {/* <!-- Header Span --> */}
       <span className="header-span"></span>
       {/* End MobileMenu */}
-      <Breadcrumb title="Find Jobs" meta="Jobs" />
+      <Breadcrumb title="Find Contracts" meta="Contracts" />
       <div className="job-search-form container py-10" data-aos-delay="700" data-aos="fade-up">
-        <SearchForm3 btnStyle="btn-style-two" expertiseData={[]} initialJobTitle={initialJobTitle} initialLocation={initialLocation} intialExpertise={intialExpertise} />
+        <SearchForm3 btnStyle="btn-style-two" expertiseData={[]} intitialSearchText={initialSearchText} initialLocation={initialLocation} intialExpertise={intialExpertise} />
       </div>
       {/* <!--End Breadcrumb Start--> */}
       <section className="ls-section">

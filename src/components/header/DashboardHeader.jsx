@@ -2,10 +2,13 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import employerMenuData from "../../data/employerMenuData";
 import HeaderNavContent from "./HeaderNavContent";
+import NewHeaderNavContent from "./NewHeaderNavContent";
 import { isActiveLink } from "../../utils/linkActiveChecker";
 import useAuthStore from "@/utils/authStoreZusland";
 
 import { useLocation } from "react-router-dom";
+import { contractorMenuData } from "./DashboardContractorSidebar";
+import { candidateMenuData } from "./DashboardCandidatesSidebar";
 
 const DashboardHeader = () => {
   const { pathname } = useLocation();
@@ -18,11 +21,18 @@ const DashboardHeader = () => {
       setNavbar(false);
     }
   };
-  const { logout } = useAuthStore();
+  const { logout, user } = useAuthStore();
   useEffect(() => {
     window.addEventListener("scroll", changeBackground);
   }, []);
-
+  const currentRole = localStorage.getItem("jp-current-role");
+  let menuData = employerMenuData;
+  if (currentRole === "contractor") {
+    menuData = contractorMenuData;
+  } else if (currentRole === "candidate") {
+    menuData = candidateMenuData;
+  }
+  console.log(currentRole)
   return (
     // <!-- Main Header-->
     <header
@@ -42,7 +52,7 @@ const DashboardHeader = () => {
             </div>
             {/* End .logo-box */}
 
-            <HeaderNavContent />
+            <NewHeaderNavContent />
             {/* <!-- Main Menu End--> */}
           </div>
           {/* End .nav-outer */}
@@ -76,12 +86,7 @@ const DashboardHeader = () => {
               </a>
 
               <ul className="dropdown-menu">
-                <li className={` mb-1`} key={"item.id"}>
-                  <Link to={"/"} onClick={() => logout()}>
-                    <i className={`la la-sign-out`}></i> {"Logout"}
-                  </Link>
-                </li>
-                {employerMenuData.map((item) => (
+                {menuData.map((item) => (
                   <li
                     className={`${
                       isActiveLink(item.routePath, pathname) ? "active" : ""
@@ -93,6 +98,11 @@ const DashboardHeader = () => {
                     </Link>
                   </li>
                 ))}
+                <li className={` mb-1`} key={"item.id"}>
+                  <Link to={"/"} onClick={() => logout()}>
+                    <i className={`la la-sign-out`}></i> {"Logout"}
+                  </Link>
+                </li>
               </ul>
             </div>
             {/* End dropdown */}

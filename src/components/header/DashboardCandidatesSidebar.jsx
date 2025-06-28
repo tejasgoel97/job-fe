@@ -10,7 +10,7 @@ import { menuToggle } from "../../features/toggle/toggleSlice";
 
 import { useLocation } from "react-router-dom";
 
-const candidatesuData = [
+export const candidateMenuData = [
   {
     id: 1,
     name: "Dashboard",
@@ -81,13 +81,7 @@ const candidatesuData = [
     routePath: "/candidates-dashboard/change-password",
     active: "",
   },
-  {
-    id: 11,
-    name: "Logout",
-    icon: "la-sign-out",
-    routePath: "/logout",
-    active: "",
-  },
+
   {
     id: 12,
     name: "Delete Profile",
@@ -125,7 +119,7 @@ const DashboardCandidatesSidebar = () => {
 
       <div className="sidebar-inner">
         <ul className="navigation">
-          {candidatesuData.map((item) => (
+          {candidateMenuData.map((item) => (
             <li
               className={`${
                 isActiveLink(item.routePath, pathname) ? "active" : ""

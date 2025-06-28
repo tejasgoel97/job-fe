@@ -6,7 +6,7 @@ import { isActiveLink } from "../../utils/linkActiveChecker";
 import { useDispatch, useSelector } from "react-redux";
 import { menuToggle } from "../../features/toggle/toggleSlice";
 
-let contractorMenuData  = [
+export let contractorMenuData  = [
   {
     id: 1,
     name: "Dashboard",

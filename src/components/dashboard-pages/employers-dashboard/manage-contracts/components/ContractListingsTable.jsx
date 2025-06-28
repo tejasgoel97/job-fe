@@ -122,6 +122,12 @@ const ContractListingsTable = () => {
                       <div className="job-block">
                         <div className="inner-box">
                           <div className="content">
+                            <span className="company-logo">
+                            <img
+                              src={item.logo || "https://previews.123rf.com/images/r4yhan/r4yhan2007/r4yhan200700252/151036792-handshake-logo-icon-for-business-agreement-deal-contract-and-partnership-logo.jpg"} // Add a default logo if needed
+                              alt="logo"
+                            />
+                          </span>
                             <h4>
                               <Link to={`/contract/${item._id}`}>
                                 {item.title}

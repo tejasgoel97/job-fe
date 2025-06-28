@@ -38,6 +38,7 @@ import MyResumePage from "./Pages/CandidateDashboard/my-resume";
 import CandidateSingle1 from "./Pages/General/CandidateSingle1";
 import CompanySingle1 from "./Pages/General/CompanySingle1";
 import JobList4 from "./Pages/General/JobList4";
+import ContractList4 from "./Pages/General/ContractList4";
 
 import ContractorDashboardPage from "./Pages/contractor-dashboard/dashboard";
 
@@ -177,6 +178,7 @@ function App() {
                 <Route path="company/:id" element={<CompanySingle1 />} />
                 <Route path="contract/:id" element={<ContractSingle1 />} />
                 <Route path='job-list' element = {<JobList4 />} />  
+                <Route path='contract-list' element = {<ContractList4 />} />
               </Route>
             </Routes>
             <ScrollTopBehaviour />

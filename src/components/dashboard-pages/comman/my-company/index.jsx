@@ -14,7 +14,6 @@ import { info } from "sass";
 import DashboardEmployerSidebar from "@/components/header/DashboardEmployerSidebar";
 import DashboardHeader from "@/components/header/DashboardHeader";
 
-
 const index = ({ role = "employer" }) => {
   const {
     infoData,
@@ -48,7 +47,6 @@ const index = ({ role = "employer" }) => {
     if form - eiter user asked to create one or update
   */
   }
-  console.log({ mode });
   useEffect(() => {
     console.log(companyId, compnayVerifiedToUser);
     if (!companyId) {
@@ -96,7 +94,6 @@ const index = ({ role = "employer" }) => {
     e.preventDefault();
     handleSubmit();
   };
-  console.log("infoData", infoData);
   return (
     <div className="page-wrapper dashboard">
       <span className="header-span"></span>
@@ -105,17 +102,18 @@ const index = ({ role = "employer" }) => {
       {/* End Login Popup Modal */}
       {role === "employer" && (
         <>
-        <DashboardHeader />
+          <DashboardHeader />
 
           <DashboardEmployerSidebar />
-
         </>
       )}
-      {role === "contractor" && <>
-      <DashboardContractorHeader />
-  
+      {role === "contractor" && (
+        <>
+          <DashboardContractorHeader />
 
-      <DashboardContractorSidebar /></>}
+          <DashboardContractorSidebar />
+        </>
+      )}
 
       {/* <!-- End Candidates Sidebar Menu --> */}
 
@@ -261,7 +259,9 @@ const ContentRenderer = ({
               <div className="ls-widget">
                 <div className="tabs-box">
                   <div className="widget-title">
-                    <h4>{companyId ? "Update" : "Create"} Company Profile</h4>
+                    <h4>
+                      {companyId ? "Update" : "Create New"} Company Profile
+                    </h4>
                   </div>
                   <MyContractorCompany_2
                     infoData={infoData}
@@ -311,6 +311,15 @@ const ContentRenderer = ({
               {/* <!-- Ls widget --> */}
             </div>
           </div>
+          {Object.keys(errors).length > 0 && (
+            <div className="alert alert-danger mt-3" role="alert">
+              <ul className="mb-0">
+                {Object.entries(errors).map(([field, message]) => (
+                  <li key={field}>{message}</li>
+                ))}
+              </ul>
+            </div>
+          )}
           <div className="row">
             <div className="form-group col-lg-12 col-md-12">
               <button type="submit" className="theme-btn btn-style-one">

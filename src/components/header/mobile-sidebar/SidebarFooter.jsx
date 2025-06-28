@@ -1,3 +1,6 @@
+import useAuthStore from "@/utils/authStoreZusland";
+import { Link } from "react-router-dom";
+
 const SidebarFooter = () => {
   const socialContent = [
     { id: 1, icon: "fa-facebook-f", link: "https://www.facebook.com/" },
@@ -5,12 +8,36 @@ const SidebarFooter = () => {
     { id: 3, icon: "fa-instagram", link: "https://www.instagram.com/" },
     { id: 4, icon: "fa-linkedin-in", link: "https://www.linkedin.com/" },
   ];
+  const {user} = useAuthStore()
+  const isLoggedIn = !!user && !!user.token;
 
   return (
     <div className="mm-add-listing mm-listitem pro-footer">
-      <a href="#" className="theme-btn btn-style-one mm-listitem__text">
+      {!isLoggedIn ? <a
+        href="#"
+        className="theme-btn btn-style-two call-modal"
+        data-bs-toggle="modal"
+        data-bs-target="#loginPopupModal"
+      >
+        Login / Register
+      </a>:
+      <>
+       <Link
+        to="/employers-dashboard/post-jobs"
+        className="theme-btn btn-style-two call-modal"
+        data-bs-toggle="modal"
+        data-bs-target="#loginPopupModal"
+      >
+        Dashboard
+      </Link>
+      </>
+      }
+      <Link
+        to="/employers-dashboard/post-jobs"
+        className="theme-btn btn-style-one mm-listitem__text mt-1"
+      >
         Job Post
-      </a>
+      </Link>
       {/* job post btn */}
 
       <div className="mm-listitem__text">

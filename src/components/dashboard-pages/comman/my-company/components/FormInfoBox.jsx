@@ -18,7 +18,8 @@ const FormInfoBox = ({ formData, setFormData, errors = {} }) => {
   const handleCastingChange = (selectedOptions) => {
     setFormData({ ...formData, typeOfCasting: selectedOptions });
   };
-
+  console.log(errors)
+  console.log(errors.contactNumber)
   return (
     <div className="default-form">
       <div className="row">

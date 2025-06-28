@@ -8,6 +8,8 @@ import HeaderNavContent from "./HeaderNavContent";
 import { isActiveLink } from "../../utils/linkActiveChecker";
 
 import { useLocation } from "react-router-dom";
+import { contractorMenuData } from "./DashboardContractorSidebar";
+import NewHeaderNavContent from "./NewHeaderNavContent";
 const DashboardContractorHeader = () => {
     const { pathname } = useLocation();
     const [navbar, setNavbar] = useState(false);
@@ -51,7 +53,8 @@ const DashboardContractorHeader = () => {
                         </div>
                         {/* End .logo-box */}
 
-                        <HeaderNavContent />
+                        {/* <HeaderNavContent /> */}
+                        <NewHeaderNavContent/>
                         {/* <!-- Main Menu End--> */}
                     </div>
                     {/* End .nav-outer */}
@@ -86,7 +89,7 @@ const DashboardContractorHeader = () => {
                             </a>
 
                             <ul className="dropdown-menu">
-                                {candidatesMenuData.map((item) => (
+                                {contractorMenuData.map((item) => (
                                     <li
                                         className={`${
                                             isActiveLink(

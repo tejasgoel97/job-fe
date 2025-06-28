@@ -5,30 +5,30 @@ import { toast } from "react-toastify";
 
 const useCompanyInfoForm = () => {
   const [infoData, setInfoData] = useState({
-    companyName: "aa",
-    aboutCompany: "aa",
-    gstNo: "aa",
-    contactPerson: "aa",
-    contactNumber: "8448804428",
-    email: "aa",
-    otherDetails: "aa",
-    factoryLicenseNo: "aa",
+    companyName: "",
+    aboutCompany: "",
+    gstNo: "",
+    contactPerson: "",
+    contactNumber: "",
+    email: "",
+    otherDetails: "",
+    factoryLicenseNo: "",
     // typeOfCasting: [],
-    manufacturingCapacity: "aa",
-    yearOfEstablishment: "aa",
-    isoCertifications: "aa",
-    keyProducts: "aa",
-    website: "aa",
+    manufacturingCapacity: "",
+    yearOfEstablishment: "",
+    isoCertifications: "",
+    keyProducts: "",
+    website: "",
   });
 
   const [contactData, setContactData] = useState({
     country: "India",
-    state: "aa",
-    city: "aa",
-    pinCode: "121102",
-    addressLine1: "aa",
-    addressLine2: "aa",
-    googleMapLink: "aa",
+    state: "",
+    city: "",
+    pinCode: "",
+    addressLine1: "",
+    addressLine2: "",
+    googleMapLink: "",
   });
 
   const [socialData, setSocialData] = useState({
@@ -111,12 +111,14 @@ const useCompanyInfoForm = () => {
     });
 
     setErrors(newErrors);
+    console.log("err",{newErrors})
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async () => {
     console.log("In handle Sumbit")
     if (!validateForm()) {
+      console.log("error",errors)
       alert("Please correct the form errors.");
       return false;
     }
