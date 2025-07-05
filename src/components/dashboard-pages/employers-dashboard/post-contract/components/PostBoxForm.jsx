@@ -101,7 +101,7 @@ const PostBoxForm = ({ jobId, mode, initialData }) => {
     const fetchExpertise = async () => {
       try {
         const res = await fetch(
-          "http://localhost:3000/api/expertise/get-all-expertise"
+          `${import.meta.env.VITE_API_BASE_URL}/api/expertise/get-all-expertise`
         );
         const data = await res.json();
         setExpertiseData(data.data.expertiseList);
@@ -211,8 +211,8 @@ const PostBoxForm = ({ jobId, mode, initialData }) => {
     try {
       const url =
         mode === "edit"
-          ? `http://localhost:3000/api/jobs/update-job/${jobId}`
-          : `http://localhost:3000/api/jobs/create-job`;
+          ? `${import.meta.env.VITE_API_BASE_URL}/api/jobs/update-job/${jobId}`
+          : `${import.meta.env.VITE_API_BASE_URL}/api/jobs/create-job`;
 
       const method = mode === "edit" ? "PUT" : "POST";
 

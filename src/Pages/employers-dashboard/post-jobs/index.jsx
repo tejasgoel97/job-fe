@@ -7,8 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const metadata = {
-  title: "Post Jobs || Superio - Job Borad ReactJs Template",
-  description: "Superio - Job Borad ReactJs Template",
+  title: "Post Jobs || Unicron Apps - Job Portal",
+  description: "Unicron Apps - Job Portal",
 };
 
 

@@ -119,8 +119,8 @@ const PostContractBoxForm = ({ contractId, mode, initialData }) => {
     try {
       const url =
         mode === "edit"
-          ? `http://localhost:3000/api/contracts/update-contract/${contractId}`
-          : `http://localhost:3000/api/contracts/create-contract`;
+          ? `${import.meta.env.VITE_API_BASE_URL}/api/contracts/update-contract/${contractId}`
+          : `${import.meta.env.VITE_API_BASE_URL}/api/contracts/create-contract`;
       const method = mode === "edit" ? "PUT" : "POST";
 
       const response = await fetch(url, {

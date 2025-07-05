@@ -14,7 +14,7 @@ const SearchForm3 = ({ expertiseData }) => {
     
     // You can build query params or state here
     const query = new URLSearchParams({
-      job: jobTitle,
+      searchText: jobTitle,
       location,
       category: selectedExpertise,
     }).toString();

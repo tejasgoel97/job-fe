@@ -12,7 +12,7 @@ const JobApplied = () => {
               <span className="company-logo">
                 <img
                  
-                  src={item.logo}
+                  src={item.logo || "https://www.shutterstock.com/image-vector/metallurgy-foundry-badge-logo-design-260nw-1848406672.jpg"}
                   alt="item brand"
                 />
               </span>

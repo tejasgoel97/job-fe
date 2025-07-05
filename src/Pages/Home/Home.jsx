@@ -5,8 +5,8 @@ import Home from "@/components/home/index";
 import MetaComponent from "@/components/common/MetaComponent";
 
 const metadata = {
-  title: "Home-4 || Superio - Job Borad ReactJs Template",
-  description: "Superio - Job Borad ReactJs Template",
+  title: "Home-4 || Unicron Apps - Job Portal",
+  description: "Unicron Apps - Job Portal",
 };
 
 const HomePage4 = () => {

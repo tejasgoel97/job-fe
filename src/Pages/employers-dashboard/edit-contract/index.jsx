@@ -5,8 +5,8 @@ import { useState, useEffect } from "react";
 import useAuthStore from "@/utils/authStoreZusland";
 
 const metadata = {
-  title: "Edit Contract || Superio - Job Borad ReactJs Template",
-  description: "Superio - Job Borad ReactJs Template",
+  title: "Edit Contract || Unicron Apps - Job Portal",
+  description: "Unicron Apps - Job Portal",
 };
 
 const EditContractEmploeeDBPage = () => {
@@ -25,7 +25,7 @@ const EditContractEmploeeDBPage = () => {
         return;
       }
       try {
-        const response = await fetch(`http://localhost:3000/api/contracts/get-contract/${contractId}`, {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/contracts/get-contract/${contractId}`, {
           headers: {
             Authorization: `Bearer ${user.token}`,
           },

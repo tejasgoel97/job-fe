@@ -16,8 +16,8 @@ import SocialTwo from "@/components/SingleJob/SocialTwo";
 import InfoDataPoints from "@/components/dashboard-pages/SingleContractorProfile/InfoDataPoints";
 
 const metadata = {
-  title: "Company Profile || Superio - Job Board ReactJs Template",
-  description: "Superio - Job Board ReactJs Template",
+  title: "Company Profile || Unicron Apps - Job Board ReactJs Template",
+  description: "Unicron Apps - Job Board ReactJs Template",
 };
 
 const ContractorSingle1 = () => {

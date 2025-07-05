@@ -4,8 +4,8 @@ import ShortlistedResumes from "@/components/dashboard-pages/employers-dashboard
 import MetaComponent from "@/components/common/MetaComponent";
 
 const metadata = {
-  title: "Shortlisted Resumes || Superio - Job Borad ReactJs Template",
-  description: "Superio - Job Borad ReactJs Template",
+  title: "Shortlisted Resumes || Unicron Apps - Job Portal",
+  description: "Unicron Apps - Job Portal",
 };
 
 const ShortListedResumeEmploeeDBPage = () => {

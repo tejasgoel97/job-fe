@@ -4,8 +4,8 @@ import AllApplicants from "@/components/dashboard-pages/employers-dashboard/all-
 import MetaComponent from "@/components/common/MetaComponent";
 
 const metadata = {
-  title: "All Applicants || Superio - Job Borad ReactJs Template",
-  description: "Superio - Job Borad ReactJs Template",
+  title: "All Applicants || Unicron Apps - Job Portal",
+  description: "Unicron Apps - Job Portal",
 };
 
 const AllApplicantsEmploeesPage = () => {

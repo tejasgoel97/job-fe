@@ -37,6 +37,8 @@ import MyProfilePage from "./Pages/CandidateDashboard/my-profile";
 import MyResumePage from "./Pages/CandidateDashboard/my-resume";
 import CandidateSingle1 from "./Pages/General/CandidateSingle1";
 import CompanySingle1 from "./Pages/General/CompanySingle1";
+import ContractSingle1 from "./Pages/General/ContractSingle1";
+
 import JobList4 from "./Pages/General/JobList4";
 import ContractList4 from "./Pages/General/ContractList4";
 
@@ -47,7 +49,6 @@ import ContractorCompanyPage from "./Pages/contractor-dashboard/contractor-compa
 import Logout from "./Pages/authPages/logout";
 import AppliedJobsPage from "./Pages/CandidateDashboard/applied-jobs";
 import AppliedContractsPage from "./Pages/contractor-dashboard/applied-contracts";
-import ContractSingle1 from "./Pages/contract-single/index";
 import ContractorProfile from "./Pages/General/ContractorProfileSingle";
 import ApplicantsByJob from "./Pages/employers-dashboard/applicants-by-job";
 import ApplicantsByContract from "./Pages/employers-dashboard/applicants-by-contract";

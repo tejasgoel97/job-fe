@@ -77,13 +77,7 @@ const candidatesuData = [
     routePath: "/candidates-dashboard/change-password",
     active: "",
   },
-  {
-    id: 11,
-    name: "Logout",
-    icon: "la-sign-out",
-    routePath: "/logout",
-    active: "",
-  },
+
   {
     id: 12,
     name: "Delete Profile",

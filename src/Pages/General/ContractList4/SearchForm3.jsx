@@ -2,7 +2,13 @@ import { init } from "aos";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const SearchForm3 = ({ expertiseData, intialSearchText, initialLocation, intialExpertise }) => {
+const SearchForm3 = ({
+  expertiseData,
+  intialSearchText,
+  initialLocation,
+  intialExpertise,
+  loading,
+}) => {
   const [selectedExpertise, setSelectedExpertise] = useState(intialExpertise);
   const [searchText, setSearchText] = useState(intialSearchText);
   const [location, setLocation] = useState(initialLocation);
@@ -12,7 +18,7 @@ const SearchForm3 = ({ expertiseData, intialSearchText, initialLocation, intialE
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    
+
     // You can build query params or state here
     const query = new URLSearchParams({
       searchText: searchText,
@@ -65,8 +71,12 @@ const SearchForm3 = ({ expertiseData, intialSearchText, initialLocation, intialE
         </div>
 
         <div className="form-group col-lg-2 col-md-12 col-sm-12 text-right">
-          <button type="submit" className="theme-btn btn-style-one">
-            Find Contract
+          <button
+            type="submit"
+            className="theme-btn btn-style-one"
+            disabled={loading}
+          >
+            {loading ? "Searching..." : "Find Contract"}
           </button>
         </div>
       </div>

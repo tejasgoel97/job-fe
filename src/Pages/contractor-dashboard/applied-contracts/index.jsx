@@ -3,8 +3,8 @@ import AppliedContracts from "@/components/dashboard-pages/contractor-dashboard/
 import MetaComponent from "@/components/common/MetaComponent";
 
 const metadata = {
-  title: "Applied Jobs || Superio - Job Borad ReactJs Template",
-  description: "Superio - Job Borad ReactJs Template",
+  title: "Applied Jobs || Unicron Apps - Job Portal",
+  description: "Unicron Apps - Job Portal",
 };
 
 const AppliedJobsPage = () => {

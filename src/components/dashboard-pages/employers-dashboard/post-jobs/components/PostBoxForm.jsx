@@ -146,8 +146,8 @@ const PostBoxForm = ({ jobId, mode="new", initialData={} }) => {
     try {
       const url =
         mode === "edit"
-          ? `http://localhost:3000/api/jobs/update-job/${jobId}`
-          : `http://localhost:3000/api/jobs/create-job`;
+          ? `${import.meta.env.VITE_API_BASE_URL}/api/jobs/update-job/${jobId}`
+          : `${import.meta.env.VITE_API_BASE_URL}/api/jobs/create-job`;
 
       const method = mode === "edit" ? "PUT" : "POST";
 

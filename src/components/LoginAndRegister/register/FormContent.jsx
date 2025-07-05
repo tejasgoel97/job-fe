@@ -45,7 +45,10 @@ const RegisterFormContent = () => {
       console.log("Registration success:", response.data);
       setStep("verify-otp");
     } catch (error) {
-      console.error("Registration error:", error.response?.data || error.message);
+      console.error(
+        "Registration error:",
+        error.response?.data || error.message
+      );
       alert(error.response?.data?.message || "Registration failed");
     }
   };
@@ -58,35 +61,62 @@ const RegisterFormContent = () => {
         otp,
       });
 
-      const { token, userId, role, capabilities, email, phoneNumber,firstName, lastName } = response.data;
-      login({ email, userId, role, capabilities, token, phoneNumber,firstName, lastName});
+      const {
+        token,
+        userId,
+        role,
+        capabilities,
+        email,
+        phoneNumber,
+        firstName,
+        lastName,
+      } = response.data;
+      login({
+        email,
+        userId,
+        role,
+        capabilities,
+        token,
+        phoneNumber,
+        firstName,
+        lastName,
+      });
 
-      if (formData.rememberMe) {
+     
         localStorage.setItem("token", token);
-      }
+      let currentRole = localStorage.getItem("jp-current-role");
 
       // Navigate based on role
-      if (role === "candidate") navigate("/candidates-dashboard/dashboard");
-      else if (role === "employer") navigate("/employers-dashboard/dashboard");
-      else if (role === "contractor") navigate("/contractor-dashboard/dashboard");
-      else navigate("/");
-
+      if (currentRole === "candidate") {
+        window.location.href = "/candidates-dashboard/dashboard";
+      } else if (currentRole === "employer") {
+        window.location.href = "/employers-dashboard/dashboard";
+      } else if (currentRole === "contractor") {
+        window.location.href = "/contractor-dashboard/dashboard";
+      } else {
+        window.location.href = "/";
+      }
     } catch (error) {
-      console.error("OTP verification failed:", error.response?.data || error.message);
+      console.error(
+        "OTP verification failed:",
+        error.response?.data || error.message
+      );
       alert(error.response?.data?.message || "OTP verification failed");
     }
   };
 
   return (
     <div className="form-inner">
-      <h3>Register on Superio</h3>
+      <h3>Register on Job Portal</h3>
 
       <div className="btn-group w-100 mb-3" role="group">
         {["candidate", "employer", "contractor"].map((type) => (
           <button
             key={type}
             type="button"
-            className={`btn ${userType === type ? "btn-primary" : "btn-outline-primary"}`}
+            className={`btn ${
+              userType === type ? "btn-primary" : "btn-outline-primary"
+            }`}
             onClick={() => handleUserTypeChange(type)}
           >
             {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -172,16 +202,16 @@ const RegisterFormContent = () => {
         <form onSubmit={handleVerifyOtp}>
           <div className="form-group">
             <div className="d-flex justify-content-between align-items-center">
-                  <label>Enter OTP</label>
-            <button
-              type="button"
-              className="btn btn-secondary p-1   m-1"
-              onClick={() => setStep("register")}
-            >
-              Edit Details
-            </button>
+              <label>Enter OTP</label>
+              <button
+                type="button"
+                className="btn btn-secondary p-1   m-1"
+                onClick={() => setStep("register")}
+              >
+                Edit Details
+              </button>
             </div>
-          
+
             <input
               type="text"
               name="otp"
@@ -192,14 +222,13 @@ const RegisterFormContent = () => {
             />
           </div>
           <div className="form-group d-flex justify-content-between">
-           
             <button type="submit" className="theme-btn btn-style-one">
               Verify OTP
             </button>
           </div>
         </form>
       )}
-{/* 
+      {/* 
       <div className="bottom-box">
         <div className="text">
           Already have an account?{" "}

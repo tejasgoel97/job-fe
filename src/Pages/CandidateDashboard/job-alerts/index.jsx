@@ -4,8 +4,8 @@ import JobAlerts from "@/components/dashboard-pages/candidates-dashboard/job-ale
 import MetaComponent from "@/components/common/MetaComponent";
 
 const metadata = {
-  title: "My Job Alerts || Superio - Job Borad ReactJs Template",
-  description: "Superio - Job Borad ReactJs Template",
+  title: "My Job Alerts || Unicron Apps - Job Portal",
+  description: "Unicron Apps - Job Portal",
 };
 
 const JobAlertPage = () => {

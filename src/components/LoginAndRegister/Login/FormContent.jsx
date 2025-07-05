@@ -1,12 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useAuthStore from "@/utils/authStoreZusland";
 import axiosInstance from "@/utils/api/axiosInstance";
 
 const FormContent = () => {
   const navigate = useNavigate(); // For redirecting after login
   const [userType, setUserType] = useState("candidate");
+  const [loading, setLoading] = useState(false);
 
   // Local state for form inputs
   const [formData, setFormData] = useState({
@@ -26,48 +27,68 @@ const FormContent = () => {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
-
+  useEffect(()=>{
+    const currentRole = localStorage.getItem("jp-current-role");
+    if (currentRole) {
+      setUserType(currentRole);
+    }
+    else {
+      localStorage.setItem("jp-current-role", "candidate");
+      setUserType("candidate");
+    }
+  }, [])
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Start loading
     try {
-      const response = await axiosInstance.post(
-        "/auth/login",
-        {
-          email: formData.email,
-          password: formData.password,
-          role: userType,
-        }
-      );
-      const { email, userId, role, capabilities, token, phoneNumber,firstName, lastName} = response.data;
+      const response = await axiosInstance.post("/auth/login", {
+        email: formData.email,
+        password: formData.password,
+        role: userType,
+      });
 
-      console.log(response.data);
-      console.log(token);
+      const {
+        email,
+        userId,
+        role,
+        capabilities,
+        token,
+        phoneNumber,
+        firstName,
+        lastName,
+      } = response.data;
 
-      // Store user data and token in Zustand
-              login({ email, userId, role, capabilities, token, phoneNumber,firstName, lastName});
+      login({
+        email,
+        userId,
+        role,
+        capabilities,
+        token,
+        phoneNumber,
+        firstName,
+        lastName,
+      });
 
-      // Optionally save token to localStorage if not using Zustand persist
       if (formData.rememberMe) {
         localStorage.setItem("token", token);
       }
+
       const currentRole = localStorage.getItem("jp-current-role");
-      console.log(role)
-      if(currentRole === "candidate"){
-         navigate("/candidates-dashboard/dashboard");
-      }
-      else if (currentRole === "employer") {
-        navigate("/employers-dashboard/dashboard"); // Adjust the route as per your app
-      }
-      else if (currentRole === "contractor") {
-        navigate("/contractor-dashboard/dashboard"); // Adjust the route as per your app
+      if (currentRole === "candidate") {
+        window.location.href = "/candidates-dashboard/dashboard";
+      } else if (currentRole === "employer") {
+        window.location.href = "/employers-dashboard/dashboard";
+      } else if (currentRole === "contractor") {
+        window.location.href = "/contractor-dashboard/dashboard";
       } else {
-        navigate("/"); // Adjust the route as per your app
+        window.location.href = "/";
       }
-      // Redirect to a dashboard or home page
     } catch (error) {
       console.error("Login error:", error.response?.data || error.message);
       alert(error.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false); // Stop loading in both success/failure
     }
   };
   function handleUserTypeChange(newType) {
@@ -77,7 +98,7 @@ const FormContent = () => {
   return (
     <div className="form-inner">
       <h3>Login to Superio</h3>
-<div className="btn-group w-100 mb-3" role="group">
+      <div className="btn-group w-100 mb-3" role="group">
         <button
           type="button"
           className={`btn ${
@@ -159,11 +180,21 @@ const FormContent = () => {
             className="theme-btn btn-style-one"
             type="submit"
             name="log-in"
-            data-dismiss="modal"
-            aria-label="Close"
-            data-bs-dismiss="modal"
+            disabled={loading}
+            aria-label="Log In"
           >
-            Log In
+            {loading ? (
+              <>
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                Logging in...
+              </>
+            ) : (
+              "Log In"
+            )}
           </button>
         </div>
         {/* Login button */}

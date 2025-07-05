@@ -42,7 +42,7 @@ const ContractListingsTable = () => {
 
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:3000/api/contracts/delete-contract/${contractId}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/contracts/delete-contract/${contractId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${user.token}`,

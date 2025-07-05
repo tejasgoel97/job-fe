@@ -54,7 +54,7 @@ const ExpertiseSection = ({ initialData }) => {
     const fetchExpertise = async () => {
       try {
         const res = await fetch(
-          "http://localhost:3000/api/expertise/get-all-expertise"
+          `${import.meta.env.VITE_API_BASE_URL}/api/expertise/get-all-expertise`
         );
         const data = await res.json();
         setExpertiseData(data.data.expertiseList);

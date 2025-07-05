@@ -8,7 +8,7 @@ const SidebarFooter = () => {
     { id: 3, icon: "fa-instagram", link: "https://www.instagram.com/" },
     { id: 4, icon: "fa-linkedin-in", link: "https://www.linkedin.com/" },
   ];
-  const {user} = useAuthStore()
+  const {user, logout} = useAuthStore()
   const isLoggedIn = !!user && !!user.token;
 
   return (
@@ -23,10 +23,8 @@ const SidebarFooter = () => {
       </a>:
       <>
        <Link
-        to="/employers-dashboard/post-jobs"
-        className="theme-btn btn-style-two call-modal"
-        data-bs-toggle="modal"
-        data-bs-target="#loginPopupModal"
+        to="contractor-dashboard/applied-contracts"
+        className="theme-btn btn-style-two"
       >
         Dashboard
       </Link>
@@ -38,6 +36,17 @@ const SidebarFooter = () => {
       >
         Job Post
       </Link>
+      {
+        isLoggedIn &&
+              <Link
+        to="/"
+        onClick={() => logout()}
+        className="theme-btn btn-style-one  mt-1"
+      >
+         <i className={`la la-sign-out`}></i> {"Logout"}
+      </Link>
+      }
+
       {/* job post btn */}
 
       <div className="mm-listitem__text">

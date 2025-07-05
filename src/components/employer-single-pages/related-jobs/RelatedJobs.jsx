@@ -10,7 +10,7 @@ const RelatedJobs = () => {
           <div className="inner-box">
             <div className="content">
               <span className="company-logo">
-                <img  src={item.logo} alt="resource" />
+                <img  src={item.logo || "https://www.shutterstock.com/image-vector/metallurgy-foundry-badge-logo-design-260nw-1848406672.jpg"} alt="resource" />
               </span>
               <h4>
                 <Link to={`/job-single-v1/${item.id}`}>{item.jobTitle}</Link>

@@ -119,6 +119,11 @@ const DashboardCandidatesSidebar = () => {
 
       <div className="sidebar-inner">
         <ul className="navigation">
+          <li className={` mb-1`} key={"item.id"}>
+                            <Link to={"/"} onClick={() => logout()}>
+                              <i className={`la la-sign-out`}></i> {"Logout"}
+                            </Link>
+                          </li>
           {candidateMenuData.map((item) => (
             <li
               className={`${

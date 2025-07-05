@@ -36,7 +36,7 @@ const Index = () => {
       {/* End pro-header */}
 
       
-        <Sidebar>
+        {/* <Sidebar>
           <Menu>
             {mobileMenuData.map((item) => (
               <SubMenu
@@ -66,7 +66,7 @@ const Index = () => {
               </SubMenu>
             ))}
           </Menu>
-        </Sidebar>
+        </Sidebar> */}
 
 
       <SidebarFooter />

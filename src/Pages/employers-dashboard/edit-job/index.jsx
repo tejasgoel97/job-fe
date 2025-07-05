@@ -7,8 +7,8 @@ import MetaComponent from "@/components/common/MetaComponent";
 import axiosInstance from "@/utils/api/axiosInstance";
 
 const metadata = {
-  title: "Post Jobs || Superio - Job Board ReactJs Template",
-  description: "Superio - Job Board ReactJs Template",
+  title: "Post Jobs || Unicron Apps - Job Board ReactJs Template",
+  description: "Unicron Apps - Job Board ReactJs Template",
 };
 
 const EditJobsEmployeeDBPage = () => {

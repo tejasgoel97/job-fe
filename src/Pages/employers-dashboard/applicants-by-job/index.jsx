@@ -8,8 +8,8 @@ import axiosInstance from "@/utils/api/axiosInstance";
 import AllApplicantsEmploeesPage from "../all-applicants";
 
 const metadata = {
-  title: "Post Jobs || Superio - Job Board ReactJs Template",
-  description: "Superio - Job Board ReactJs Template",
+  title: "Post Jobs || Unicron Apps - Job Board ReactJs Template",
+  description: "Unicron Apps - Job Board ReactJs Template",
 };
 
 const ApplicantsByJob = () => {

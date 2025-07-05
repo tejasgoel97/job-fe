@@ -1,5 +1,5 @@
 import FilterSidebar from "./FilterSidebar";
-import FilterJobBox from "./FilterJobBox";
+import FilterContractBox from "./FilterContractBox";
 import Breadcrumb from "@/components/common/Breadcrumb";
 import CallToActions from "@/components/job-listing-page/CallToActions";
 import SearchForm3 from "./SearchForm3";
@@ -14,7 +14,7 @@ const index = () => {
 
   // Get initial query params
   const queryParams = new URLSearchParams(location.search);
-  const initialSearchText = queryParams.get("jobtitle") || "";
+  const initialSearchText = queryParams.get("searchText") || "";
   const initialLocation = queryParams.get("location") || "";
   const intialExpertise = queryParams.get("expertise") || "";
 
@@ -25,7 +25,7 @@ const index = () => {
 
   // Fetch jobs when query params change
   useEffect(() => {
-    const fetchJobs = async () => {
+    const fetchContracts = async () => {
       try {
         setLoading(true);
         const response = await axiosInstance.get("/contracts/search-contracts", {
@@ -43,8 +43,8 @@ const index = () => {
       }
     };
 
-    fetchJobs();
-  }, [location.search]);
+    fetchContracts();
+  }, [location.search, initialSearchText, initialLocation, intialExpertise]);
 
   // Handle form submit and update URL
 
@@ -55,7 +55,7 @@ const index = () => {
       {/* End MobileMenu */}
       <Breadcrumb title="Find Contracts" meta="Contracts" />
       <div className="job-search-form container py-10" data-aos-delay="700" data-aos="fade-up">
-        <SearchForm3 btnStyle="btn-style-two" expertiseData={[]} intitialSearchText={initialSearchText} initialLocation={initialLocation} intialExpertise={intialExpertise} />
+        <SearchForm3 btnStyle="btn-style-two" expertiseData={[]} intitialSearchText={initialSearchText} initialLocation={initialLocation} intialExpertise={intialExpertise} loading={loading}/>
       </div>
       {/* <!--End Breadcrumb Start--> */}
       <section className="ls-section">
@@ -74,7 +74,7 @@ const index = () => {
             {/* <!-- End Filters Column --> */}
               
             <div className="content-column col-lg-12">
-              <FilterJobBox jobs={jobs} loading={loading} />
+              <FilterContractBox jobs={jobs} loading={loading} />
             </div>
             {/* <!-- End Content Column --> */}
           </div>

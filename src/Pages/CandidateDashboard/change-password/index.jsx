@@ -4,8 +4,8 @@ import ChangePassword from "@/components/dashboard-pages/candidates-dashboard/ch
 import MetaComponent from "@/components/common/MetaComponent";
 
 const metadata = {
-  title: "Change Password || Superio - Job Borad ReactJs Template",
-  description: "Superio - Job Borad ReactJs Template",
+  title: "Change Password || Unicron Apps - Job Portal",
+  description: "Unicron Apps - Job Portal",
 };
 
 const ChangePasswordPage = () => {

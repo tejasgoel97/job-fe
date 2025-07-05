@@ -14,7 +14,7 @@ const index = () => {
 
   // Get initial query params
   const queryParams = new URLSearchParams(location.search);
-  const initialJobTitle = queryParams.get("contractTitle") || "";
+  const initialJobTitle = queryParams.get("searchText") || "";
   const initialLocation = queryParams.get("location") || "";
   const intialExpertise = queryParams.get("expertise") || "";
 
@@ -55,7 +55,7 @@ const index = () => {
       {/* End MobileMenu */}
       <Breadcrumb title="Find Jobs" meta="Jobs" />
       <div className="job-search-form container py-10" data-aos-delay="700" data-aos="fade-up">
-        <SearchForm3 btnStyle="btn-style-two" expertiseData={[]} initialJobTitle={initialJobTitle} initialLocation={initialLocation} intialExpertise={intialExpertise} />
+        <SearchForm3 btnStyle="btn-style-two" expertiseData={[]} initialJobTitle={initialJobTitle} initialLocation={initialLocation} intialExpertise={intialExpertise} loading={loading}/>
       </div>
       {/* <!--End Breadcrumb Start--> */}
       <section className="ls-section">

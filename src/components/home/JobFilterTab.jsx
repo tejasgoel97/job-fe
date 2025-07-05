@@ -1,10 +1,7 @@
-
-
-
 import { Link } from "react-router-dom";
 import jobFeatured from "../../data/job-featured";
-import { useState } from "react";
-
+import { useEffect, useState } from "react";
+import axiosInstance from "@/utils/api/axiosInstance";
 
 const JobFilterTab = () => {
   const [tabId, setTabId] = useState(2);
@@ -16,6 +13,31 @@ const JobFilterTab = () => {
     { id: 5, name: "Health", isActive: false },
   ]);
 
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch jobs when query params change
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        setLoading(true);
+        const response = await axiosInstance.get("/jobs/search-jobs", {
+          params: {
+            searchText: "",
+            locationText: "",
+            expertise: "",
+          },
+        });
+        setJobs(response.data.jobs);
+      } catch (err) {
+        console.error("Error fetching jobs:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, [location.search]);
   // tab handler
   const tabHandler = (id) => {
     // active tab
@@ -51,73 +73,88 @@ const JobFilterTab = () => {
       <div className="tab active-tab" data-aos="fade-up">
         <div className="row">
           {/* all tab */}
-          {tabId === 1 ? (
+          {tabId ? (
             <>
-              {jobFeatured.slice(0, 6).map((item) => (
-                <div
-                  className="job-block col-lg-6 col-md-12 col-sm-12"
-                  key={item.id}
-                >
-                  <div className="inner-box">
-                    <div className="content">
-                      <span className="company-logo">
-                        <img
-                         
-                          src={item.logo}
-                          alt="item brand"
-                        />
-                      </span>
-                      <h4>
-                        <Link to={`/job-single-v5/${item.id}`}>
-                          {item.jobTitle}
-                        </Link>
-                      </h4>
+              {jobs.map((item) => {
+                const formattedTime = new Date(item.createdAt).toLocaleString(
+                  "en-US",
+                  {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  }
+                );
 
-                      <ul className="job-info">
-                        <li>
-                          <span className="icon flaticon-briefcase"></span>
-                          {item.company}
-                        </li>
-                        {/* compnay info */}
-                        <li>
-                          <span className="icon flaticon-map-locator"></span>
-                          {item.location}
-                        </li>
-                        {/* location info */}
-                        <li>
-                          <span className="icon flaticon-clock-3"></span>{" "}
-                          {item.time}
-                        </li>
-                        {/* time info */}
-                        <li>
-                          <span className="icon flaticon-money"></span>{" "}
-                          {item.salary}
-                        </li>
-                        {/* salary info */}
-                      </ul>
-                      {/* End .job-info */}
+                return (
+                  <div
+                    className="job-block col-lg-6 col-md-12 col-sm-12"
+                    key={item.id}
+                  >
+                    <div className="inner-box">
+                      <div className="content">
+                        <span className="company-logo">
+                          <img
+                            src={
+                              item.logo ||
+                              "https://www.shutterstock.com/image-vector/metallurgy-foundry-badge-logo-design-260nw-1848406672.jpg"
+                            }
+                            alt="item brand"
+                          />
+                        </span>
+                        <h4>
+                         <Link to={`/job/${item._id}`}>{item.title}, {item.companyDetails.infoData.companyName}</Link>
+                        </h4>
 
-                      <ul className="job-other-info">
-                        {item.jobType?.map((val, i) => (
-                          <li key={i} className={`${val.styleClass}`}>
-                            {val.type}
+                        <ul className="job-info">
+                          <li>
+                            <span className="icon flaticon-briefcase"></span>
+                            {item.companyDetails.infoData.companyName}
                           </li>
-                        ))}
-                      </ul>
-                      {/* End .job-other-info */}
+                          {/* compnay info */}
+                          <li>
+                            <span className="icon flaticon-map-locator"></span>
+                            {item.city}
+                          </li>
+                          {/* location info */}
+                          <li>
+                            <span className="icon flaticon-clock-3"></span>{" "}
+                            {formattedTime}
+                          </li>
+                          {/* time info */}
+                          <li>
+                            <span className="icon flaticon-money"></span>{" "}
+                            {item.salaryFrom} - {item.salaryTo}
+                          </li>
+                          {/* salary info */}
+                        </ul>
+                        {/* End .job-info */}
 
-                      <button className="bookmark-btn">
-                        <span className="flaticon-bookmark"></span>
-                      </button>
+                        <ul className="job-other-info">
+                          <li className={`privacy`}>
+                            Department: {item.department}
+                          </li>
+                          <li className={`required`}>Type: {item.jobType}</li>
+                          {item?.expertise?.map((val, i) => (
+                            <li key={i} className={`time`}>
+                              {val.category}
+                            </li>
+                          ))}
+                        </ul>
+                        {/* End .job-other-info */}
+
+                        <button className="bookmark-btn">
+                          <span className="flaticon-bookmark"></span>
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-                // End job-block
-              ))}
+                  // End job-block
+                );
+              })}
             </>
           ) : undefined}
           {/* trending tab */}
-          {tabId === 2 ? (
+          {tabId === 20 ? (
             <>
               {jobFeatured.slice(6, 10).map((item) => (
                 <div
@@ -127,11 +164,7 @@ const JobFilterTab = () => {
                   <div className="inner-box">
                     <div className="content">
                       <span className="company-logo">
-                        <img
-                         
-                          src={item.logo}
-                          alt="item brand"
-                        />
+                        <img src={item.logo} alt="item brand" />
                       </span>
                       <h4>
                         <Link to={`/job-single-v5/${item.id}`}>
@@ -183,7 +216,7 @@ const JobFilterTab = () => {
             </>
           ) : undefined}
           {/* design tab  */}
-          {tabId === 3 ? (
+          {tabId === 30 ? (
             <>
               {jobFeatured.slice(10, 16).map((item) => (
                 <div
@@ -193,11 +226,7 @@ const JobFilterTab = () => {
                   <div className="inner-box">
                     <div className="content">
                       <span className="company-logo">
-                        <img
-                         
-                          src={item.logo}
-                          alt="item brand"
-                        />
+                        <img src={item.logo} alt="item brand" />
                       </span>
                       <h4>
                         <Link to={`/job-single-v5/${item.id}`}>
@@ -249,7 +278,7 @@ const JobFilterTab = () => {
             </>
           ) : undefined}
           {/* marketing tab  */}
-          {tabId === 4 ? (
+          {tabId === 40 ? (
             <>
               {jobFeatured.slice(16, 20).map((item) => (
                 <div
@@ -259,11 +288,7 @@ const JobFilterTab = () => {
                   <div className="inner-box">
                     <div className="content">
                       <span className="company-logo">
-                        <img
-                         
-                          src={item.logo}
-                          alt="item brand"
-                        />
+                        <img src={item.logo} alt="item brand" />
                       </span>
                       <h4>
                         <Link to={`/job-single-v5/${item.id}`}>
@@ -315,7 +340,7 @@ const JobFilterTab = () => {
             </>
           ) : undefined}
           {/* helth tab */}{" "}
-          {tabId === 5 ? (
+          {tabId === 50 ? (
             <>
               {jobFeatured.slice(10, 16).map((item) => (
                 <div
@@ -325,11 +350,7 @@ const JobFilterTab = () => {
                   <div className="inner-box">
                     <div className="content">
                       <span className="company-logo">
-                        <img
-                         
-                          src={item.logo}
-                          alt="item brand"
-                        />
+                        <img src={item.logo} alt="item brand" />
                       </span>
                       <h4>
                         <Link to={`/job-single-v5/${item.id}`}>

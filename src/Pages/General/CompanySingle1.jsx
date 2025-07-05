@@ -13,8 +13,8 @@ import SocialTwo from "@/components/SingleJob/SocialTwo";
 
 const metadata = {
   title:
-    "Company Profile || Superio - Job Board ReactJs Template",
-  description: "Superio - Job Borad ReactJs Template",
+    "Company Profile || Unicron Apps - Job Board ReactJs Template",
+  description: "Unicron Apps - Job Portal",
 };
 
 const CompanySingle1 = () => {

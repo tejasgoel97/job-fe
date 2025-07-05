@@ -4,8 +4,8 @@ import ManageJobs from "@/components/dashboard-pages/employers-dashboard/manage-
 import MetaComponent from "@/components/common/MetaComponent";
 
 const metadata = {
-  title: "Manage Jobs || Superio - Job Borad ReactJs Template",
-  description: "Superio - Job Borad ReactJs Template",
+  title: "Manage Jobs || Unicron Apps - Job Portal",
+  description: "Unicron Apps - Job Portal",
 };
 
 const ManageJobsEmploeeDBPage = () => {

@@ -5,7 +5,7 @@ const axiosInstance = axios.create({
   // For example, if your APIs are like /api/v1/users, /api/v1/products
   // you can set baseURL: '/api/v1'
   // Based on your current usage, '/api' seems appropriate
-  baseURL: "http://localhost:3000/api",
+  baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`,
 });
 
 // Add a request interceptor to include the token in headers

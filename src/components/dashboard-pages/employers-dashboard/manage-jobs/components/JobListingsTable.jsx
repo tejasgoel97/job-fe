@@ -18,7 +18,7 @@ const JobListingsTable = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/jobs/my-jobs", {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/jobs/my-jobs`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${user.token}`,

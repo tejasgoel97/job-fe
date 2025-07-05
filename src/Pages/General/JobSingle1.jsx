@@ -98,6 +98,32 @@ const JobSingle1 = () => {
     );
   }
 
+const handleShare = async () => {
+    const shareData = {
+      title: document.title,
+      text: "Check this out!",
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        console.log("Shared successfully");
+      } catch (err) {
+        console.error("Share failed:", err);
+      }
+    } else {
+      // Fallback for unsupported devices
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        alert("Link copied to clipboard!");
+      } catch (err) {
+        alert("Could not copy the link");
+      }
+    }
+  };
+
+
   return (
     <section className="job-detail-section">
       <div className="upper-box">
@@ -158,7 +184,7 @@ const JobSingle1 = () => {
                   <button className="theme-btn btn-style-one" disabled>
                     Already Applied
                   </button>
-                ) : (
+                ) : ( 
                   <a
                     href="#"
                     className="theme-btn btn-style-one"
@@ -168,8 +194,8 @@ const JobSingle1 = () => {
                     Apply For Job
                   </a>
                 )}
-                <button className="bookmark-btn">
-                  <i className="flaticon-bookmark"></i>
+                <button className="bookmark-btn" onClick={handleShare}>
+                  <i className="flaticon-share"></i>
                 </button>
               </div>
               {/* End apply for job btn */}

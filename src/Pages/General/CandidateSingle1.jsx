@@ -12,8 +12,8 @@ import axiosInstance from "@/utils/api/axiosInstance";
 
 const metadata = {
   title:
-    "Candidate Single Dyanmic V3 || Superio - Job Borad ReactJs Template",
-  description: "Superio - Job Borad ReactJs Template",
+    "Candidate Single Dyanmic V3 || Unicron Apps - Job Portal",
+  description: "Unicron Apps - Job Portal",
 };
 
 const CandidateSingle1 = () => {
