@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 
-
 import DashboardCandidatesSidebar from "../../../header/DashboardCandidatesSidebar";
 import BreadCrumb from "../../BreadCrumb";
 import CopyrightFooter from "../../CopyrightFooter";
@@ -9,11 +8,14 @@ import DashboardCandidatesHeader from "../../../header/DashboardCandidatesHeader
 import MenuToggler from "../../MenuToggler";
 import axiosInstance from "@/utils/api/axiosInstance";
 import useAuthStore from "@/utils/authStoreZusland";
+import CandidateSingle1 from "@/Pages/General/CandidateSingle1";
 
 const index = () => {
-    const [initialLoading, setInitialLoading] = useState(true);
-    const [resumeData, setResumeData] = useState(null);
-    const {user} = useAuthStore();
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [resumeData, setResumeData] = useState(null);
+  const [mode, setMode] = useState("view"); // "edit" | "view"
+  const [hasUnsavedChanges, seHhasUnsavedChanges] = useState(false);
+  const { user } = useAuthStore();
   useEffect(() => {
     const fetchResumeData = async () => {
       try {
@@ -39,7 +41,10 @@ const index = () => {
 
     fetchResumeData();
   }, []); // Empty dependency array ensures this runs only once on component mount
-  console.log({user})
+  console.log({ user });
+  const handleModeToggle = () => {
+    setMode((prev) => (prev === "edit" ? "view" : "edit"));
+  };
   return (
     <div className="page-wrapper dashboard">
       <span className="header-span"></span>
@@ -64,8 +69,40 @@ const index = () => {
             <div className="col-lg-12">
               <div className="ls-widget">
                 <div className="tabs-box">
-                  <div className="widget-title">
-                    <h4>{resumeData ? "Edit" : "Create"}  Resume</h4>
+                  <div className="widget-title flex items-center justify-between">
+                    <h4>
+                      {resumeData
+                        ? mode === "edit"
+                          ? "Edit"
+                          : "View"
+                        : "Create"}{" "}
+                      Resume
+                    </h4>
+                    {resumeData && mode === "view" && (
+                      <>
+                        <button
+                          className="btn btn-outline-primary"
+                          type="button"
+                          onClick={handleModeToggle}
+                          disabled={
+                            initialLoading ||
+                            (mode === "edit" && hasUnsavedChanges)
+                          }
+                        >
+                         
+                            <span
+                              className="ml-3 flex items-center"
+                              style={{ fontWeight: 500 }}
+                            >
+                              <i
+                                className="flaticon-pencil"
+                                style={{ fontSize: 20, marginRight: 8 }}
+                              />
+                              Edit
+                            </span>
+                        </button>
+                      </>
+                    )}
                   </div>
                   {/* End widget-title */}
 
@@ -75,7 +112,22 @@ const index = () => {
                         Loading your resume details...
                       </div>
                     ) : (
-                      <Resume initialData={resumeData} user={user} />
+                      <>
+                        {mode === "edit" ? (
+                          <Resume
+                            initialData={resumeData}
+                            user={user}
+                            setHasUnsavedChanges={seHhasUnsavedChanges}
+                            setMode={setMode}
+                          />
+                        ) : (
+                          <CandidateSingle1
+                            data={resumeData}
+                            user={user}
+                            candidateId={resumeData?._id}
+                          />
+                        )}
+                      </>
                     )}
                   </div>
                   {/* End widget-content */}

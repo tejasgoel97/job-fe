@@ -1,0 +1,24 @@
+.edit-card {
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 24px 0 rgba(60,72,88,.1);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .edit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 2rem;
+    align-items: end;
+  }
+}
+@media (max-width: 767px) {
+  .edit-grid {
+    display: block;
+  }
+  .edit-grid > div {
+    margin-bottom: 1rem;
+  }
+}

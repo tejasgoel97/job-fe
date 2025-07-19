@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddPortfolio from "./AddPortfolio";
 import Awards from "./Awards";
 import ContactInfoBox from "./ContactInfoBox";
@@ -9,19 +9,18 @@ import SocialNetworkBox from "./SocialNetworkBox";
 import axiosInstance from "@/utils/api/axiosInstance";
 import OtherDetails from "./OtherDetails";
 import { toast } from "react-toastify";
+import CandidateExpertiseSelector from "./CandidateExpertiseSelector";
 
-const Resume = ({ initialData, user }) => {
+const Resume = ({ initialData, user, setMode }) => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [resumeExists, setResumeExists] = useState(!!initialData);
 
-  const [portfolioFile, setPortfolioFile] = useState(null);
+  const [cvFileURL, setCvFileURL] = useState(initialData.cvFileURL || "");
+  const [profileImageURL, setProfileImageURL] = useState(initialData.profileImageURL || "");
   const [firstName, setFirstName] = useState(user?.firstName || "");
   const [lastName, setLastName] = useState(user?.lastName || "");
   const [description, setDescription] = useState(
     initialData?.description || ""
-  );
-  const [skills, setSkills] = useState(
-    initialData?.skills?.map((skill) => ({ value: skill, label: skill })) || []
   );
   // State for ContactInfoBox
   const [contactInfo, setContactInfo] = useState({
@@ -33,16 +32,14 @@ const Resume = ({ initialData, user }) => {
     city: initialData?.contactInfo?.city || "",
     addressLine1: initialData?.contactInfo?.addressLine1 || "",
     addressLine2: initialData?.contactInfo?.addressLine2 || "",
-    
-    googleMapLink: initialData?.contactInfo?.googleMapLink || "",
   });
 
   // State for SocialNetworkBox
   const [socialNetworks, setSocialNetworks] = useState({
     facebook: initialData?.socialNetworks?.facebook || "",
-    twitter: initialData?.socialNetworks?.twitter || "",
+    x: initialData?.socialNetworks?.x || "", // for X (formerly Twitter)
     linkedin: initialData?.socialNetworks?.linkedin || "",
-    googlePlus: initialData?.socialNetworks?.googlePlus || "",
+    instagram: initialData?.socialNetworks?.instagram || "", // replaced googlePlus
   });
 
   // State for Education, Experiences, and Awards
@@ -64,9 +61,17 @@ const Resume = ({ initialData, user }) => {
   const [currentSalary, setCurrentSalary] = useState(
     initialData?.currentSalary || ""
   );
+  const [currentSalaryCurrency, setCurrentSalaryCurrency] = useState(
+    initialData?.currentSalaryCurrency || "INR"
+  );
+  const [expectedSalaryCurrency, setExpectedSalaryCurrency] = useState(
+    initialData?.expectedSalaryCurrency || "INR"
+  );
   const [expectedSalary, setExpectedSalary] = useState(
     initialData?.expectedSalary || ""
   );
+  const [selectedExpertise, setSelectedExpertise] = useState({});
+  const [initialExpertise, setInitialExpertise] = useState(initialData?.expertise || []);
   const [languages, setLanguages] = useState(
     initialData?.languages?.map((lang) => ({ value: lang, label: lang })) || []
   );
@@ -83,15 +88,11 @@ const Resume = ({ initialData, user }) => {
 
     // Basic checks
 
-
     if (!description.trim()) {
       alert("Description is required.");
       return;
     }
-    if (skills.length === 0) {
-      alert("Please select at least one skill.");
-      return;
-    }
+
     if (!contactInfo.phoneNumber || !contactInfo.email) {
       alert("Please Phone Number and email in  contact information fields.");
       return;
@@ -112,26 +113,35 @@ const Resume = ({ initialData, user }) => {
     // Consolidate all data
     // Use FormData to handle file uploads along with other data
 
-    if (portfolioFile) {
-      formData.append("portfolioFile", portfolioFile);
-    }
+    const finalExpertise = Object.entries(selectedExpertise)
+      .filter(([key, value]) => value.isSelected) // Only selected categories
+      .map(([key, value]) => ({
+        category: key,
+        subcategories: value.subcategories,
+        processes: value.processes,
+      }));
+      console.log({finalExpertise})
     const body = {
-      portfolioFile,
-      name,
+      cvFileURL,
+      profileImageURL,
+      firstName,
+      lastName,
       description,
       age,
       totalExperienceYears,
       totalExperienceMonths,
       currentlyWorking,
+      currentSalaryCurrency,
+      expectedSalaryCurrency,
       currentSalary,
       expectedSalary,
       languages: languages.map((l) => l.value),
       education,
       experiences,
-      awards,
-      skills: skills.map((s) => s.value),
+      // skills: skills.map((s) => s.value),
       contactInfo,
       socialNetworks,
+      expertise: finalExpertise,
     };
     console.log("Request Body:", body);
 
@@ -142,14 +152,15 @@ const Resume = ({ initialData, user }) => {
         // Update existing resume
         response = await axiosInstance.post("/resume", body);
         toast.success("Resume updated successfully!");
-                window.scroll(0, 0)
-
+        window.scroll(0, 0);
+        setMode("view");
       } else {
         // Create new resume
-        response = await axiosInstance.post("/resume", body, {
-        });
+        response = await axiosInstance.post("/resume", body, {});
         toast.success("Resume saved successfully!");
-        window.scroll(0, 0)
+        window.scroll(0, 0);
+        setMode("view");
+
         setResumeExists(true); // After a successful save, the resume now exists for future edits.
       }
       console.log("Server Response:", response.data);
@@ -164,14 +175,19 @@ const Resume = ({ initialData, user }) => {
     }
   };
 
+  useEffect;
   return (
     <form className="default-form" onSubmit={handleSubmit}>
       <div className="row">
         <div className="form-group col-lg-6 col-md-12">
-          <AddPortfolio onFileSelect={setPortfolioFile} />
+          <AddPortfolio
+            cvFileURL={cvFileURL}
+            setCvFileURL={setCvFileURL}
+            profileImageURL={profileImageURL}
+            setProfileImageURL={setProfileImageURL}
+          />
         </div>
-         <div className="form-group col-lg-6 col-md-12">
-        </div>
+        <div className="form-group col-lg-6 col-md-12"></div>
         {/* <!-- Input --> */}
 
         <div className="form-group col-lg-6 col-md-6">
@@ -222,9 +238,13 @@ const Resume = ({ initialData, user }) => {
           languages={languages}
           setLanguages={setLanguages}
           currentSalary={currentSalary}
+          currentSalaryCurrency={currentSalaryCurrency}
+          setCurrentSalaryCurrency={setCurrentSalaryCurrency}
           setCurrentSalary={setCurrentSalary}
           expectedSalary={expectedSalary}
           setExpectedSalary={setExpectedSalary}
+          expectedSalaryCurrency={expectedSalaryCurrency}
+          setExpectedSalaryCurrency={setExpectedSalaryCurrency}
         />
         <div className="form-group col-lg-12 col-md-12">
           <Education items={education} setItems={setEducation} />
@@ -243,9 +263,17 @@ const Resume = ({ initialData, user }) => {
         </div>
         {/* <!-- End Award --> */}
 
-        <div className="form-group col-lg-6 col-md-12">
+        {/* <div className="form-group col-lg-6 col-md-12">
           <label>Skills </label>
           <SkillsMultiple value={skills} onChange={setSkills} />
+        </div> */}
+        <div className="form-group col-lg-12 col-md-12">
+          <label>EXpertise selection </label>
+          <CandidateExpertiseSelector
+            initialExpertise={initialExpertise}
+            selectedExpertise={selectedExpertise}
+            setSelectedExpertise={setSelectedExpertise}
+          />
         </div>
         {/* <!-- End Skills --> */}
 

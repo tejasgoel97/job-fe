@@ -2,42 +2,56 @@ const SocialNetworkBox = ({ data, onChange }) => {
   return (
     <form className="default-form">
       <div className="row">
-        {/* <!-- Input --> */}
+        {/* Facebook */}
         <div className="form-group col-lg-6 col-md-12">
           <label>Facebook</label>
           <input
             type="text"
             name="facebook"
-            placeholder="www.facebook.com/Invision"
+            placeholder="www.facebook.com/yourprofile"
             value={data.facebook}
             onChange={(e) => onChange("facebook", e.target.value)}
             required
           />
         </div>
 
-        {/* <!-- Input --> */}
+        {/* X (Twitter) */}
         <div className="form-group col-lg-6 col-md-12">
-          <label>Twitter</label>
+          <label>X (Twitter)</label>
           <input
             type="text"
-            name="twitter"
-            placeholder=""
-            value={data.twitter}
-            onChange={(e) => onChange("twitter", e.target.value)}
+            name="x"
+            placeholder="www.x.com/yourhandle"
+            value={data.x}
+            onChange={(e) => onChange("x", e.target.value)}
             required
           />
         </div>
 
-        {/* <!-- Input --> */}
+        {/* Linkedin */}
         <div className="form-group col-lg-6 col-md-12">
-          <label>Linkedin</label>
-          <input type="text" name="linkedin" placeholder="" value={data.linkedin} onChange={(e) => onChange("linkedin", e.target.value)} required />
+          <label>LinkedIn</label>
+          <input
+            type="text"
+            name="linkedin"
+            placeholder="www.linkedin.com/in/yourprofile"
+            value={data.linkedin}
+            onChange={(e) => onChange("linkedin", e.target.value)}
+            required
+          />
         </div>
 
-        {/* <!-- Input --> */}
+        {/* Instagram */}
         <div className="form-group col-lg-6 col-md-12">
-          <label>Google Plus</label>
-          <input type="text" name="googlePlus" placeholder="" value={data.googlePlus} onChange={(e) => onChange("googlePlus", e.target.value)} required />
+          <label>Instagram</label>
+          <input
+            type="text"
+            name="instagram"
+            placeholder="www.instagram.com/yourhandle"
+            value={data.instagram}
+            onChange={(e) => onChange("instagram", e.target.value)}
+            required
+          />
         </div>
       </div>
     </form>

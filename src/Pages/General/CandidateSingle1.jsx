@@ -16,9 +16,9 @@ const metadata = {
   description: "Unicron Apps - Job Portal",
 };
 
-const CandidateSingle1 = () => {
+const CandidateSingle1 = ({candidateId}) => {
   let params = useParams();
-  const id = params.id;
+  const id = candidateId ? candidateId : params.id;
   const candidate = candidates.find((item) => item.id == id) || candidates[0];
   const [resumeData, setResumeData] = useState(null);
   const [loading, setLoading] = useState(true);
