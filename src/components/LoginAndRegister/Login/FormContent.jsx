@@ -1,25 +1,38 @@
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 import useAuthStore from "@/utils/authStoreZusland";
 import axiosInstance from "@/utils/api/axiosInstance";
 
 const FormContent = () => {
-  const navigate = useNavigate(); // For redirecting after login
-  const [userType, setUserType] = useState("candidate");
+  const { login } = useAuthStore();
+  const formTopRef = useRef(null);
+  const [userType, setUserType] = useState(""); // initially none
   const [loading, setLoading] = useState(false);
-
-  // Local state for form inputs
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     rememberMe: false,
   });
 
-  // Zustand store actions
-  const { login } = useAuthStore();
+  useEffect(() => {
+    const storedRole = localStorage.getItem("jp-current-role");
+    if (storedRole) {
+      setUserType("");
+    }
+  }, []);
 
-  // Handle input changes
+  const handleRoleSelect = (role) => {
+    setUserType(role);
+    localStorage.setItem("jp-current-role", role);
+
+    // Scroll to form top
+    if (formTopRef.current) {
+      setTimeout(() => {
+        formTopRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100); // slight delay to ensure DOM update
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -27,194 +40,138 @@ const FormContent = () => {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
-  useEffect(()=>{
-    const currentRole = localStorage.getItem("jp-current-role");
-    if (currentRole) {
-      setUserType(currentRole);
-    }
-    else {
-      localStorage.setItem("jp-current-role", "candidate");
-      setUserType("candidate");
-    }
-  }, [])
-  // Handle form submission
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Start loading
+    setLoading(true);
     try {
-      const response = await axiosInstance.post("/auth/login", {
+      const res = await axiosInstance.post("/auth/login", {
         email: formData.email,
         password: formData.password,
         role: userType,
       });
 
-      const {
-        email,
-        userId,
-        role,
-        capabilities,
-        token,
-        phoneNumber,
-        firstName,
-        lastName,
-      } = response.data;
+      const { email, userId, role, capabilities, token, phoneNumber, firstName, lastName } = res.data;
 
-      login({
-        email,
-        userId,
-        role,
-        capabilities,
-        token,
-        phoneNumber,
-        firstName,
-        lastName,
-      });
+      login({ email, userId, role, capabilities, token, phoneNumber, firstName, lastName });
 
       if (formData.rememberMe) {
         localStorage.setItem("token", token);
       }
 
-      const currentRole = localStorage.getItem("jp-current-role");
-      if (currentRole === "candidate") {
-        window.location.href = "/candidates-dashboard/dashboard";
-      } else if (currentRole === "employer") {
-        window.location.href = "/employers-dashboard/dashboard";
-      } else if (currentRole === "contractor") {
-        window.location.href = "/contractor-dashboard/dashboard";
-      } else {
-        window.location.href = "/";
-      }
-    } catch (error) {
-      console.error("Login error:", error.response?.data || error.message);
-      alert(error.response?.data?.message || "Login failed");
+      const dashboardMap = {
+        candidate: "/candidates-dashboard/dashboard",
+        employer: "/employers-dashboard/dashboard",
+        contractor: "/contractor-dashboard/dashboard",
+      };
+
+      window.location.href = dashboardMap[userType] || "/";
+    } catch (err) {
+      alert(err.response?.data?.message || "Login failed");
     } finally {
-      setLoading(false); // Stop loading in both success/failure
+      setLoading(false);
     }
   };
-  function handleUserTypeChange(newType) {
-    setUserType(newType);
-    localStorage.setItem("jp-current-role", newType);
-  }
+
   return (
     <div className="form-inner">
-      <h3>Login to Superio</h3>
-      <div className="btn-group w-100 mb-3" role="group">
-        <button
-          type="button"
-          className={`btn ${
-            userType === "candidate" ? "btn-primary" : "btn-outline-primary"
-          }`}
-          onClick={() => handleUserTypeChange("candidate")}
-        >
-          Candidate
-        </button>
-        <button
-          type="button"
-          className={`btn ${
-            userType === "employer" ? "btn-primary" : "btn-outline-primary"
-          }`}
-          onClick={() => handleUserTypeChange("employer")}
-        >
-          Employer
-        </button>
-        <button
-          type="button"
-          className={`btn ${
-            userType === "contractor" ? "btn-primary" : "btn-outline-primary"
-          }`}
-          onClick={() => handleUserTypeChange("contractor")}
-        >
-          Contractor
-        </button>
+      {/* Role Selector Always Visible */}
+      <div className="text-center mb-4" ref={formTopRef}>
+        <h4 className="mb-3">Choose your role to continue</h4>
+        <div className="btn-group w-100 mb-4 p-3" role="group">
+          {["candidate", "employer", "contractor"].map((role) => (
+            <button
+              key={role}
+              className={`btn ${userType === role ? "btn-primary" : "btn-outline-primary"} p-3`}
+              onClick={() => handleRoleSelect(role)}
+            >
+              {role.charAt(0).toUpperCase() + role.slice(1)}
+            </button>
+          ))}
+        </div>
       </div>
-      {/* Login Form */}
-      <form method="post" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        {/* Email */}
-        <div className="form-group">
-          <label>Password</label>
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        {/* Password */}
 
-        <div className="form-group">
-          <div className="field-outer">
-            <div className="input-group checkboxes square">
+      {/* Show login form after role selection */}
+      {userType && (
+        <>
+          <h3 className="mb-4">Login as {userType.charAt(0).toUpperCase() + userType.slice(1)}</h3>
+
+          <form method="post" onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>Email</label>
               <input
-                type="checkbox"
-                name="rememberMe"
-                id="remember"
-                checked={formData.rememberMe}
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
                 onChange={handleChange}
+                required
               />
-              <label htmlFor="remember" className="remember">
-                <span className="custom-checkbox"></span> Remember me
-              </label>
             </div>
-            <a href="#" className="pwd">
-              Forgot password?
-            </a>
+
+            <div className="form-group">
+              <label>Password</label>
+              <input
+                type="password"
+                name="password"
+                placeholder="Password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <div className="field-outer">
+                <div className="input-group checkboxes square">
+                  <input
+                    type="checkbox"
+                    name="rememberMe"
+                    id="remember"
+                    checked={formData.rememberMe}
+                    onChange={handleChange}
+                  />
+                  <label htmlFor="remember" className="remember">
+                    <span className="custom-checkbox"></span> Remember me
+                  </label>
+                </div>
+                <a href="#" className="pwd">Forgot password?</a>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <button
+                className="theme-btn btn-style-one"
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? (
+                  <>
+                    <span className="spinner-border spinner-border-sm me-2" role="status" />
+                    Logging in...
+                  </>
+                ) : (
+                  "Log In"
+                )}
+              </button>
+            </div>
+          </form>
+
+          <div className="bottom-box text-center">
+            <div className="text">
+              Don't have an account?{" "}
+              <Link
+                to="#"
+                className="call-modal signup"
+                data-bs-toggle="modal"
+                data-bs-target="#registerModal"
+              >
+                Signup
+              </Link>
+            </div>
           </div>
-        </div>
-        {/* Remember me & Forgot password */}
-
-        <div className="form-group">
-          <button
-            className="theme-btn btn-style-one"
-            type="submit"
-            name="log-in"
-            disabled={loading}
-            aria-label="Log In"
-          >
-            {loading ? (
-              <>
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  role="status"
-                  aria-hidden="true"
-                ></span>
-                Logging in...
-              </>
-            ) : (
-              "Log In"
-            )}
-          </button>
-        </div>
-        {/* Login button */}
-      </form>
-      {/* End form */}
-
-      <div className="bottom-box">
-        <div className="text">
-          Don't have an account?{" "}
-          <Link
-            to="#"
-            className="call-modal signup"
-            data-bs-toggle="modal"
-            data-bs-target="#registerModal"
-          >
-            Signup
-          </Link>
-        </div>
-      </div>
-      {/* End bottom-box */}
+        </>
+      )}
     </div>
   );
 };

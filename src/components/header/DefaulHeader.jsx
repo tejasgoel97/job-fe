@@ -56,7 +56,7 @@ const DefaulHeader = () => {
               href="#"
               className="theme-btn btn-style-three call-modal"
               data-bs-toggle="modal"
-              data-bs-target="#loginPopupModal"
+              data-bs-target="#askPopupModal"
             >
               Login / Register
             </a>

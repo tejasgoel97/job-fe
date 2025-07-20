@@ -57,7 +57,7 @@ const Header = () => {
                 href="#"
                 className="theme-btn btn-style-six call-modal"
                 data-bs-toggle="modal"
-                data-bs-target="#loginPopupModal"
+                data-bs-target="#askPopupModal"
               >
                 Login / Register
               </a>
