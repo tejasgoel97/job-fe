@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Select from "react-select";
 import axios from "axios";
+import KeyProductsInput from "./KeyProductsInput";
 
 const castingOptions = [
   { value: "Sand Casting", label: "Sand Casting" },
@@ -18,8 +19,8 @@ const FormInfoBox = ({ formData, setFormData, errors = {} }) => {
   const handleCastingChange = (selectedOptions) => {
     setFormData({ ...formData, typeOfCasting: selectedOptions });
   };
-  console.log(errors)
-  console.log(errors.contactNumber)
+  console.log(errors);
+  console.log(errors.contactNumber);
   return (
     <div className="default-form">
       <div className="row">
@@ -35,7 +36,9 @@ const FormInfoBox = ({ formData, setFormData, errors = {} }) => {
             required
           />
           {errors.companyName && (
-            <div style={{ color: "red", marginTop: "5px" }}>{errors.companyName}</div>
+            <div style={{ color: "red", marginTop: "5px" }}>
+              {errors.companyName}
+            </div>
           )}
         </div>
 
@@ -96,7 +99,9 @@ const FormInfoBox = ({ formData, setFormData, errors = {} }) => {
             required
           />
           {errors.contactNumber && (
-            <div style={{ color: "red", marginTop: "5px" }}>{errors.contactNumber}</div>
+            <div style={{ color: "red", marginTop: "5px" }}>
+              {errors.contactNumber}
+            </div>
           )}
         </div>
         <div className="form-group col-lg-6 col-md-12">
@@ -158,31 +163,8 @@ const FormInfoBox = ({ formData, setFormData, errors = {} }) => {
             placeholder="e.g., 1995"
           />
         </div>
-
-        {/* ISO Certifications */}
-        <div className="form-group col-lg-12 col-md-12">
-          <label>ISO Certification Details</label>
-          <textarea
-            name="isoCertifications"
-            value={formData.isoCertifications}
-            onChange={handleChange}
-            placeholder="Enter ISO Certification details"
-          />
-        </div>
-
-        {/* Key Products */}
-        <div className="form-group col-lg-12 col-md-12">
-          <label>Key Products</label>
-          <textarea
-            name="keyProducts"
-            value={formData.keyProducts}
-            onChange={handleChange}
-            placeholder="Enter Key Products"
-          />
-        </div>
-
-        {/* Website */}
-        <div className="form-group col-lg-12 col-md-12">
+                  {/* Website */}
+        <div className="form-group col-lg-6 col-md-12">
           <label>Website</label>
           <input
             type="text"
@@ -192,6 +174,25 @@ const FormInfoBox = ({ formData, setFormData, errors = {} }) => {
             placeholder="Enter website URL"
           />
         </div>
+        {/* ISO Certifications
+        <div className="form-group col-lg-12 col-md-12">
+          <label>ISO Certification Details</label>
+          <textarea
+            name="isoCertifications"
+            value={formData.isoCertifications}
+            onChange={handleChange}
+            placeholder="Enter ISO Certification details"
+          />
+        </div> */}
+
+        {/* Key Products */}
+        <KeyProductsInput
+          keyProducts={formData.keyProducts}
+          setKeyProducts={(newProducts) =>
+            setFormData({ ...formData, keyProducts: newProducts })
+          }
+        />
+
       </div>
     </div>
   );

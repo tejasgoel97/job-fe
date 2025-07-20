@@ -17,7 +17,7 @@ const useCompanyInfoForm = () => {
     manufacturingCapacity: "",
     yearOfEstablishment: "",
     isoCertifications: "",
-    keyProducts: "",
+    keyProducts: [""],
     website: "",
   });
 
@@ -33,11 +33,12 @@ const useCompanyInfoForm = () => {
 
   const [socialData, setSocialData] = useState({
     facebook: "https://www.facebook.com/",
-    twitter: "https://www.facebook.com/",
+    x: "https://www.facebook.com/",
     linkedin: "https://www.facebook.com/",
     instagram: "https://www.facebook.com/",
   });
-
+  const [companyLogo, setCompanyLogo] = useState("");
+  const [companyPhotos, setCompanyPhotos] = useState({})
   const [errors, setErrors] = useState({});
   const [companyId, setCompanyId] = useState("");
   const [compnayVerifiedToUser, setCompanyVerifiedToUser] = useState(false);
@@ -45,7 +46,7 @@ const useCompanyInfoForm = () => {
   const [selectedExpertise, setSelectedExpertise] =useState([])
   const [initialExpertise, setInitialExpertise] = useState([])
   const [loadingCompanyInfo, setLoadingCompanyInfo] = useState(true);
-
+  
       const fetchCompanyInfo = async () => {
           setLoadingCompanyInfo(true);
 
@@ -55,13 +56,15 @@ const useCompanyInfoForm = () => {
           setCompanyId(false);
           return;
         }
-        const { infoData, contactData, socialData, compayVerifiedToUser, _id: companyId, expertise } = res.data.company; // Assuming structure remains the same
+        const { infoData, contactData, socialData, compayVerifiedToUser, _id: companyId, expertise, companyPhotos={}, companyLogo } = res.data.company; // Assuming structure remains the same
         setInfoData(infoData);
         setContactData(contactData);
         setSocialData(socialData);
         setCompanyId(companyId);
         setInitialExpertise(expertise);
         setCompanyVerifiedToUser(compayVerifiedToUser);
+        setCompanyPhotos(companyPhotos)
+        setCompanyLogo(companyLogo)
       } catch (error) {
         console.log("No existing company found or failed to fetch.");
         setCompanyId(false);
@@ -74,7 +77,7 @@ const useCompanyInfoForm = () => {
 
     fetchCompanyInfo();
   }, []);
-
+console.log("CompayLogo", companyLogo)
   const validateForm = () => {
     const newErrors = {};
 
@@ -131,6 +134,7 @@ const useCompanyInfoForm = () => {
       }));
       console.log({finalExpertise})
     const payload = {
+      companyLogo, companyPhotos,
       infoData,
       contactData,
       socialData,
@@ -144,11 +148,13 @@ const useCompanyInfoForm = () => {
         fetchCompanyInfo();
       } else {
         await axiosInstance.post("/company/create-company-info", payload);
-        alert("Company Information Created Successfully!");
+        toast.success("Company Information Created Successfully!");
                 fetchCompanyInfo();
 
       }
-
+setTimeout(() => {
+  window.location.reload();
+}, 500); // slight delay to allow toast to show
       return true;
     } catch (error) {
       console.error("Error submitting company info:", error);
@@ -184,6 +190,10 @@ const useCompanyInfoForm = () => {
     setContactData,
     socialData,
     setSocialData,
+    companyLogo,
+    companyPhotos,
+    setCompanyPhotos,
+    setCompanyLogo,
     selectedExpertise,
     setSelectedExpertise,
     initialExpertise,

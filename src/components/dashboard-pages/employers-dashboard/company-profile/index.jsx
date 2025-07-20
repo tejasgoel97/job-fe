@@ -17,6 +17,10 @@ const index = () => {
     socialData,
     setSocialData,
     isExistingCompany,
+    companyLogo,
+    setCompanyLogo,
+    companyPhotos,
+    setCompanyPhotos,
     errors,
     handleSubmit,
   } = useCompanyInfoForm();

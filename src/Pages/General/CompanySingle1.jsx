@@ -17,8 +17,10 @@ const metadata = {
   description: "Unicron Apps - Job Portal",
 };
 
-const CompanySingle1 = () => {
-  const { id } = useParams();
+const CompanySingle1 = ({companyId}) => {
+  let id = companyId;
+  if(!companyId)  id  = useParams().id
+
   const [company, setCompany] = useState(null); // Initialize as null
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -86,7 +88,7 @@ const CompanySingle1 = () => {
     <>
     <MetaComponent meta={metadata} />
       {/* <!-- Header Span --> */}
-      <span className="header-span"></span>
+      {/* <span className="header-span"></span> */}
 
       {/* End MobileMenu */}
 

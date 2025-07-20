@@ -13,6 +13,8 @@ import axiosInstance from "@/utils/api/axiosInstance";
 import { info } from "sass";
 import DashboardEmployerSidebar from "@/components/header/DashboardEmployerSidebar";
 import DashboardHeader from "@/components/header/DashboardHeader";
+import { toast } from "react-toastify";
+import CompanySingle1 from "@/Pages/General/CompanySingle1";
 
 const index = ({ role = "employer" }) => {
   const {
@@ -22,6 +24,10 @@ const index = ({ role = "employer" }) => {
     setContactData,
     socialData,
     setSocialData,
+        companyLogo,
+    setCompanyLogo,
+    companyPhotos,
+    setCompanyPhotos,
     selectedExpertise,
     setSelectedExpertise,
     initialExpertise,
@@ -38,6 +44,7 @@ const index = ({ role = "employer" }) => {
   const [mode, setMode] = useState("initial"); // initial | choose | form | status
   const [companyList, setCompanyList] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState(null);
+const [isEditing, setIsEditing] = useState(false);
 
   {
     /*
@@ -67,11 +74,11 @@ const index = ({ role = "employer" }) => {
         setCompanyList([res.data.company]);
         setMode("choose");
       } else {
-        alert("No companies found with this GST.");
+        toast.error(res?.data?.message || "Something went wrong");
       }
     } catch (err) {
       console.error("Error fetching companies", err);
-      alert("Something went wrong.");
+        toast.error("Offline or Something went wrong");
     }
   };
 
@@ -139,6 +146,10 @@ const index = ({ role = "employer" }) => {
             setContactData={setContactData}
             socialData={socialData}
             setSocialData={setSocialData}
+            companyLogo={companyLogo}
+            setCompanyLogo={setCompanyLogo}
+            companyPhotos={companyPhotos}
+            setCompanyPhotos={setCompanyPhotos}
             selectedExpertise={selectedExpertise}
             setSelectedExpertise={setSelectedExpertise}
             initialExpertise={initialExpertise}
@@ -153,6 +164,8 @@ const index = ({ role = "employer" }) => {
             handleConfirmCompany={handleConfirmCompany}
             linkingLoading={linkingLoading}
             compnayVerifiedToUser={compnayVerifiedToUser}
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
           />
           {/* End .row */}
         </div>
@@ -181,6 +194,10 @@ const ContentRenderer = ({
   setContactData,
   socialData,
   setSocialData,
+      companyLogo,
+    setCompanyLogo,
+    companyPhotos,
+    setCompanyPhotos,
   initialExpertise,
   selectedExpertise,
   setSelectedExpertise,
@@ -193,6 +210,7 @@ const ContentRenderer = ({
   handleConfirmCompany,
   linkingLoading,
   compnayVerifiedToUser,
+  isEditing, setIsEditing
 }) => {
   return (
     <div className="widget-content">
@@ -252,8 +270,40 @@ const ContentRenderer = ({
           </button>
         </div>
       )}
-      {mode === "form" && (
-        <form onSubmit={onSubmit}>
+      {mode === "form" && !isEditing && (
+  <div className="text-right">
+    <button
+      className="btn btn-outline-primary"
+      type="button"
+      onClick={()=> setIsEditing((prev) => !prev)}
+      disabled={linkingLoading}
+    >
+      <span className="ml-3 flex items-center" style={{ fontWeight: 500 }}>
+        <i
+          className="flaticon-pencil"
+          style={{ fontSize: 20, marginRight: 8 }}
+        />
+        Edit
+      </span>
+    </button>
+  </div>
+)}
+{mode === "form" && (
+  <>
+    {!isEditing ? (
+      <>
+        <CompanySingle1
+            companyId={companyId}
+
+        />
+        <div className="mt-3">
+          <button className="btn btn-primary" onClick={() => setIsEditing(true)}>
+            Edit Company
+          </button>
+        </div>
+      </>
+    ) : (
+              <form onSubmit={onSubmit}>
           <div className="row">
             <div className="col-lg-12">
               <div className="ls-widget">
@@ -269,6 +319,10 @@ const ContentRenderer = ({
                     selectedExpertise={selectedExpertise}
                     setSelectedExpertise={setSelectedExpertise}
                     initialExpertise={initialExpertise}
+                    companyPhotos={companyPhotos}
+                    setCompanyPhotos={setCompanyPhotos}
+                    companyLogo={companyLogo}
+                    setCompanyLogo={setCompanyLogo}
                     errors={errors}
                   />
                 </div>
@@ -328,7 +382,10 @@ const ContentRenderer = ({
             </div>
           </div>
         </form>
-      )}
+    )}
+  </>
+)}
+
 
       {mode === "status" && (
         <div className="alert alert-info mt-3">
