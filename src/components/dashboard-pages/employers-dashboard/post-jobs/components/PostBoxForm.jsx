@@ -5,6 +5,8 @@ import ExpertiseSection from "./ExpertiseSection";
 import JobAndContractExpertiseSelector from "@/components/dashboard-pages/comman/job-contract-expertise-selector/JobAndContractExpertiseSelector";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import SalaryRanges from "./SalaryRanges";
+import KeyResponsibilitiesInput from "./KeyResponsibilitiesInput ";
 
 const salaryRangesOptions = [
   { value: "30000-40000", label: "$30,000 - $40,000" },
@@ -57,16 +59,23 @@ const jobTitleOptions = [
   "Other",
 ];
 
-const PostBoxForm = ({ jobId, mode="new", initialData={} }) => {
+const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
   const [formData, setFormData] = useState({});
 
   const [selectedExpertise, setSelectedExpertise] = useState([]);
   const [jobTitle, setJobTitle] = useState("");
   const [customJobTitle, setCustomJobTitle] = useState("");
   const [department, setDepartment] = useState("");
+  const [fromSalary, setFromSalary] = useState("");
+  const [toSalary, setToSalary] = useState("");
+  const [keyResponsibilities, setKeyResponsibilities] = useState([""]);
+  const [salaryCurrency, setSalaryCurrency] = useState("");
+  const [fromSalaryINR, setFromSalaryINR] = useState("");
+  const [toSalaryINR, setToSalaryINR] = useState("");
+
   const [loading, setLoading] = useState(false);
   const { user } = useAuthStore();
-            const navigate = useNavigate();
+  const navigate = useNavigate();
 
   // Foundry-specific dropdown options
   useEffect(() => {
@@ -74,7 +83,7 @@ const PostBoxForm = ({ jobId, mode="new", initialData={} }) => {
       setFormData({
         description: initialData.description || "",
         jobType: initialData.jobType || "",
-        qualification: initialData.qualification || "",
+        // qualification: initialData.qualification || "",
         minExperience: initialData.minExperience || "",
         salaryFrom: initialData.salaryFrom || "",
         salaryTo: initialData.salaryTo || "",
@@ -250,7 +259,10 @@ const PostBoxForm = ({ jobId, mode="new", initialData={} }) => {
             onChange={handleInputChange}
           />
         </div>
-
+        <KeyResponsibilitiesInput
+          keyResponsibilities={keyResponsibilities}
+          setKeyResponsibilities={setKeyResponsibilities}
+        />
         <div className="form-group col-lg-6 col-md-12">
           <label>Job Type</label>
           <select
@@ -267,7 +279,7 @@ const PostBoxForm = ({ jobId, mode="new", initialData={} }) => {
           </select>
         </div>
 
-        <div className="form-group col-lg-6 col-md-12">
+        {/* <div className="form-group col-lg-6 col-md-12">
           <label>Qualification</label>
           <Select
             name="qualification"
@@ -279,10 +291,24 @@ const PostBoxForm = ({ jobId, mode="new", initialData={} }) => {
             )}
             onChange={handleSelectChange("qualification")}
           />
-        </div>
+        </div> */}
 
         {/* Salary Range */}
-        <div className="form-group col-lg-6 col-md-12">
+
+        <SalaryRanges
+          fromSalary={fromSalary}
+          toSalary={toSalary}
+          salaryCurrency={salaryCurrency}
+          setSalaryCurrency={setSalaryCurrency}
+          setFromSalary={setFromSalary}
+          setToSalary={setToSalary}
+
+          fromSalaryINR={fromSalaryINR}
+          toSalaryINR={toSalaryINR}
+          setFromSalaryINR={setFromSalaryINR}
+          setToSalaryINR={setToSalaryINR}
+        />
+        {/* <div className="form-group col-lg-6 col-md-12">
           <label>Salary Range (Monthly)</label>
           <div className="row">
             <div className="col-6">
@@ -324,7 +350,7 @@ const PostBoxForm = ({ jobId, mode="new", initialData={} }) => {
               </select>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Experience */}
         <div className="form-group col-lg-6 col-md-12">
@@ -336,9 +362,13 @@ const PostBoxForm = ({ jobId, mode="new", initialData={} }) => {
             onChange={handleInputChange}
           >
             <option value="">Select</option>
-            {[...Array(11)].map((_, i) => (
+            {[...Array(36)].map((_, i) => (
               <option key={i} value={i === 10 ? "10+" : i}>
-                {i === 10 ? "10+ years" :i===0 ? "Fresher" : `${i} year${i !== 1 ? "s" : ""}`}
+                {i === 10
+                  ? "10+ years"
+                  : i === 0
+                  ? "Fresher"
+                  : `${i} year${i !== 1 ? "s" : ""}`}
               </option>
             ))}
           </select>

@@ -35,7 +35,7 @@ const index = ({ jobId, mode, initialData }) => {
                   </div>
 
                   <div className="widget-content">
-                    <PostJobSteps />
+                    {/* <PostJobSteps /> */}
                     {/* End job steps form */}
                     <PostBoxForm
                       initialData={initialData}
