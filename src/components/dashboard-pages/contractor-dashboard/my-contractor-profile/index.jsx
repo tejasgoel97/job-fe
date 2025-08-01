@@ -14,6 +14,7 @@ const index = () => {
       const [initialLoading, setInitialLoading] = useState(true);
     const [contractorProfile, setContractorProfile] = useState(null);
     const {user} = useAuthStore();
+    console.log({user})
   useEffect(() => {
     const fetchcontractorProfile = async () => {
       try {

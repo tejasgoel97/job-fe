@@ -104,11 +104,11 @@ const OtherDetails = (props) => {
 
       {/* Total Experience (Months) */}
       <div className="form-group col-lg-4 col-md-12">
-        <label>Total Experience (Months)</label>
+        <label>Total Experience (Years)</label>
         <input
           type="number"
           name="experienceMonths"
-          placeholder=""
+          placeholder="Eg.1.6"
           value={totalExperienceMonths}
           onChange={(e) => setTotalExperienceMonths(e.target.value)}
         />
@@ -206,6 +206,18 @@ const OtherDetails = (props) => {
           options={languageOptions}
           className="basic-multi-select"
           classNamePrefix="select"
+           styles={{
+    menuPortal: base => ({ ...base, zIndex: 9999 }),
+ menu: (base) => ({
+    ...base,
+    backgroundColor: '#f5f5f5',
+  }),
+  option: (base, state) => ({
+    ...base,
+    backgroundColor: state.isFocused ? '#1976d2' : '#f5f5f5',
+    color: state.isFocused ? '#fff' : '#333',
+  }),
+  }}
         />
       </div>
     </>

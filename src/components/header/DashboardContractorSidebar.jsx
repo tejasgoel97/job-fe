@@ -21,13 +21,13 @@ export let contractorMenuData  = [
     routePath: "/contractor-dashboard/my-profile",
     active: "",
   },
-  {
-    id: 3,
-    name: "My Company",
-    icon: "la la-file-invoice",
-    routePath: "/contractor-dashboard/my-company",
-    active: "",
-  },
+  // {
+  //   id: 3,
+  //   name: "My Company",
+  //   icon: "la la-file-invoice",
+  //   routePath: "/contractor-dashboard/my-company",
+  //   active: "",
+  // },
   {
     id: 4,
     name: "Applied Contracts",

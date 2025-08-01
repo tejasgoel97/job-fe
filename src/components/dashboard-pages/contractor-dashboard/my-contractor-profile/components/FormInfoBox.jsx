@@ -1,16 +1,75 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Select from "react-select";
+import PhotoUpload from "./PhotoUpload";
+import SafetyConditionSection from "./SafetyCondition";
 
-const FormInfoBox = ({name, setName, lastCompanies, setLastCompanies, strengths, setStrengths, weaknesses, setWeaknesses, safetyConditions, setSafetyConditions, photos, setPhotos, photoPreviews, setPhotoPreviews, socialMedia, setSocialMedia}) => {
+const monthOptions = [
+  { value: "01", label: "January" },
+  { value: "02", label: "February" },
+  { value: "03", label: "March" },
+  { value: "04", label: "April" },
+  { value: "05", label: "May" },
+  { value: "06", label: "June" },
+  { value: "07", label: "July" },
+  { value: "08", label: "August" },
+  { value: "09", label: "September" },
+  { value: "10", label: "October" },
+  { value: "11", label: "November" },
+  { value: "12", label: "December" },
+];
+
+const getYearOptions = () => {
+  const currentYear = new Date().getFullYear();
+  return Array.from({ length: 50 }, (_, i) => {
+    const year = currentYear - i;
+    return { value: String(year), label: String(year) };
+  });
+};
+
+const contractTypeOptions = [
+  { value: "Full-Time", label: "Full-Time" },
+  { value: "Part-Time", label: "Part-Time" },
+  { value: "Contractual", label: "Contractual" },
+];
+
+const calculateWorkDuration = (fromMonth, fromYear, toMonth, toYear) => {
+  try {
+    const start = new Date(`${fromYear}-${fromMonth}-01`);
+    const end = new Date(`${toYear}-${toMonth}-01`);
+    const months =
+      (end.getFullYear() - start.getFullYear()) * 12 +
+      (end.getMonth() - start.getMonth());
+    const years = Math.floor(months / 12);
+    const remMonths = months % 12;
+    return `${years} year(s), ${remMonths} month(s)`;
+  } catch {
+    return "";
+  }
+};
+
+const FormInfoBox = ({
+  firstName,
+  lastName,
+  setName,
+  lastCompanies,
+  setLastCompanies,
+  strengths,
+  setStrengths,
+  weaknesses,
+  setWeaknesses,
+  safetyConditions,
+  setSafetyConditions,
+  photos,
+  setPhotos,
+
+  socialMedia,
+  setSocialMedia,
+}) => {
+  const [hasGST, setHasGST] = useState(false);
+  const [gstNumber, setGstNumber] = useState("");
+  const [companyName, setCompanyName] = useState("");
 
 
-  const handlePhotoChange = (e) => {
-    const files = Array.from(e.target.files);
-    setPhotos(files);
-
-    const previews = files.map((file) => URL.createObjectURL(file));
-    setPhotoPreviews(previews);
-  };
 
   const handleCompanyChange = (index, field, value) => {
     const updated = [...lastCompanies];
@@ -21,7 +80,15 @@ const FormInfoBox = ({name, setName, lastCompanies, setLastCompanies, strengths,
   const addCompany = () => {
     setLastCompanies([
       ...lastCompanies,
-      { companyName: "", yearWorked: "", description: "" },
+      {
+        companyName: "",
+        fromMonth: "",
+        fromYear: "",
+        toMonth: "",
+        toYear: "",
+        description: "",
+        contractType: "",
+      },
     ]);
   };
 
@@ -31,19 +98,53 @@ const FormInfoBox = ({name, setName, lastCompanies, setLastCompanies, strengths,
     setLastCompanies(updated);
   };
 
-
   return (
-    <form className="default-form" >
+    <form className="default-form">
       <div className="row">
-        {/* Name */}
+        {/* Contractor Name */}
         <div className="form-group col-lg-6 col-md-12">
           <label>Contractor Name</label>
           <input
             type="text"
             placeholder="Enter your name"
-            value={name}
+            value={firstName + " " + lastName || ""}
             onChange={(e) => setName(e.target.value)}
             required
+            disabled
+          />
+        </div>
+    <SafetyConditionSection/>
+        {/* Do you have GST? */}
+        <div className="form-group col-lg-6 col-md-12">
+          <label>Do you have GST?</label>
+          <div className="d-flex align-items-center gap-2">
+            <input
+              type="checkbox"
+              checked={hasGST}
+              onChange={(e) => setHasGST(e.target.checked)}
+            />
+            <span>Yes</span>
+          </div>
+          {hasGST && (
+            <input
+              type="text"
+              className="form-control mt-2"
+              value={gstNumber}
+              onChange={(e) => setGstNumber(e.target.value)}
+              placeholder="Enter GST Number"
+            />
+          )}
+        </div>
+
+        {/* Enter Company Name */}
+        <div className="form-group col-12">
+          <label>Company Name</label>
+          <input
+            type="text"
+            value={companyName}
+            onChange={(e) => setCompanyName(e.target.value)}
+            placeholder="e.g., XYZ Enterprises"
+            className="form-control"
           />
         </div>
 
@@ -60,22 +161,83 @@ const FormInfoBox = ({name, setName, lastCompanies, setLastCompanies, strengths,
                   onChange={(e) =>
                     handleCompanyChange(index, "companyName", e.target.value)
                   }
+                  className="form-control"
                   placeholder="e.g., ABC Pvt Ltd"
-                  className="form-control"
                 />
               </div>
+
+              <div className="row">
+                <div className="form-group col-md-3">
+                  <label>From Month</label>
+                  <Select
+                    options={monthOptions}
+                    value={monthOptions.find((opt) => opt.value === company.fromMonth)}
+                    onChange={(option) =>
+                      handleCompanyChange(index, "fromMonth", option.value)
+                    }
+                  />
+                </div>
+                <div className="form-group col-md-3">
+                  <label>From Year</label>
+                  <Select
+                    options={getYearOptions()}
+                    value={getYearOptions().find((opt) => opt.value === company.fromYear)}
+                    onChange={(option) =>
+                      handleCompanyChange(index, "fromYear", option.value)
+                    }
+                  />
+                </div>
+                <div className="form-group col-md-3">
+                  <label>To Month</label>
+                  <Select
+                    options={monthOptions}
+                    value={monthOptions.find((opt) => opt.value === company.toMonth)}
+                    onChange={(option) =>
+                      handleCompanyChange(index, "toMonth", option.value)
+                    }
+                  />
+                </div>
+                <div className="form-group col-md-3">
+                  <label>To Year</label>
+                  <Select
+                    options={getYearOptions()}
+                    value={getYearOptions().find((opt) => opt.value === company.toYear)}
+                    onChange={(option) =>
+                      handleCompanyChange(index, "toYear", option.value)
+                    }
+                  />
+                </div>
+              </div>
+
+              {/* Duration Calculation */}
+              {company.fromMonth &&
+                company.fromYear &&
+                company.toMonth &&
+                company.toYear && (
+                  <p className="mt-2 text-muted">
+                    Duration:{" "}
+                    {calculateWorkDuration(
+                      company.fromMonth,
+                      company.fromYear,
+                      company.toMonth,
+                      company.toYear
+                    )}
+                  </p>
+              )}
+
               <div className="form-group">
-                <label>Year Worked</label>
-                <input
-                  type="text"
-                  value={company.yearWorked}
-                  onChange={(e) =>
-                    handleCompanyChange(index, "yearWorked", e.target.value)
+                <label>Contract Type</label>
+                <Select
+                  options={contractTypeOptions}
+                  value={contractTypeOptions.find(
+                    (opt) => opt.value === company.contractType
+                  )}
+                  onChange={(option) =>
+                    handleCompanyChange(index, "contractType", option.value)
                   }
-                  placeholder="e.g., 2015-2020"
-                  className="form-control"
                 />
               </div>
+
               <div className="form-group">
                 <label>Description</label>
                 <textarea
@@ -83,10 +245,11 @@ const FormInfoBox = ({name, setName, lastCompanies, setLastCompanies, strengths,
                   onChange={(e) =>
                     handleCompanyChange(index, "description", e.target.value)
                   }
-                  placeholder="Brief description of work"
                   className="form-control"
+                  placeholder="Brief description of work"
                 />
               </div>
+
               {lastCompanies.length > 1 && (
                 <button
                   type="button"
@@ -107,8 +270,6 @@ const FormInfoBox = ({name, setName, lastCompanies, setLastCompanies, strengths,
           </button>
         </div>
 
-        {/* Strengths */}
-        {/* Strengths */}
         <div className="form-group col-lg-12 col-md-12">
           <label>Your Strengths</label>
           {strengths.map((item, index) => (
@@ -228,28 +389,7 @@ const FormInfoBox = ({name, setName, lastCompanies, setLastCompanies, strengths,
         </div>
 
         {/* Photo Upload */}
-        <div className="form-group col-lg-12 col-md-12">
-          <label>Upload Photos</label>
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handlePhotoChange}
-            className="form-control"
-          />
-          <div className="d-flex flex-wrap gap-3 mt-2">
-            {photoPreviews.map((src, index) => (
-              <img
-                key={index}
-                src={src}
-                alt={`Preview ${index}`}
-                width={100}
-                height={100}
-                style={{ objectFit: "cover", borderRadius: "8px" }}
-              />
-            ))}
-          </div>
-        </div>
+<PhotoUpload photos={photos} setPhotos={setPhotos}/>
 
         {/* Social Media Links */}
         <div className="form-group col-lg-4 col-md-12">
@@ -284,10 +424,7 @@ const FormInfoBox = ({name, setName, lastCompanies, setLastCompanies, strengths,
             }
             placeholder="Facebook profile URL"
           />
-        </div>
-
-      
-      </div>
+        </div>      </div>
     </form>
   );
 };

@@ -75,18 +75,20 @@ const candidatesuData = [
     active: "",
   },
 
-  {
-    id: 12,
-    name: "Delete Profile",
-    icon: "la-trash",
-    routePath: "/",
-    active: "",
-  },
+  // {
+  //   id: 12,
+  //   name: "Delete Profile",
+  //   icon: "la-trash",
+  //   routePath: "/",
+  //   active: "",
+  // },
 ];
 import { useLocation } from "react-router-dom";
+import useAuthStore from "@/utils/authStoreZusland";
 const DashboardCandidatesHeader = () => {
   const { pathname } = useLocation();
   const [navbar, setNavbar] = useState(false);
+  const { logout, user } = useAuthStore();
 
   const changeBackground = () => {
     if (window.scrollY >= 0) {

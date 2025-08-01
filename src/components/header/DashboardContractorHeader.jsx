@@ -10,10 +10,12 @@ import { isActiveLink } from "../../utils/linkActiveChecker";
 import { useLocation } from "react-router-dom";
 import { contractorMenuData } from "./DashboardContractorSidebar";
 import NewHeaderNavContent from "./NewHeaderNavContent";
+import useAuthStore from "@/utils/authStoreZusland";
 const DashboardContractorHeader = () => {
     const { pathname } = useLocation();
     const [navbar, setNavbar] = useState(false);
 
+  const { logout, user } = useAuthStore();
 
 
     const changeBackground = () => {
@@ -109,6 +111,11 @@ const DashboardContractorHeader = () => {
                                         </Link>
                                     </li>
                                 ))}
+                                                <li className={` mb-1`} key={"item.id"}>
+                                                  <Link to={"/"} onClick={() => logout()}>
+                                                    <i className={`la la-sign-out`}></i> {"Logout"}
+                                                  </Link>
+                                                </li>
                             </ul>
                         </div>
                         {/* End dropdown */}

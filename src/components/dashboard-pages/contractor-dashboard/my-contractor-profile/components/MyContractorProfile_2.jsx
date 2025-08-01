@@ -9,8 +9,10 @@ const Index = ({ initialData, user }) => {
   console.log({ initialData });
   const [submitLoading, setSubmitLoading] = useState(false);
   const [profileExists, setProfileExists] = useState(!!initialData);
-
+  const [companyLogo, setCompanyLogo] = useState(initialData?.companyLogo || "");
   const [name, setName] = useState(initialData?.name || "");
+  const [firstName, setFirstName] = useState(user.firstName || "");
+  const [lastName, setLastName] = useState(user.lastName || "");
   const [lastCompanies, setLastCompanies] = useState(
     initialData?.lastCompanies || [
       { companyName: "", yearWorked: "", description: "" },
@@ -113,11 +115,13 @@ const Index = ({ initialData, user }) => {
 
   return (
     <div className="widget-content">
-      <LogoUpload />
+      <LogoUpload companyLogo={companyLogo} setCompanyLogo={setCompanyLogo}/>
 
       <FormInfoBox
         name={name}
         setName={setName}
+        firstName={firstName}
+        lastName={lastName}
         lastCompanies={lastCompanies}
         setLastCompanies={setLastCompanies}
         strengths={strengths}
@@ -134,6 +138,7 @@ const Index = ({ initialData, user }) => {
         setSocialMedia={setSocialNetworks}
         contactInfo={contactInfo}
         setContactInfo={setContactInfo}
+
       />
 
       <div className="ls-widget">

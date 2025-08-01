@@ -13,10 +13,11 @@ const index = ({ infoData, setInfoData,    companyLogo,
     <div className="widget-content">
       <LogoUpload companyLogo={companyLogo} setCompanyLogo={setCompanyLogo} />
       {/* End logo and cover photo components */}
-      <ImagesUploadSection companyPhotos={companyPhotos} setCompanyPhotos={setCompanyPhotos} />
       <FormInfoBox formData={infoData} setFormData={setInfoData} errors={errors} />
       {/* compnay info box */}
       <CompanyExpertiseSelector initialExpertise={initialExpertise} selectedExpertise={selectedExpertise} setSelectedExpertise={setSelectedExpertise}/>
+            <ImagesUploadSection companyPhotos={companyPhotos} setCompanyPhotos={setCompanyPhotos} />
+
     </div>
   );
 };
