@@ -4,7 +4,7 @@ import MyResume from "@/components/dashboard-pages/candidates-dashboard/my-resum
 import MetaComponent from "@/components/common/MetaComponent";
 
 const metadata = {
-  title: "My Resume || Unicron Apps - Job Portal",
+  title: "My Profile || Unicron Apps - Job Portal",
   description: "Unicron Apps - Job Portal",
 };
 

@@ -1,75 +1,96 @@
-
 import candidates from "@/data/candidates";
-
 import GalleryBox from "@/components/candidates-single-pages/shared-components/GalleryBox";
 import Social from "@/components/candidates-single-pages/social/Social";
 import JobSkills from "@/components/candidates-single-pages/shared-components/JobSkills";
-import {useParams } from "react-router-dom";
-
+import { useParams, Link } from "react-router-dom";
 import MetaComponent from "@/components/common/MetaComponent";
 import { useEffect, useState } from "react";
 import axiosInstance from "@/utils/api/axiosInstance";
 
 const metadata = {
-  title:
-    "Candidate Single Dyanmic V3 || Unicron Apps - Job Portal",
+  title: "Candidate Single Dynamic V3 || Unicron Apps - Job Portal",
   description: "Unicron Apps - Job Portal",
 };
 
-const CandidateSingle1 = ({candidateId}) => {
+const CandidateSingle1 = ({ candidateId }) => {
   let params = useParams();
   const id = candidateId ? candidateId : params.id;
   const candidate = candidates.find((item) => item.id == id) || candidates[0];
   const [resumeData, setResumeData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-useEffect(() => {
+
+  useEffect(() => {
     if (id) {
       const fetchResumeData = async () => {
         setLoading(true);
         setError(null);
         try {
           const response = await axiosInstance.get(`/resume/${id}`);
-
-          let data = response.data
-          // Simulating API call with the provided sample response
-          // await new Promise(resolve => setTimeout(resolve, 500)); // Simulate network delay
-          const sampleApiResponse = {
-            "contactInfo": { "phoneNumber": "asdasdasd", "email": "asdasdasd@gmail.com", "country": "Chaina", "city": "Chaina", "completeAddress": "asdasdasdasdasdasasdasd", "googleMapLink": "asdasdasdasd" },
-            "socialNetworks": { "facebook": "https://www.facebook.com/Invision", "twitter": "https://twitter.com/envato", "linkedin": "https://www.linkedin.com/company/envato/", "googlePlus": "https://plus.google.com/+Envato" },
-            "_id": "68566e6487250cf0f29dd241", "userId": "67d3ddb10858a9eeabb3529d", "__v": 0, "awards": [], "createdAt": "2025-06-21T08:33:40.230Z",
-            "education": [ { "degree": "Master Degree", "institution": "Cambridge University", "fromYear": "2012", "toYear": "2014", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a ipsum tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus.", "_id": "68567554f12e632fc54b3350" } ],
-            "experiences": [ { "title": "Product Designer", "company": "Google Inc.", "fromYear": "2014", "toYear": "2018", "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin a ipsum tellus. Interdum et malesuada fames ac ante ipsum primis in faucibus.", "_id": "68567554f12e632fc54b334f" } ],
-            "skills": [ "App Design", "Illustrator", "HTML", "CSS", "Photoshop" ],
-            "updatedAt": "2025-06-21T09:20:38.799Z",
-            "description": "Hello my name is Nicole Wells and web developer from Portland. In pharetra orci dignissim, blandit mi semper, ultricies diam. Suspendisse malesuada suscipit nunc non volutpat. Sed porta nulla id orci laoreet tempor non consequat enim. Sed vitae aliquam velit. Aliquam ante erat, blandit at pretium et, accumsan ac est. Integer vehicula rhoncus molestie. Morbi ornare ipsum sed sem condimentum, et pulvinar tortor luctus. Suspendisse condimentum lorem ut elementum aliquam. Mauris nec erat ut libero vulputate pulvinar. Aliquam ante erat, blandit at pretium et, accumsan ac est. Integer vehicula rhoncus molestie. Morbi ornare ipsum sed sem condimentum, et pulvinar tortor luctus. Suspendisse condimentum lorem ut elementum aliquam. Mauris nec erat ut libero vulputate pulvinar.",
-            "name": "Darlene Robertson",
-            "portfolioFile": null, "age": "28", "currentSalary": "11", "currentlyWorking": false, "expectedSalary": "26",
-            "languages": [ "English", "German", "Spanish" ],
-            "totalExperienceMonths": "", "totalExperienceYears": "2"
-          };
-          setResumeData(data.resume || sampleApiResponse);
+          setResumeData(response.data.resume);
         } catch (e) {
           setError(e.message);
         } finally {
           setLoading(false);
         }
-      };      fetchResumeData();
+      };
+      fetchResumeData();
     }
   }, [id]);
 
-    console.log(resumeData)
+  // Helper to safely display currencies
+  function formatCurrency(amount, currency) {
+    if (!amount) return "N/A";
+    return currency ? `${amount} ${currency}` : amount;
+  }
 
+  // Helper for experience dates
+  function expYearMonth(exp) {
+    if (exp.fromMonth && exp.fromYear) {
+      return `${exp.fromMonth}/${exp.fromYear} - ${exp.toMonth || "--"}/${
+        exp.toYear || "--"
+      }`;
+    } else if (exp.fromYear) {
+      return `${exp.fromYear} - ${exp.toYear || "--"}`;
+    }
+    return "N/A";
+  }
 
-if (!candidate) {
+  // Helper for education block key
+  function eduKey(edu, i) {
+    return edu._id || edu.id || i;
+  }
+
+  // Helper for experience block key
+  function expKey(exp, i) {
+    return exp._id || exp.id || i;
+  }
+
+  // Helper for social links (ensure URLs have protocol)
+  function fixURL(url) {
+    if (!url) return "";
+    return url.startsWith("http") ? url : "https://" + url;
+  }
+
+  if (!candidate) {
     return (
       <>
         <MetaComponent meta={metadata} />
-        <section className="error-section" style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <section
+          className="error-section"
+          style={{
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <div className="auto-container text-center">
             <h2>404 - Candidate Not Found</h2>
             <p>We can't find the candidate you're looking for.</p>
-            <Link to="/candidates-list-v1" className="theme-btn btn-style-one">Browse All Candidates</Link>
+            <Link to="/candidates-list-v1" className="theme-btn btn-style-one">
+              Browse All Candidates
+            </Link>
           </div>
         </section>
       </>
@@ -80,7 +101,14 @@ if (!candidate) {
     return (
       <>
         <MetaComponent meta={metadata} />
-        <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div
+          style={{
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <h3>Loading...</h3>
         </div>
       </>
@@ -91,28 +119,27 @@ if (!candidate) {
     return (
       <>
         <MetaComponent meta={metadata} />
-        <div style={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', color: 'red' }}>
+        <div
+          style={{
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            color: "red",
+          }}
+        >
           <h3>Error loading data: {error}</h3>
         </div>
       </>
     );
   }
 
+  const r = resumeData || {};
+
   return (
     <>
-    <MetaComponent meta={metadata} />
-      {/* <!-- Header Span --> */}
+      <MetaComponent meta={metadata} />
       <span className="header-span"></span>
-
-
-      {/* End Login Popup Modal */}
-
-      {/* <DefaulHeader /> */}
-      {/* <!--End Main Header --> */}
-
-      {/* End MobileMenu */}
-
-      {/* <!-- Job Detail Section --> */}
       <section className="candidate-detail-section style-three">
         <div className="upper-box">
           <div className="auto-container">
@@ -120,63 +147,70 @@ if (!candidate) {
               <div className="inner-box">
                 <figure className="image">
                   <img
-                   
-                    src={candidate?.avatar}
-                    alt="avatar"
+                    src={
+                      r.profileImageURL || "/images/resource/candidate-1.png"
+                    }
+                    alt="profile avatar"
                   />
                 </figure>
-                <h4 className="name">{resumeData?.name}</h4>
-                <span className="designation">{resumeData?.designation || "Web Developer"}</span>
-
+                <h4 className="name">
+                  {`${r.firstName || ""} ${r.lastName || ""}`.trim() ||
+                    "No Name"}
+                </h4>
+                <span className="designation">
+                  {r.currentDesignation || "N/A"}
+                </span>
                 <div className="content">
                   <ul className="post-tags">
-                    {resumeData?.skills?.map((val, i) => (
-                      <li key={i}>{val}</li>
+                    {r.skills?.map((skill, i) => (
+                      <li key={i}>{skill}</li>
                     ))}
                   </ul>
-                  {/* End post-tags */}
-
                   <ul className="candidate-info">
                     <li>
                       <span className="icon flaticon-map-locator"></span>
-                      {resumeData?.contactInfo?.city}, {resumeData?.contactInfo?.country}
+                      {r.contactInfo?.city || "N/A"},{" "}
+                      {r.contactInfo?.country || ""}
                     </li>
                     <li>
-                      <span className="icon flaticon-money"></span> $
-                      {resumeData?.hourlyRate} / hour
+                      <span className="icon flaticon-mail"></span>
+                      {r.contactInfo?.email || "N/A"}
                     </li>
                     <li>
-                      <span className="icon flaticon-clock"></span> Member
-                      Since,Aug 19, 2020
+                      <span className="icon flaticon-clock"></span>
+                      Member Since,{" "}
+                      {r.createdAt
+                        ? new Date(r.createdAt).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "long",
+                          })
+                        : "N/A"}
                     </li>
                   </ul>
-                  {/* End candidate-info */}
-
                   <div className="btn-box">
-                    <a
-                      className="theme-btn btn-style-one"
-                      href="/images/sample.pdf"
-                      download
-                    >
-                      Download CV
-                    </a>
+                    {r.cvFileURL && (
+                      <a
+                        className="theme-btn btn-style-one"
+                        href={r.cvFileURL}
+                        download
+                      >
+                        Download CV
+                      </a>
+                    )}
                     <button className="bookmark-btn">
                       <i className="flaticon-bookmark"></i>
                     </button>
                   </div>
-                  {/* Download cv box */}
                 </div>
-                {/* End .content */}
               </div>
             </div>
-            {/*  <!-- Candidate block Five --> */}
           </div>
         </div>
-        {/* <!-- Upper Box --> */}
 
         <div className="candidate-detail-outer">
           <div className="auto-container">
             <div className="row">
+              {/* Sidebar */}
               <div className="sidebar-column col-lg-4 col-md-12 col-sm-12">
                 <aside className="sidebar">
                   <div className="sidebar-widget">
@@ -185,201 +219,266 @@ if (!candidate) {
                         <li>
                           <i className="icon icon-calendar"></i>
                           <h5>Experience:</h5>
-                          <span>{resumeData?.totalExperienceYears} years</span>
+                          <span>
+                            {r.totalExperienceYears
+                              ? `${r.totalExperienceYears} years`
+                              : r.totalExperienceMonths
+                              ? `${r.totalExperienceMonths} months`
+                              : "N/A"}
+                          </span>
                         </li>
-
                         <li>
                           <i className="icon icon-expiry"></i>
                           <h5>Age:</h5>
-                          <span>{resumeData?.age} yr</span>
+                          <span>{r.age ? `${r.age} Years` : "N/A"}</span>
                         </li>
-
                         <li>
                           <i className="icon icon-rate"></i>
                           <h5>Current Salary:</h5>
-                          <span>{resumeData?.currentSalary}</span>
+                          <span>
+                            {formatCurrency(
+                              r.currentSalary,
+                              r.currentSalaryCurrency
+                            )}
+                          </span>
                         </li>
-
                         <li>
                           <i className="icon icon-salary"></i>
                           <h5>Expected Salary:</h5>
-                          <span>{resumeData?.expectedSalary}</span>
+                          <span>
+                            {formatCurrency(
+                              r.expectedSalary,
+                              r.expectedSalaryCurrency
+                            )}
+                          </span>
                         </li>
-
-                        <li>
-                          <i className="icon icon-user-2"></i>
-                          <h5>Gender:</h5>
-                          <span>{resumeData?.gender || "Male"}</span>
-                        </li>
-
                         <li>
                           <i className="icon icon-language"></i>
                           <h5>Language:</h5>
-                          <div></div>
-                          <span>{resumeData?.languages?.join(", ")}</span>
+                          <span>
+                            {r.languages?.length
+                              ? r.languages.join(", ")
+                              : "N/A"}
+                          </span>
                         </li>
-
                         <li>
                           <i className="icon icon-degree"></i>
                           <h5>Education Level:</h5>
-                          <span>{resumeData?.education?.[0]?.degree}</span>
+                          <span>{r.education?.[0]?.degree || "N/A"}</span>
                         </li>
                       </ul>
                     </div>
                   </div>
-                  {/* End .sidebar-widget conadidate overview */}
-
                   <div className="sidebar-widget social-media-widget">
                     <h4 className="widget-title">Social media</h4>
                     <div className="widget-content">
                       <div className="social-links">
-                        <Social socialNetworks={resumeData?.socialNetworks} />
+                        <Social
+                          socialNetworks={{
+                            facebook: fixURL(r.socialNetworks?.facebook),
+                            twitter: fixURL(
+                              r.socialNetworks?.twitter || r.socialNetworks?.x
+                            ),
+                            linkedin: fixURL(r.socialNetworks?.linkedin),
+                            instagram: fixURL(r.socialNetworks?.instagram),
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
-                  {/* End .sidebar-widget social-media-widget */}
-
                   <div className="sidebar-widget">
                     <h4 className="widget-title">Professional Skills</h4>
                     <div className="widget-content">
                       <ul className="job-skills">
-                        <JobSkills skills={resumeData?.skills} />
+                        <JobSkills skills={r.skills} />
                       </ul>
                     </div>
                   </div>
-                  {/* End .sidebar-widget skill widget */}
-
-                  {/* <div className="sidebar-widget contact-widget">
-                    <h4 className="widget-title">Contact Us</h4>
-                    <div className="widget-content">
-                      <div className="default-form">
-                        <Contact />
-                      </div>
-                    </div>
-                  </div> */}
-                  {/* End .sidebar-widget contact-widget */}
                 </aside>
-                {/* End .sidebar */}
               </div>
-              {/* End .sidebar-column */}
 
+              {/* Main content */}
               <div className="content-column col-lg-8 col-md-12 col-sm-12">
                 <div className="job-detail">
-                  <h4>Candidates About</h4>
-                  <p>
-                    {resumeData.description}
-                  </p>
+                  <h4>About Candidate</h4>
+                  <p>{r.description || "No description available."}</p>
 
+                  {/* Expertise Section */}
+                  {r.expertise?.length > 0 && (
+                    <div className="mt-5">
+                      <h4>Areas of Expertise</h4>
+                      {r.expertise.map((expertItem, index) => (
+                        <div
+                          key={index}
+                          className="resume-outer p-4 mb-4"
+                          style={{
+                            border: "1px solid #e5e7eb",
+                            borderRadius: "8px",
+                          }}
+                        >
+                          <h5 className="mb-3">{expertItem.category}</h5>
+                          <div className="row">
+                            <div className="col-md-6">
+                              <h6>Subcategories</h6>
+                              <ul className="list-style-three">
+                                {expertItem.subcategories?.map((sub, i) => (
+                                  <li key={i}>{sub}</li>
+                                ))}
+                              </ul>
+                            </div>
+                            <div className="col-md-6">
+                              <h6>Processes</h6>
+                              <ul className="list-style-three">
+                                {expertItem.processes?.map((proc, i) => (
+                                  <li key={i}>{proc}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
-                  {/* <!-- Portfolio --> */}
-                  <div className="portfolio-outer">
+                  {/* Portfolio */}
+                  <div className="portfolio-outer mt-5">
+                    <h4>Portfolio</h4>
                     <div className="row">
                       <GalleryBox />
                     </div>
                   </div>
 
-
-
-
-                   {resumeData.education?.length > 0 && <div
-                      className={`resume-outer `}
-
-                    >
+                  {/* Education */}
+                  {r.education?.length > 0 && (
+                    <div className="resume-outer mt-5">
                       <div className="upper-title">
-                        <h4>{"Education"}</h4>
+                        <h4>Education</h4>
                       </div>
-                      {resumeData.education.map((edu) => (
-                        <div className="resume-block" key={edu.id}>
+                      {r.education.map((edu, i) => (
+                        <div className="resume-block" key={eduKey(edu, i)}>
                           <div className="inner">
-                            <span className="name">{edu.degree.charAt(0)}</span>
+                            <span className="name">
+                              {edu.institution?.charAt(0)}
+                            </span>
                             <div className="title-box">
                               <div className="info-box">
-                                <h3>{edu.degree}</h3>
-                                <span>{edu.institution}</span>
+                                <h3 className="fs-5">{edu.degree || "N/A"} - <span className="font-bold text-capitalize fw-light fs-6">{edu.degreeType}</span> </h3>
+                                <span>{edu.institution || "N/A"}</span>
+                                {edu.region && (
+                                  <div>
+                                    <strong>Region:</strong> {edu.region} {edu.country}
+                                  </div>
+                                )}
+
                               </div>
                               <div className="edit-box">
-                                  <span className="year">{edu.fromYear} - {edu.toYear}</span>
+                                <span className="year">{`${
+                                  edu.fromYear || "--"
+                                }-${edu.toYear || "--"}`}</span>
                               </div>
                             </div>
-                            <div className="text">{edu.description}</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>}
-
-
-                     {/* <!-- Resume / Work & Experience --> */}
-                  {resumeData.experiences?.length > 0 && (
-                    <div className="resume-outer theme-blue">
-                      <div className="upper-title">
-                        <h4>Work & Experience</h4>
-                      </div>
-                      {resumeData.experiences.map(exp => (
-                        <div className="resume-block" key={exp._id}>
-                          <div className="inner">
-                            <span className="name">{exp.company.charAt(0)}</span>
-                            <div className="title-box">
-                              <div className="info-box">
-                                <h3>{exp.title}</h3>
-                                <span>{exp.company}</span>
-                              </div>
-                              <div className="edit-box">
-                                <span className="year">{exp.fromYear} - {exp.toYear}</span>
-                              </div>
-                            </div>
-                            <div className="text">{exp.description}</div>
+                            <div className="text">{edu.description || ""}</div>
                           </div>
                         </div>
                       ))}
                     </div>
                   )}
 
-
-                  {resumeData.awards?.length > 0 && (
-                    <div className="resume-outer theme-yellow">
+                  {/* Work & Experience */}
+                  {r.experiences?.length > 0 && (
+                    <div className="resume-outer theme-blue mt-5">
                       <div className="upper-title">
                         <h4>Work & Experience</h4>
                       </div>
-                      {resumeData.awards.map(award => (
-                        <div className="resume-block" key={award._id}>
+                      {r.experiences.map((exp, i) => (
+                        <div className="resume-block" key={expKey(exp, i)}>
                           <div className="inner">
-                            <span className="name">{award.title.charAt(0)}</span>
+                            <span className="name">
+                              {exp.company?.charAt(0) || "?"}
+                            </span>
                             <div className="title-box">
                               <div className="info-box">
-                                <h3>{award.title}</h3>
-                                {/* <span>{award.company}</span> */}
+                                <h3>{exp.title || "N/A"}</h3>
+                                <span>{exp.company || "N/A"}</span>
+                                 {exp.region && (
+                                  <div>
+                                    <strong>Region:</strong> {exp.region} {exp.country}
+                                  </div>
+                                )}
+
                               </div>
                               <div className="edit-box">
-                                <span className="year">{award.fromYear} - {award.toYear}</span>
+                                <span className="year">
+                                  {expYearMonth(exp)}
+                                </span>
                               </div>
                             </div>
-                            <div className="text">{award.description}</div>
+                            {/* Achievements and responsibilities */}
+                            {exp.achievements?.length > 0 && (
+                              <div>
+                                <strong>Achievements:</strong>
+                                <ul>
+                                  {exp.achievements.map((a, j) => (
+                                    <li key={j}>{a}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                            {exp.responsibilities?.length > 0 && (
+                              <div>
+                                <strong>Responsibilities:</strong>
+                                <ul>
+                                  {exp.responsibilities.map((r, j) => (
+                                    <li key={j}>{r}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
                           </div>
                         </div>
                       ))}
                     </div>
                   )}
-                  {/* <!-- Candidate Resume End --> */}
 
-                  {/* <div className="video-outer">
-                    <h4>Intro Video</h4>
-                    <AboutVideo />
-                  </div> */}
-                  {/* <!-- About Video Box --> */}
+                  {/* Awards */}
+                  {r.awards?.length > 0 && (
+                    <div className="resume-outer theme-yellow mt-5">
+                      <div className="upper-title">
+                        <h4>Awards</h4>
+                      </div>
+                      {r.awards.map((award, i) => (
+                        <div className="resume-block" key={award._id || i}>
+                          <div className="inner">
+                            <span className="name">
+                              {award.title?.charAt(0) || "?"}
+                            </span>
+                            <div className="title-box">
+                              <div className="info-box">
+                                <h3>{award.title || "N/A"}</h3>
+                              </div>
+                              <div className="edit-box">
+                                <span className="year">
+                                  {award.year || "N/A"}
+                                </span>
+                              </div>
+                            </div>
+                            <div className="text">
+                              {award.description || ""}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
-              {/* End .content-column */}
+              {/* end main content */}
             </div>
           </div>
         </div>
-        {/* <!-- job-detail-outer--> */}
       </section>
-      {/* <!-- End Job Detail Section --> */}
-
-      {/* <FooterDefault footerStyle="alternate5" /> */}
-      {/* <!-- End Main Footer --> */}
     </>
   );
 };
 
-export default CandidateSingle1
+export default CandidateSingle1;

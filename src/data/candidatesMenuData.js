@@ -15,7 +15,7 @@ const candidateMenus = [
   // },
   {
     id: 3,
-    name: "My Resume",
+    name: "My Profile",
     icon: "la la-file-invoice",
     routePath: "/candidates-dashboard/my-resume",
     active: "",

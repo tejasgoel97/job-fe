@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Select from "react-select";
 
+// Language Options
 const languageOptions = [
-  // Major Indian languages
   { value: "English", label: "English" },
   { value: "Hindi", label: "Hindi" },
   { value: "Marathi", label: "Marathi" },
@@ -15,7 +15,6 @@ const languageOptions = [
   { value: "Malayalam", label: "Malayalam" },
   { value: "Odia", label: "Odia" },
   { value: "Urdu", label: "Urdu" },
-
   // Popular foreign languages
   { value: "Spanish", label: "Spanish" },
   { value: "French", label: "French" },
@@ -48,7 +47,6 @@ const languageOptions = [
   { value: "Finnish", label: "Finnish" },
 ];
 
-
 const currencyOptions = [
   { value: "INR", label: "INR (₹)", symbol: "₹", rateToINR: 1 },
   { value: "USD", label: "USD ($)", symbol: "$", rateToINR: 83 },
@@ -56,6 +54,13 @@ const currencyOptions = [
   { value: "GBP", label: "Pound (£)", symbol: "£", rateToINR: 105 },
   { value: "AED", label: "Dirham (د.إ)", symbol: "د.إ", rateToINR: 22.6 },
 ];
+
+// Range helper
+const rangeOptions = (min, max) =>
+  Array.from({ length: max - min + 1 }, (_, i) => ({
+    value: min + i,
+    label: String(min + i),
+  }));
 
 const OtherDetails = (props) => {
   const {
@@ -77,46 +82,92 @@ const OtherDetails = (props) => {
     setExpectedSalaryCurrency,
   } = props;
 
-  // Find selected currency object
   const selectedCurrencyObj =
     currencyOptions.find((c) => c.value === currentSalaryCurrency) ||
     currencyOptions[0];
 
-  // Conversion calculation
   const showConverted = currentSalaryCurrency !== "INR" && currentSalary;
   const salaryInINR = (
     Number(currentSalary) * selectedCurrencyObj.rateToINR
   ).toLocaleString("en-IN");
+
+  // Age and Experience Options
+  const ageOptions = rangeOptions(16, 90);
+  const expOptions = rangeOptions(0, 50);
+
+  // Helper to handle typing in <input>
+  const handleAgeInput = (e) => {
+    let val = parseInt(e.target.value) || "";
+    if (val > 90) val = 90;
+    if (val < 16 && val !== "") val = 16;
+    setAge(val);
+  };
+
+  const handleExpInput = (e) => {
+    let val = parseInt(e.target.value) || "";
+    if (val > 50) val = 50;
+    if (val < 0 && val !== "") val = 0;
+    setTotalExperienceYears(val);
+  };
 
   return (
     <>
       {/* Age */}
       <div className="form-group col-lg-4 col-md-12">
         <label>Age</label>
-        <input
-          type="number"
-          name="age"
-          placeholder="e.g. 25"
-          value={age}
-          onChange={(e) => setAge(e.target.value)}
-        />
+          <Select
+            value={ageOptions.find((opt) => opt.value === Number(age))}
+            onChange={(opt) => setAge(opt.value)}
+            options={ageOptions}
+            placeholder="Select"
+            // styles={{
+            //   container: (base) => ({ ...base, minWidth: 90, maxWidth: 120 }),
+            // }}
+            isSearchable
+          />
+
+        <div className="form-text text-muted">Allowed: 16 – 90 years</div>
+      </div>
+
+      {/* Total Experience (Years) */}
+      <div className="form-group col-lg-4 col-md-12">
+        <label>Total Experience (Years)</label>
+          <Select
+            value={expOptions.find(
+              (opt) => opt.value === Number(totalExperienceYears)
+            )}
+            onChange={(opt) => setTotalExperienceYears(opt.value)}
+            options={expOptions}
+            placeholder="Select"
+
+            isSearchable
+          />
+
+        <div className="form-text text-muted">Allowed: 0 – 50 years</div>
       </div>
 
       {/* Total Experience (Months) */}
-      <div className="form-group col-lg-4 col-md-12">
-        <label>Total Experience (Years)</label>
+      {/* <div className="form-group col-lg-4 col-md-12">
+        <label>Total Experience (Months)</label>
         <input
           type="number"
           name="experienceMonths"
-          placeholder="Eg.1.6"
+          min="0"
+          max="11"
+          placeholder="Eg. 0–11"
           value={totalExperienceMonths}
-          onChange={(e) => setTotalExperienceMonths(e.target.value)}
+          onChange={(e) => {
+            let val = parseInt(e.target.value) || 0;
+            if (val > 11) val = 11;
+            if (val < 0) val = 0;
+            setTotalExperienceMonths(val);
+          }}
         />
-      </div>
+        <div className="form-text text-muted">0–11 months</div>
+      </div> */}
 
       {/* Current Salary with Currency */}
-      {/* Current Salary with Currency */}
-      <div className="form-group col-lg-4 col-md-12">
+      <div className="form-group col-lg-6 col-md-12">
         <label>Current Salary (per annum)</label>
         <div className="row g-2 align-items-center">
           {/* Currency Selector: 1/4 width */}
@@ -153,7 +204,7 @@ const OtherDetails = (props) => {
       </div>
 
       {/* Expected Salary */}
-      <div className="form-group col-lg-4 col-md-12">
+      <div className="form-group col-lg-6 col-md-12">
         <label>Expected Salary (per annum)</label>
         <div className="row g-2 align-items-center">
           {/* Currency Selector: 1/4 width */}
@@ -184,7 +235,7 @@ const OtherDetails = (props) => {
         {/* Show INR equivalent if not INR */}
         {expectedSalaryCurrency !== "INR" && expectedSalary && (
           <div className="mt-1 text-xs text-muted">
-            ≈ ₹{" "}
+            ≈ ₹
             {(
               Number(expectedSalary) *
               (currencyOptions.find((c) => c.value === expectedSalaryCurrency)
@@ -206,18 +257,19 @@ const OtherDetails = (props) => {
           options={languageOptions}
           className="basic-multi-select"
           classNamePrefix="select"
-           styles={{
-    menuPortal: base => ({ ...base, zIndex: 9999 }),
- menu: (base) => ({
-    ...base,
-    backgroundColor: '#f5f5f5',
-  }),
-  option: (base, state) => ({
-    ...base,
-    backgroundColor: state.isFocused ? '#1976d2' : '#f5f5f5',
-    color: state.isFocused ? '#fff' : '#333',
-  }),
-  }}
+          styles={{
+            menuPortal: (base) => ({ ...base, zIndex: 99 }),
+            menu: (base) => ({
+              ...base,
+              backgroundColor: "#f5f5f5",
+            }),
+            option: (base, state) => ({
+              ...base,
+              zIndex:999,
+              backgroundColor: state.isFocused ? "#1976d2" : "#f5f5f5",
+              color: state.isFocused ? "#fff" : "#333",
+            }),
+          }}
         />
       </div>
     </>
