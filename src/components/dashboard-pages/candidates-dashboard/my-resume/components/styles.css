@@ -22,3 +22,100 @@
     margin-bottom: 1rem;
   }
 }
+
+
+
+/* Place in your CSS file or in a <style> tag in your component */
+.resume-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  background: linear-gradient(90deg, #fdf6b7 0%, #ffe1e6 50%, #e1e5f8 100%);
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 16px rgba(244, 114, 182, 0.08);
+  border: 2px solid #fb7185;
+  padding: 1.3rem 1.5rem;
+  margin-bottom: 1.2rem;
+  position: relative;
+}
+
+.resume-toggle-label {
+  font-size: 1.13rem;
+  color: #be185d;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.resume-toggle-caption {
+  font-size: 0.93rem;
+  color: #374151;
+  margin-top: 2px;
+}
+
+.resume-toggle-switch {
+  position: relative;
+  width: 48px;
+  height: 28px;
+  display: inline-block;
+}
+
+.resume-toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.resume-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  background: #d1d5db;
+  border-radius: 28px;
+  top: 0;
+  left: 0;
+  width: 48px;
+  height: 28px;
+  transition: background 0.3s;
+}
+
+.resume-toggle-switch input:checked + .resume-toggle-slider {
+  background: linear-gradient(90deg, #fb7185, #6366f1);
+}
+
+.resume-toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  height: 22px;
+  width: 22px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.15);
+  transition: transform 0.3s;
+}
+
+.resume-toggle-switch input:checked ~ .resume-toggle-knob {
+  transform: translateX(20px);
+}
+
+.resume-toggle-icon {
+  width: 2.2rem;
+  height: 2.2rem;
+  color: #fb7185;
+}
+
+.resume-toggle-status {
+  margin-left: 12px;
+  padding: 3px 11px;
+  border-radius: 6px;
+  font-size: 0.87rem;
+  font-weight: 600;
+  background: #bbf7d0;
+  color: #166534;
+  animation: resume-pulse 1.5s infinite;
+  display: inline-block;
+}
+@keyframes resume-pulse {
+  0% { background-color: #bbf7d0; }
+  50% { background-color: #86efac; }
+  100% { background-color: #bbf7d0; }
+}

@@ -1,6 +1,17 @@
-import React from "react";
-import "./styles.css"
-const showToast = (msg) => window.alert(msg);
+import React, { useState, useRef } from "react";
+import "./styles.css";
+
+// Bootstrap 5 Modal helpers
+const showBsModal = (modalRef) => {
+  if (window.bootstrap && modalRef.current) {
+    window.bootstrap.Modal.getOrCreateInstance(modalRef.current).show();
+  }
+};
+const hideBsModal = (modalRef) => {
+  if (window.bootstrap && modalRef.current) {
+    window.bootstrap.Modal.getOrCreateInstance(modalRef.current).hide();
+  }
+};
 
 const degreeTypeOptions = [
   { value: "diploma", label: "Diploma" },
@@ -18,49 +29,47 @@ const countryOptions = [
   "China", "Japan", "Russia", "Brazil", "South Africa", "Italy", "Other"
 ];
 
-const Education = ({ items: educations, setItems: setEducations }) => {
-  const handleEditToggle = (id) => {
-    setEducations((prev) =>
-      prev.map((edu) =>
-        edu.id === id ? { ...edu, editing: !edu.editing } : edu
-      )
-    );
-  };
+function Education({ items: educations, setItems: setEducations }) {
+  const [modalMode, setModalMode] = useState(""); // "add" or "edit"
+  const [modalIdx, setModalIdx] = useState(null); // index of education being edited
+  const [form, setForm] = useState(initForm());
+  const modalRef = useRef();
 
-  const handleDelete = (id) => {
-    setEducations((prev) => prev.filter((edu) => edu.id !== id));
-  };
+  function initForm(edu = null) {
+    return edu
+      ? { ...edu }
+      : {
+          degreeType: "",
+          degree: "",
+          institution: "",
+          region: "",
+          country: "",
+          fromYear: "",
+          toYear: "",
+          marks: "",
+          cgpa: "",
+          description: "",
+        };
+  }
 
-  const handleChange = (id, field, value) => {
-    setEducations((prev) =>
-      prev.map((edu) =>
-        edu.id === id ? { ...edu, [field]: value } : edu
-      )
-    );
-  };
+  function openAddModal() {
+    setModalMode("add");
+    setForm(initForm());
+    setModalIdx(null);
+    setTimeout(() => showBsModal(modalRef), 1);
+  }
+  function openEditModal(idx) {
+    setModalMode("edit");
+    setForm(initForm(educations[idx]));
+    setModalIdx(idx);
+    setTimeout(() => showBsModal(modalRef), 1);
+  }
 
-  const handleAdd = () => {
-    const newId = Date.now();
-    setEducations((prev) => [
-      {
-        id: newId,
-        degreeType: "",
-        degree: "",
-        institution: "",
-        region: "",
-        country: "",
-        fromYear: "",
-        toYear: "",
-        marks: "",
-        cgpa: "",
-        description: "",
-        editing: true,
-      },
-      ...prev,
-    ]);
-  };
+  function handleFormChange(field, value) {
+    setForm((f) => ({ ...f, [field]: value }));
+  }
 
-  const validateEducation = (edu) => {
+  function validateEducation(edu) {
     if (!edu.degreeType.trim()) return "Degree Type is required.";
     if (!edu.degree.trim()) return "Degree is required.";
     if (!edu.institution.trim()) return "Institution is required.";
@@ -79,45 +88,113 @@ const Education = ({ items: educations, setItems: setEducations }) => {
     if (edu.cgpa && (isNaN(Number(edu.cgpa)) || Number(edu.cgpa) < 0 || Number(edu.cgpa) > 10))
       return "CGPA should be a number between 0 and 10.";
     return null;
-  };
+  }
 
-  const handleSave = (id) => {
-    const current = educations.find((edu) => edu.id === id);
-    const err = validateEducation(current);
+  function handleSave() {
+    const err = validateEducation(form);
     if (err) {
-      showToast(err);
+      window.alert(err);
       return;
     }
-    setEducations((prev) =>
-      prev.map((edu) =>
-        edu.id === id ? { ...edu, editing: false } : edu
-      )
-    );
-  };
+    if (modalMode === "add") {
+      setEducations((prev) => [
+        { ...form, id: Date.now() },
+        ...prev,
+      ]);
+    } else if (modalMode === "edit" && modalIdx !== null) {
+      setEducations((prev) =>
+        prev.map((edu, idx) =>
+          idx === modalIdx ? { ...form, id: edu.id } : edu
+        )
+      );
+    }
+    handleModalClose();
+  }
+
+  function handleModalClose() {
+    setModalMode("");
+    setModalIdx(null);
+    setForm(initForm());
+    hideBsModal(modalRef);
+  }
+
+  function handleDelete(idx) {
+    if (window.confirm("Delete this education record?")) {
+      setEducations((prev) => prev.filter((_, i) => i !== idx));
+    }
+  }
 
   return (
     <div className="resume-outer">
-      <div className="upper-title">
+      <div className="upper-title d-flex align-items-center justify-content-between">
         <h4>Education</h4>
-        <button className="add-info-btn" onClick={handleAdd}>
+        <button className="add-info-btn" onClick={openAddModal}>
           <span className="icon flaticon-plus"></span> Add Education
         </button>
       </div>
 
-      {educations.map((edu) => (
+      {educations.length === 0 && (
+        <div className="alert alert-secondary">No education added.</div>
+      )}
+      {educations.map((edu, idx) => (
         <div className="resume-block" key={edu.id}>
           <div className="inner">
             <span className="name">{edu.institution?.[0] || "?"}</span>
-            {edu.editing ? (
+            <div className="title-box">
+              <div className="info-box">
+                <h3>
+                  {degreeTypeOptions.find(dt => dt.value === edu.degreeType)?.label || ""}
+                  {edu.degree ? ` in ${edu.degree}` : ""}
+                </h3>
+                <span>
+                  {edu.institution}
+                  {edu.region && `, ${edu.region}`}
+                  {edu.country && `, ${edu.country}`}
+                </span>
+              </div>
+              <div className="edit-box">
+                <span className="year">
+                  {edu.fromYear} - {edu.toYear}
+                  {(edu.marks || edu.cgpa) && (
+                    <span>
+                      {" "} | {edu.marks && `Marks: ${edu.marks}`}
+                      {edu.cgpa && ` CGPA: ${edu.cgpa}`}
+                    </span>
+                  )}
+                </span>
+                <div className="edit-btns">
+                  <button onClick={() => openEditModal(idx)}>
+                    <span className="la la-pencil"></span>
+                  </button>
+                  <button onClick={() => handleDelete(idx)}>
+                    <span className="la la-trash"></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div className="text">
+              <p>{edu.description}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+
+      {/* Modal */}
+      <div className="modal fade" tabIndex={-1} ref={modalRef}>
+        <div className="modal-dialog modal-lg modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">{modalMode === "edit" ? "Edit Education" : "Add Education"}</h5>
+              <button type="button" className="btn-close" onClick={handleModalClose}></button>
+            </div>
+            <div className="modal-body">
               <div className="edit-card">
                 <div className="edit-grid">
                   <div>
                     <label>Degree Type <span style={{ color: "red" }}>*</span></label>
                     <select
-                      value={edu.degreeType}
-                      onChange={(e) =>
-                        handleChange(edu.id, "degreeType", e.target.value)
-                      }
+                      value={form.degreeType}
+                      onChange={e => handleFormChange("degreeType", e.target.value)}
                       required
                     >
                       <option value="">Select Degree Type</option>
@@ -130,10 +207,8 @@ const Education = ({ items: educations, setItems: setEducations }) => {
                     <label>Degree <span style={{ color: "red" }}>*</span></label>
                     <input
                       type="text"
-                      value={edu.degree}
-                      onChange={(e) =>
-                        handleChange(edu.id, "degree", e.target.value)
-                      }
+                      value={form.degree}
+                      onChange={e => handleFormChange("degree", e.target.value)}
                       required
                     />
                   </div>
@@ -141,10 +216,8 @@ const Education = ({ items: educations, setItems: setEducations }) => {
                     <label>Institution <span style={{ color: "red" }}>*</span></label>
                     <input
                       type="text"
-                      value={edu.institution}
-                      onChange={(e) =>
-                        handleChange(edu.id, "institution", e.target.value)
-                      }
+                      value={form.institution}
+                      onChange={e => handleFormChange("institution", e.target.value)}
                       required
                     />
                   </div>
@@ -152,19 +225,15 @@ const Education = ({ items: educations, setItems: setEducations }) => {
                     <label>Region/State</label>
                     <input
                       type="text"
-                      value={edu.region}
-                      onChange={(e) =>
-                        handleChange(edu.id, "region", e.target.value)
-                      }
+                      value={form.region}
+                      onChange={e => handleFormChange("region", e.target.value)}
                     />
                   </div>
                   <div>
                     <label>Country <span style={{ color: "red" }}>*</span></label>
                     <select
-                      value={edu.country}
-                      onChange={(e) =>
-                        handleChange(edu.id, "country", e.target.value)
-                      }
+                      value={form.country}
+                      onChange={e => handleFormChange("country", e.target.value)}
                       required
                     >
                       <option value="">Select Country</option>
@@ -177,9 +246,9 @@ const Education = ({ items: educations, setItems: setEducations }) => {
                     <label>From Year</label>
                     <input
                       type="number"
-                      value={edu.fromYear}
-                      onChange={(e) =>
-                        handleChange(edu.id, "fromYear", e.target.value.replace(/\D/, ""))
+                      value={form.fromYear}
+                      onChange={e =>
+                        handleFormChange("fromYear", e.target.value.replace(/\D/, ""))
                       }
                       placeholder="e.g. 2019"
                       min="1900"
@@ -191,9 +260,9 @@ const Education = ({ items: educations, setItems: setEducations }) => {
                     <label>To Year <span style={{ color: "red" }}>*</span></label>
                     <input
                       type="number"
-                      value={edu.toYear}
-                      onChange={(e) =>
-                        handleChange(edu.id, "toYear", e.target.value.replace(/\D/, ""))
+                      value={form.toYear}
+                      onChange={e =>
+                        handleFormChange("toYear", e.target.value.replace(/\D/, ""))
                       }
                       placeholder="e.g. 2023"
                       min="1900"
@@ -206,37 +275,21 @@ const Education = ({ items: educations, setItems: setEducations }) => {
                     <label>Marks/CGPA</label>
                     <input
                       type="number"
-                      value={edu.marks}
-                      onChange={(e) =>
-                        handleChange(edu.id, "marks", e.target.value.replace(/[^\d.]/g, ""))
+                      value={form.marks}
+                      onChange={e =>
+                        handleFormChange("marks", e.target.value.replace(/[^\d.]/g, ""))
                       }
                       placeholder="e.g. 89"
                       min="0"
                       max="100"
                     />
                   </div>
-                  {/* <div>
-                    <label>CGPA</label>
-                    <input
-                      type="number"
-                      value={edu.cgpa}
-                      onChange={(e) =>
-                        handleChange(edu.id, "cgpa", e.target.value.replace(/[^\d.]/g, ""))
-                      }
-                      placeholder="e.g. 9.2"
-                      min="0"
-                      max="10"
-                      step="0.01"
-                    />
-                  </div> */}
                 </div>
                 <div style={{ marginTop: "1rem" }}>
                   <label>Description</label>
                   <textarea
-                    value={edu.description}
-                    onChange={(e) =>
-                      handleChange(edu.id, "description", e.target.value)
-                    }
+                    value={form.description}
+                    onChange={e => handleFormChange("description", e.target.value)}
                     style={{ width: "100%", minHeight: 60 }}
                   />
                   <div style={{ marginTop: "10px", display: "flex", gap: "1rem" }}>
@@ -250,7 +303,7 @@ const Education = ({ items: educations, setItems: setEducations }) => {
                         borderRadius: "4px",
                         cursor: "pointer",
                       }}
-                      onClick={() => handleSave(edu.id)}
+                      onClick={handleSave}
                     >
                       Save
                     </button>
@@ -264,56 +317,19 @@ const Education = ({ items: educations, setItems: setEducations }) => {
                         borderRadius: "4px",
                         cursor: "pointer",
                       }}
-                      onClick={() => handleDelete(edu.id)}
+                      onClick={handleModalClose}
                     >
                       Cancel
                     </button>
                   </div>
                 </div>
               </div>
-            ) : (
-              <>
-                <div className="title-box">
-                  <div className="info-box">
-                    <h3>
-                      {degreeTypeOptions.find(dt => dt.value === edu.degreeType)?.label || ""}{edu.degree ? ` in ${edu.degree}` : ""}
-                    </h3>
-                    <span>
-                      {edu.institution}
-                      {edu.region && `, ${edu.region}`}
-                      {edu.country && `, ${edu.country}`}
-                    </span>
-                  </div>
-                  <div className="edit-box">
-                    <span className="year">
-                      {edu.fromYear} - {edu.toYear}
-                      {(edu.marks || edu.cgpa) && (
-                        <span>
-                          {" "} | {edu.marks && `Marks: ${edu.marks}`}
-                          {edu.cgpa && ` CGPA: ${edu.cgpa}`}
-                        </span>
-                      )}
-                    </span>
-                    <div className="edit-btns">
-                      <button onClick={() => (edu.editing ? handleSave(edu.id) : handleEditToggle(edu.id))}>
-                        <span className={edu.editing ? "la la-save" : "la la-pencil"}></span>
-                      </button>
-                      <button onClick={() => handleDelete(edu.id)}>
-                        <span className="la la-trash"></span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="text">
-                  <p>{edu.description}</p>
-                </div>
-              </>
-            )}
+            </div>
           </div>
         </div>
-      ))}
+      </div>
     </div>
   );
-};
+}
 
 export default Education;

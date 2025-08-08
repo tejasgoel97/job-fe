@@ -175,11 +175,10 @@ const AddPortfolio = ({
           <div
             className="cv-uploadButton"
             style={{
-              height: 300,
+              height: 200,
               width: "100%",
               border: "2px dashed #ced4e1",
               borderRadius: 5,
-              padding: "30px 20px",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -237,7 +236,7 @@ const AddPortfolio = ({
           <div
             className="cv-uploadButton"
             onClick={() => profileInputRef.current.click()}
-            style={{ height: 300, width: "100%", cursor: "pointer" }}
+            style={{ height: 200, width: "100%", cursor: "pointer" }}
           >
             <input
               className="uploadButton-input"
@@ -263,11 +262,10 @@ const AddPortfolio = ({
           <div
             className="cv-uploadButton"
             style={{
-              height: 300,
+              height: 200,
               width: "100%",
               border: "2px dashed #ced4e1",
               borderRadius: 5,
-              padding: "30px 20px",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",

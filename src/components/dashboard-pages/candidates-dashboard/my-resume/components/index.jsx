@@ -10,13 +10,18 @@ import axiosInstance from "@/utils/api/axiosInstance";
 import OtherDetails from "./OtherDetails";
 import { toast } from "react-toastify";
 import CandidateExpertiseSelector from "./CandidateExpertiseSelector";
-
+import "./styles.css";
 const Resume = ({ initialData, user, setMode }) => {
   const [submitLoading, setSubmitLoading] = useState(false);
   const [resumeExists, setResumeExists] = useState(!!initialData);
+  const [lookingForChange, setLookingForChange] = useState(
+    initialData?.lookingForChange ?? false
+  );
 
   const [cvFileURL, setCvFileURL] = useState(initialData.cvFileURL || "");
-  const [profileImageURL, setProfileImageURL] = useState(initialData.profileImageURL || "");
+  const [profileImageURL, setProfileImageURL] = useState(
+    initialData.profileImageURL || ""
+  );
   const [firstName, setFirstName] = useState(user?.firstName || "");
   const [lastName, setLastName] = useState(user?.lastName || "");
   const [description, setDescription] = useState(
@@ -71,7 +76,9 @@ const Resume = ({ initialData, user, setMode }) => {
     initialData?.expectedSalary || ""
   );
   const [selectedExpertise, setSelectedExpertise] = useState({});
-  const [initialExpertise, setInitialExpertise] = useState(initialData?.expertise || []);
+  const [initialExpertise, setInitialExpertise] = useState(
+    initialData?.expertise || []
+  );
   const [languages, setLanguages] = useState(
     initialData?.languages?.map((lang) => ({ value: lang, label: lang })) || []
   );
@@ -120,7 +127,7 @@ const Resume = ({ initialData, user, setMode }) => {
         subcategories: value.subcategories,
         processes: value.processes,
       }));
-      console.log({finalExpertise})
+    console.log({ finalExpertise });
     const body = {
       cvFileURL,
       profileImageURL,
@@ -179,6 +186,43 @@ const Resume = ({ initialData, user, setMode }) => {
   return (
     <form className="default-form" onSubmit={handleSubmit}>
       <div className="row">
+        
+        <div className="form-group col-lg-12 col-md-12">
+          <div className="form-group mb-3 p-3 bg-light border rounded shadow-sm d-flex align-items-center">
+            {/* Icon */}
+            <i
+              className="bi bi-briefcase-fill me-2 text-primary"
+              style={{ fontSize: 28 }}
+            ></i>
+            {/* Label & Status */}
+            <div className="flex-grow-1">
+              <label
+                htmlFor="lookingForChangeSwitch"
+                className="form-label mb-1 fw-bold text-primary"
+              >
+                Looking for Change?
+                {lookingForChange && (
+                  <span className="badge bg-success ms-2">
+                    Open for Opportunities
+                  </span>
+                )}
+              </label>
+              <div className="text-muted" style={{ fontSize: "0.96rem" }}>
+                Let recruiters know you’re open to new roles.
+              </div>
+            </div>
+            {/* Switch */}
+            <div className="form-check form-switch ms-4">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                id="lookingForChangeSwitch"
+                checked={lookingForChange}
+                onChange={(e) => setLookingForChange(e.target.checked)}
+              />
+            </div>
+          </div>
+        </div>
         <div className="form-group col-lg-6 col-md-12">
           <AddPortfolio
             cvFileURL={cvFileURL}
@@ -187,7 +231,8 @@ const Resume = ({ initialData, user, setMode }) => {
             setProfileImageURL={setProfileImageURL}
           />
         </div>
-        <div className="form-group col-lg-6 col-md-12"></div>
+         <div className="form-group col-lg-6 col-md-12"></div>
+
         {/* <!-- Input --> */}
 
         <div className="form-group col-lg-6 col-md-6">
@@ -259,7 +304,7 @@ const Resume = ({ initialData, user, setMode }) => {
 
         <div className="form-group col-lg-12 col-md-12">
           {/* <!-- Resume / Awards --> */}
-          <Awards items={awards} setItems={setAwards} />
+          {/* <Awards items={awards} setItems={setAwards} /> */}
         </div>
         {/* <!-- End Award --> */}
 
