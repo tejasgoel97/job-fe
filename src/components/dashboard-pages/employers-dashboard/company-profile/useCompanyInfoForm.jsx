@@ -15,6 +15,7 @@ const useCompanyInfoForm = () => {
     factoryLicenseNo: "",
     // typeOfCasting: [],
     manufacturingCapacity: "",
+    yearlyTurnover: "",
     yearOfEstablishment: "",
     isoCertifications: "",
     keyProducts: [""],
@@ -152,9 +153,9 @@ console.log("CompayLogo", companyLogo)
                 fetchCompanyInfo();
 
       }
-setTimeout(() => {
-  window.location.reload();
-}, 500); // slight delay to allow toast to show
+// setTimeout(() => {
+//   window.location.reload();
+// }, 500); // slight delay to allow toast to show
       return true;
     } catch (error) {
       console.error("Error submitting company info:", error);

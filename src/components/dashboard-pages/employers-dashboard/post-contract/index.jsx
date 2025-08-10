@@ -18,7 +18,7 @@ const index = ({ contractId, mode, initialData }) => {
       {/* <!-- Dashboard --> */}
       <section className="user-dashboard">
         <div className="dashboard-outer">
-          <BreadCrumb title={mode === "edit" ? "Edit Contract" : "Post a New Contract!"} />
+          {/* <BreadCrumb title={mode === "edit" ? "Edit Contract" : "Post a New Contract!"} /> */}
           {/* breadCrumb */}
 
           <MenuToggler />
@@ -34,7 +34,7 @@ const index = ({ contractId, mode, initialData }) => {
                   </div>
 
                   <div className="widget-content">
-                    <PostContractSteps />
+                    {/* <PostContractSteps /> */}
                     {/* End contract steps form */}
                     <PostContractBoxForm
                       initialData={initialData}

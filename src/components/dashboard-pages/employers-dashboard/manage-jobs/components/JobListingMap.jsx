@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const JobListingMap = ({ jobs }) => {
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString();
   };
-
+  const navigate = useNavigate();
   return (
     <div className="widget-content">
       <div className="table-outer">

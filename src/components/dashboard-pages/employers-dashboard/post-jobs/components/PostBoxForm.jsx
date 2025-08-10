@@ -7,22 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import SalaryRanges from "./SalaryRanges";
 import KeyResponsibilitiesInput from "./KeyResponsibilitiesInput ";
+import RequiredSkillsInput from "./RequiredSkills";
 
-const salaryRangesOptions = [
-  { value: "30000-40000", label: "$30,000 - $40,000" },
-  { value: "40000-50000", label: "$40,000 - $50,000" },
-  { value: "50000-70000", label: "$50,000 - $70,000" },
-  { value: "70000-90000", label: "$70,000 - $90,000" },
-  { value: "90000+", label: "$90,000+" },
-];
-
-const qualificationOptions = [
-  { value: "diploma", label: "Diploma in Foundry Technology" },
-  { value: "btech_metallurgy", label: "B.Tech in Metallurgy" },
-  { value: "cert_casting", label: "Certification in Casting Technology" },
-  { value: "bs_mech_eng", label: "BS in Mechanical Engineering" },
-  { value: "ms_materials", label: "MS in Materials Science" },
-];
 
 const jobTypeOptions = [
   "Full Time",
@@ -32,7 +18,6 @@ const jobTypeOptions = [
   "Apprenticeship",
 ];
 
-const experienceOptions = ["0-2 Years", "2-5 Years", "5-10 Years", "10+ Years"];
 
 const countryOptions = ["USA", "India", "China", "Germany", "Japan"];
 
@@ -61,7 +46,6 @@ const jobTitleOptions = [
 
 const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
   const [formData, setFormData] = useState({});
-
   const [selectedExpertise, setSelectedExpertise] = useState([]);
   const [jobTitle, setJobTitle] = useState("");
   const [customJobTitle, setCustomJobTitle] = useState("");
@@ -69,27 +53,35 @@ const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
   const [fromSalary, setFromSalary] = useState("");
   const [toSalary, setToSalary] = useState("");
   const [keyResponsibilities, setKeyResponsibilities] = useState([""]);
+  const [requiredSkills, setRequiredSkills] = useState([""]);
   const [salaryCurrency, setSalaryCurrency] = useState("");
   const [fromSalaryINR, setFromSalaryINR] = useState("");
   const [toSalaryINR, setToSalaryINR] = useState("");
+  const [ageFrom, setAgeFrom] = useState("");
+const [ageTo, setAgeTo] = useState("");
+const [expFrom, setExpFrom] = useState("");
+const [expTo, setExpTo] = useState("");
 
   const [loading, setLoading] = useState(false);
+  const [oneTimeSubmitted, setOneTimeSubmitted] = useState(false);
+  const [errors, setErrors] = useState({});
   const { user } = useAuthStore();
   const navigate = useNavigate();
-
-  // Foundry-specific dropdown options
+  useEffect(() => {
+    if(!oneTimeSubmitted) return
+    validateFields();
+  
+}, [keyResponsibilities, requiredSkills, fromSalary, toSalary, formData, selectedExpertise, jobTitle, department, salaryCurrency]);
+  // Prefill for edit mode
   useEffect(() => {
     if (mode === "edit" && initialData) {
       setFormData({
         description: initialData.description || "",
         jobType: initialData.jobType || "",
-        // qualification: initialData.qualification || "",
         minExperience: initialData.minExperience || "",
-        salaryFrom: initialData.salaryFrom || "",
-        salaryTo: initialData.salaryTo || "",
-        deadline: initialData.deadline
-          ? initialData.deadline.split("T")[0]
-          : "", // remove time part
+        // salaryFrom: initialData.salaryFrom || "",
+        // salaryTo: initialData.salaryTo || "",
+        deadline: initialData.deadline ? initialData.deadline.split("T")[0] : "",
         country: initialData.country || "",
         city: initialData.city || "",
         state: initialData.state || "",
@@ -98,7 +90,6 @@ const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
       });
       setJobTitle(initialData.title || "");
       setDepartment(initialData.department || "");
-      // If you also want to prefill expertise
       if (initialData.expertise) {
         const expertiseState = {};
         initialData.expertise.forEach((exp) => {
@@ -110,54 +101,143 @@ const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
         });
         setSelectedExpertise(expertiseState);
       }
+      setKeyResponsibilities(initialData.keyResponsibilities || [""]);
+      setRequiredSkills(initialData.requiredSkills || [""]);
+      setSalaryCurrency(initialData.salaryCurrency || "INR");
+      setFromSalary(initialData.fromSalary || "");
+      setToSalary(initialData.toSalary || "");
+      setFromSalaryINR(initialData.fromSalaryINR || "");
+      setToSalaryINR(initialData.toSalaryINR || "");
+      setAgeFrom(initialData.ageFrom || "");
+      setAgeTo(initialData.ageTo || "");
+      setExpFrom(initialData.expFrom || "");
+      setExpTo(initialData.expTo || "");
+      
     }
   }, [mode, initialData]);
 
+  // --- Field Validation ---
+  const validateFields = () => {
+    const newErrors = {};
+    if (!user) {
+      newErrors.user = "Please login to post a job";
+    }
+    if (!jobTitle || (jobTitle === "Other" && !customJobTitle.trim())) {
+      newErrors.jobTitle = "Job Title is required";
+    }
+    if (!department || !department.trim()) {
+      newErrors.department = "Department is required";
+    }
+    if (!formData.jobType) {
+      newErrors.jobType = "Job Type is required";
+    }
+    if (!formData.description || !formData.description.trim()) {
+      newErrors.description = "Job Description is required";
+    }
+    if (!fromSalary || !toSalary) {
+      newErrors.salary = "Salary Range is required";
+    } else if (+fromSalary > +toSalary) {
+      newErrors.salary = "From Salary cannot be greater than To Salary";
+    }
+    if (
+      !Array.isArray(keyResponsibilities) ||
+      !keyResponsibilities.filter((kr) => !!kr && kr.trim()).length
+    ) {
+      newErrors.keyResponsibilities = "At least one key responsibility is required";
+    }
+    if (
+      !Array.isArray(requiredSkills) ||
+      !requiredSkills.filter((sk) => !!sk && sk.trim()).length
+    ) {
+      newErrors.requiredSkills = "At least one skill is required";
+    }
+    if (!formData.minExperience) {
+      newErrors.minExperience = "Experience is required";
+    }
+    if (!formData.deadline) {
+      newErrors.deadline = "Application Deadline is required";
+    }
+    if (!formData.address || !formData.address.trim()) {
+      newErrors.address = "Address is required";
+    }
+    if (!formData.state || !formData.state.trim()) {
+      newErrors.state = "State is required";
+    }
+    if (!formData.pinCode || !/^\d{4,10}$/.test(formData.pinCode)) {
+      newErrors.pinCode = "Valid Pin Code is required";
+    }
+    if (!formData.country) {
+      newErrors.country = "Country is required";
+    }
+    if (!formData.city) {
+      newErrors.city = "City is required";
+    }if (!ageFrom || !ageTo) {
+  newErrors.age = "Both Age fields are required";
+} else if (+ageFrom > +ageTo) {
+  newErrors.age = "Age From cannot be greater than Age To";
+} else if (+ageFrom < 14 || +ageTo > 100) {
+  newErrors.age = "Enter valid ages (14-100)";
+}
+if (!expFrom || !expTo) {
+  newErrors.experienceRange = "Both Experience fields are required";
+} else if (+expFrom > +expTo) {
+  newErrors.experienceRange = "Experience From cannot be greater than Experience To";
+} else if (+expFrom < 0 || +expTo > 50) {
+  newErrors.experienceRange = "Enter a valid experience range (0-50)";
+}
+    if (
+      !selectedExpertise ||
+      !Object.values(selectedExpertise).some((exp) => exp.isSelected)
+    ) {
+      newErrors.expertise = "Select at least one expertise area";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // --- Submit Handler ---
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!user) {
-      alert("Please login to post a job");
-      return;
-    }
-
-    if (!formData.description) {
-      alert("Job Description is required");
-      return;
-    }
-
-    if (!formData.salaryFrom || !formData.salaryTo) {
-      alert("Salary Range is required");
+    setOneTimeSubmitted(true);
+    if (!validateFields()) {
+      toast.error("Please fill all required fields correctly.");
       return;
     }
     const finalJobTitle = jobTitle === "Other" ? customJobTitle : jobTitle;
     const finalExpertise = Object.entries(selectedExpertise)
-      .filter(([key, value]) => value.isSelected) // Only selected categories
+      .filter(([key, value]) => value.isSelected)
       .map(([key, value]) => ({
         category: key,
         subcategories: value.subcategories,
         processes: value.processes,
       }));
 
-    const finalFormData = {
-      ...formData,
-      title: finalJobTitle,
-      department,
-      expertise: finalExpertise,
-      createdBy: user.id, // Add userId from Zustand store
-      email: user.email,
-      // your existing form data...
-    };
-
-    console.log(finalFormData);
-
+ const finalFormData = {
+  ...formData,
+  title: finalJobTitle,
+  department,
+  expertise: finalExpertise,
+  keyResponsibilities: keyResponsibilities.filter((kr) => !!kr && kr.trim()),
+  requiredSkills: requiredSkills.filter((sk) => !!sk && sk.trim()),
+  fromSalary,
+  toSalary,
+  fromSalaryINR,
+  toSalaryINR,
+  salaryCurrency,
+  createdBy: user.id,
+  email: user.email,
+  ageFrom,
+  ageTo,
+  expFrom,
+  expTo,
+};
+    console.log("Final Form Data:", finalFormData);
     setLoading(true);
     try {
       const url =
         mode === "edit"
           ? `${import.meta.env.VITE_API_BASE_URL}/api/jobs/update-job/${jobId}`
           : `${import.meta.env.VITE_API_BASE_URL}/api/jobs/create-job`;
-
       const method = mode === "edit" ? "PUT" : "POST";
 
       const response = await fetch(url, {
@@ -180,11 +260,11 @@ const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
         setFormData({});
         navigate("/employers-dashboard/manage-jobs");
       } else {
-        alert(result.message || "Failed to submit job");
+        toast.error(result.message || "Failed to submit job");
       }
     } catch (error) {
       console.error("Error submitting job:", error);
-      alert("An error occurred while submitting the job");
+      toast.error("An error occurred while submitting the job");
     } finally {
       setLoading(false);
     }
@@ -195,10 +275,20 @@ const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
   };
 
   const handleInputChange = (e) => {
+    setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
+  // --- Error Message Helper ---
+  const renderError = (key) =>
+    errors[key] && (
+      <div style={{ color: "#e63946", fontSize: "0.95em", marginTop: 2 }}>
+        {errors[key]}
+      </div>
+    );
+
   return (
-    <form className="default-form" onSubmit={handleSubmit}>
+    <form className="default-form" onSubmit={handleSubmit} noValidate>
       <div className="row">
         <div className="form-group col-lg-6 col-md-12">
           <label>Job Title</label>
@@ -222,10 +312,11 @@ const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
               </option>
             ))}
           </select>
+          {renderError("jobTitle")}
         </div>
 
         {jobTitle === "Other" && (
-          <div className="form-group col-lg-6 col-md-12 mt-2">
+          <div className="form-group col-lg-6 col-md-12">
             <label>Specify Job Title</label>
             <input
               type="text"
@@ -235,19 +326,43 @@ const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
               onChange={(e) => setCustomJobTitle(e.target.value)}
               required
             />
+            {renderError("jobTitle")}
           </div>
         )}
 
-        <div className="form-group col-lg-6 col-md-12 mt-3">
+        <div className="form-group col-lg-6 col-md-12">
           <label>Department</label>
           <input
             type="text"
             className="form-control"
             placeholder="Enter Department"
+            name="department"
             value={department}
-            onChange={(e) => setDepartment(e.target.value)}
+            onChange={(e) => {
+              setErrors((prev) => ({ ...prev, department: "" }));
+              setDepartment(e.target.value)}}
             required
           />
+          {renderError("department")}
+        </div>
+
+        <div className="form-group col-lg-6 col-md-12">
+          <label>Job Type</label>
+          <select
+            className="chosen-single form-select"
+            name="jobType"
+            value={formData.jobType || ""}
+            onChange={handleInputChange}
+            required
+          >
+            <option value="">Select</option>
+            {jobTypeOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+          {renderError("jobType")}
         </div>
 
         <div className="form-group col-lg-12 col-md-12">
@@ -257,44 +372,21 @@ const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
             placeholder="Enter job description..."
             value={formData.description || ""}
             onChange={handleInputChange}
+            required
           />
+          {renderError("description")}
         </div>
+
         <KeyResponsibilitiesInput
           keyResponsibilities={keyResponsibilities}
           setKeyResponsibilities={setKeyResponsibilities}
         />
-        <div className="form-group col-lg-6 col-md-12">
-          <label>Job Type</label>
-          <select
-            className="chosen-single form-select"
-            name="jobType"
-            onChange={handleInputChange}
-          >
-            <option value="">Select</option>
-            {jobTypeOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-        </div>
+        {renderError("keyResponsibilities")}
 
-        {/* <div className="form-group col-lg-6 col-md-12">
-          <label>Qualification</label>
-          <Select
-            name="qualification"
-            options={qualificationOptions}
-            className="basic-select"
-            classNamePrefix="select"
-            value={qualificationOptions.find(
-              (option) => option.value === formData.qualification
-            )}
-            onChange={handleSelectChange("qualification")}
-          />
-        </div> */}
+        <RequiredSkillsInput requiredSkills={requiredSkills} setRequiredSkills={setRequiredSkills} />
+        {renderError("requiredSkills")}
 
         {/* Salary Range */}
-
         <SalaryRanges
           fromSalary={fromSalary}
           toSalary={toSalary}
@@ -302,55 +394,12 @@ const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
           setSalaryCurrency={setSalaryCurrency}
           setFromSalary={setFromSalary}
           setToSalary={setToSalary}
-
           fromSalaryINR={fromSalaryINR}
           toSalaryINR={toSalaryINR}
           setFromSalaryINR={setFromSalaryINR}
           setToSalaryINR={setToSalaryINR}
         />
-        {/* <div className="form-group col-lg-6 col-md-12">
-          <label>Salary Range (Monthly)</label>
-          <div className="row">
-            <div className="col-6">
-              <select
-                className="form-select"
-                value={formData.salaryFrom || ""}
-                onChange={(e) =>
-                  setFormData({ ...formData, salaryFrom: e.target.value })
-                }
-              >
-                <option value="">From</option>
-                {[...Array(100)].map((_, i) => {
-                  const value = (i + 1) * 1000;
-                  return (
-                    <option key={value} value={value}>
-                      ₹{value.toLocaleString()}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-            <div className="col-6">
-              <select
-                className="form-select"
-                value={formData.salaryTo || ""}
-                onChange={(e) =>
-                  setFormData({ ...formData, salaryTo: e.target.value })
-                }
-              >
-                <option value="">To</option>
-                {[...Array(100)].map((_, i) => {
-                  const value = (i + 1) * 1000;
-                  return (
-                    <option key={value} value={value}>
-                      ₹{value.toLocaleString()}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-          </div>
-        </div> */}
+        {renderError("salary")}
 
         {/* Experience */}
         <div className="form-group col-lg-6 col-md-12">
@@ -360,6 +409,7 @@ const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
             name="minExperience"
             value={formData.minExperience || ""}
             onChange={handleInputChange}
+            required
           >
             <option value="">Select</option>
             {[...Array(36)].map((_, i) => (
@@ -372,7 +422,97 @@ const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
               </option>
             ))}
           </select>
+          {renderError("minExperience")}
         </div>
+{/* Age From / To Dropdowns */}
+<div className="form-group col-lg-3 col-md-6">
+  <label>Age From</label>
+  <select
+    className="form-select"
+    value={ageFrom}
+    onChange={e => {
+      if (+e.target.value > +ageTo && ageTo) {
+        toast.error("Age From cannot be greater than Age To");
+        return;
+      }
+      setAgeFrom(e.target.value);
+      setErrors(prev => ({ ...prev, age: "" }));
+    }}
+    // required
+  >
+    <option value="">From</option>
+    {Array.from({ length: 87 }, (_, i) => 14 + i).map(age => (
+      <option key={age} value={age}>{age}</option>
+    ))}
+  </select>
+</div>
+<div className="form-group col-lg-3 col-md-6">
+  <label>Age To</label>
+  <select
+    className="form-select"
+    value={ageTo}
+    onChange={e => {
+      if (+e.target.value < +ageFrom && ageFrom) {
+        toast.error("Age To cannot be less than Age From");
+        return;
+      }
+      setAgeTo(e.target.value);
+      setErrors(prev => ({ ...prev, age: "" }));
+    }}
+    // required
+  >
+    <option value="">To</option>
+    {Array.from({ length: 87 }, (_, i) => 14 + i).map(age => (
+      <option key={age} value={age}>{age}</option>
+    ))}
+  </select>
+</div>
+{renderError("age")}
+
+{/* Experience From / To Dropdowns */}
+<div className="form-group col-lg-3 col-md-6">
+  <label>Experience From (years)</label>
+  <select
+    className="form-select"
+    value={expFrom}
+    onChange={e => {
+            if(+e.target.value > +expTo && expTo) {
+        toast.error("Experience To cannot be less than Experience From");
+        return
+      }
+      setExpFrom(e.target.value);
+      setErrors(prev => ({ ...prev, experienceRange: "" }));
+    }}
+    required
+  >
+    <option value="">From</option>
+    {Array.from({ length: 51 }, (_, i) => i).map(exp => (
+      <option key={exp} value={exp}>{exp}</option>
+    ))}
+  </select>
+</div>
+<div className="form-group col-lg-3 col-md-6">
+  <label>Experience To (years)</label>
+  <select
+    className="form-select"
+    value={expTo}
+    onChange={e => {
+      if(+e.target.value < +expFrom) {
+        toast.error("Experience To cannot be less than Experience From");
+        return
+      }
+      setExpTo(e.target.value);
+      setErrors(prev => ({ ...prev, experienceRange: "" }));
+    }}
+    required
+  >
+    <option value="">To</option>
+    {Array.from({ length: 51 }, (_, i) => i).map(exp => (
+      <option key={exp} value={exp}>{exp}</option>
+    ))}
+  </select>
+</div>
+{renderError("experienceRange")}
 
         {/* Deadline */}
         <div className="form-group col-lg-6 col-md-12">
@@ -383,7 +523,9 @@ const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
             name="deadline"
             value={formData.deadline || ""}
             onChange={handleInputChange}
+            required
           />
+          {renderError("deadline")}
         </div>
 
         {/* Address */}
@@ -396,7 +538,9 @@ const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
             placeholder="Enter foundry address"
             value={formData.address || ""}
             onChange={handleInputChange}
+            required
           />
+          {renderError("address")}
         </div>
 
         <div className="form-group col-lg-6 col-md-12">
@@ -408,7 +552,9 @@ const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
             placeholder="Enter State"
             value={formData.state || ""}
             onChange={handleInputChange}
+            required
           />
+          {renderError("state")}
         </div>
 
         <div className="form-group col-lg-6 col-md-12">
@@ -420,7 +566,9 @@ const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
             placeholder="Enter Pin Code"
             value={formData.pinCode || ""}
             onChange={handleInputChange}
+            required
           />
+          {renderError("pinCode")}
         </div>
 
         <div className="form-group col-lg-6 col-md-12">
@@ -430,6 +578,7 @@ const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
             name="country"
             value={formData.country || ""}
             onChange={handleInputChange}
+            required
           >
             <option value="">Select</option>
             {countryOptions.map((option) => (
@@ -438,6 +587,7 @@ const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
               </option>
             ))}
           </select>
+          {renderError("country")}
         </div>
 
         <div className="form-group col-lg-6 col-md-12">
@@ -447,6 +597,7 @@ const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
             name="city"
             value={formData.city || ""}
             onChange={handleInputChange}
+            required
           >
             <option value="">Select</option>
             {cityOptions.map((option) => (
@@ -455,112 +606,28 @@ const PostBoxForm = ({ jobId, mode = "new", initialData = {} }) => {
               </option>
             ))}
           </select>
+          {renderError("city")}
         </div>
 
-        <div className="form-group col-lg-12 col-md-12">
-          <label>Complete Address</label>
-          <input
-            type="text"
-            name="address"
-            placeholder="Enter foundry address"
-            onChange={handleInputChange}
-          />
-        </div>
         <div className="form-group col-lg-12 col-md-12">
           <label>
             <strong>Expertise Selection</strong>
           </label>
-
           <JobAndContractExpertiseSelector
             initialExpertise={initialData.expertise}
             setSelectedExpertise={setSelectedExpertise}
             selectedExpertise={selectedExpertise}
           />
-
-          {/* {expertiseData.map((cat) => (
-            <div key={cat.name} className="border rounded p-2 mb-3">
-              <div className="form-check">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id={`cat-${cat.name}`}
-                  checked={selectedExpertise[cat.name]?.isSelected || false}
-                  onChange={() => toggleCategory(cat.name)}
-                />
-                <label
-                  className="form-check-label fw-bold"
-                  htmlFor={`cat-${cat.name}`}
-                >
-                  {cat.name}
-                </label>
-              </div>
-
-              {selectedExpertise[cat.name]?.isSelected && (
-                <div className="ms-4 mt-2">
-                  <div>
-                    <label className="mb-1">
-                      <strong>Subcategories:</strong>
-                    </label>
-                    {cat.subCategory.map((sub) => (
-                      <div key={sub.name} className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          id={`sub-${cat.name}-${sub.name}`}
-                          checked={selectedExpertise[
-                            cat.name
-                          ]?.subcategories.includes(sub.name)}
-                          onChange={() => toggleSubcategory(cat.name, sub.name)}
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor={`sub-${cat.name}-${sub.name}`}
-                        >
-                          {sub.name}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-
-                  {cat.keyProcesses.length > 0 && (
-                    <div className="mt-2">
-                      <label className="mb-1">
-                        <strong>Processes:</strong>
-                      </label>
-                      {cat.keyProcesses.map((proc) => (
-                        <div key={proc.name} className="form-check">
-                          <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id={`proc-${cat.name}-${proc.name}`}
-                            checked={selectedExpertise[
-                              cat.name
-                            ]?.processes.includes(proc.name)}
-                            onChange={() => toggleProcess(cat.name, proc.name)}
-                          />
-                          <label
-                            className="form-check-label"
-                            htmlFor={`proc-${cat.name}-${proc.name}`}
-                          >
-                            {proc.name}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div> 
-          ))}
-            */}
+          {renderError("expertise")}
         </div>
 
-        {/* <h1>New Wxpertise</h1>
-        <ExpertiseSection initialData={initialData} /> */}
-
         <div className="form-group col-lg-12 col-md-12 text-right">
-          <button type="submit" className="theme-btn btn-style-one">
-            Submit Job
+          <button
+            type="submit"
+            className="theme-btn btn-style-one"
+            disabled={loading}
+          >
+            {loading ? "Submitting..." : "Submit Job"}
           </button>
         </div>
       </div>

@@ -117,7 +117,7 @@ const FormInfoBox = ({ formData, setFormData, errors = {} }) => {
         </div>
 
         {/* Other Details */}
-        <div className="form-group col-lg-12 col-md-12">
+        {/* <div className="form-group col-lg-12 col-md-12">
           <label>Other Details</label>
           <textarea
             name="otherDetails"
@@ -125,10 +125,10 @@ const FormInfoBox = ({ formData, setFormData, errors = {} }) => {
             onChange={handleChange}
             placeholder="Enter Other Details"
           />
-        </div>
+        </div> */}
 
         {/* Type of Casting */}
-        <div className="form-group col-lg-6 col-md-12">
+        {/* <div className="form-group col-lg-6 col-md-12">
           <label>Type of Casting</label>
           <Select
             isMulti
@@ -138,15 +138,15 @@ const FormInfoBox = ({ formData, setFormData, errors = {} }) => {
             classNamePrefix="select"
             onChange={handleCastingChange}
           />
-        </div>
+        </div> */}
 
         {/* Manufacturing Capacity */}
         <div className="form-group col-lg-6 col-md-12">
-          <label>Manufacturing Capacity (Tons/Month)</label>
+          <label>Yearly Turnover</label>
           <input
-            type="number"
-            name="manufacturingCapacity"
-            value={formData.manufacturingCapacity}
+            type="text"
+            name="yearlyTurnover"
+            value={formData.yearlyTurnover}
             onChange={handleChange}
             placeholder="Enter Capacity"
           />

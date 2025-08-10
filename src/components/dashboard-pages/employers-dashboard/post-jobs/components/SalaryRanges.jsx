@@ -1,13 +1,15 @@
+import { currencyOptions } from "@/utils/constants/Options";
 import { useEffect } from "react";
 import Select from "react-select";
 
-const currencyOptions = [
-  { value: "INR", label: "INR (₹)", symbol: "₹", rateToINR: 1 },
-  { value: "USD", label: "USD ($)", symbol: "$", rateToINR: 83 },
-  { value: "EUR", label: "Euro (€)", symbol: "€", rateToINR: 90 },
-  { value: "GBP", label: "Pound (£)", symbol: "£", rateToINR: 105 },
-  { value: "AED", label: "Dirham (د.إ)", symbol: "د.إ", rateToINR: 22.6 },
-];
+
+// const currencyOptions = [
+//   { value: "INR", label: "INR (₹)", symbol: "₹", rateToINR: 1 },
+//   { value: "USD", label: "USD ($)", symbol: "$", rateToINR: 83 },
+//   { value: "EUR", label: "Euro (€)", symbol: "€", rateToINR: 90 },
+//   { value: "GBP", label: "Pound (£)", symbol: "£", rateToINR: 105 },
+//   { value: "AED", label: "Dirham (د.إ)", symbol: "د.إ", rateToINR: 22.6 },
+// ];
 
 const SalaryRanges = ({
   fromSalary,

@@ -5,9 +5,8 @@ import { useState, useEffect } from "react";
 const contractTypeOptions = [
   "Full Time",
   "Part Time",
-  "Contract",
-  "Shift Work",
-  "Apprenticeship",
+  "Yearly",
+  "Limited Period",
 ];
 const countryOptions = ["USA", "India", "China", "Germany", "Japan"];
 const cityOptions = ["Pittsburgh", "Mumbai", "Shanghai", "Dusseldorf", "Tokyo"];
@@ -156,7 +155,7 @@ const PostContractBoxForm = ({ contractId, mode, initialData }) => {
     <form className="default-form" onSubmit={handleSubmit}>
       <div className="row">
         {/* Contract Title */}
-        <div className="form-group col-lg-12 col-md-12">
+        <div className="form-group col-lg-6 col-md-12">
           <label>Contract Title</label>
           <input
             type="text"
@@ -167,19 +166,7 @@ const PostContractBoxForm = ({ contractId, mode, initialData }) => {
             required
           />
         </div>
-
-        {/* Contract Description */}
-        <div className="form-group col-lg-12 col-md-12">
-          <label>Contract Description</label>
-          <textarea
-            name="description"
-            placeholder="Describe the contract requirements..."
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-
-        {/* Contract Type */}
+ {/* Contract Type */}
         <div className="form-group col-lg-6 col-md-12">
           <label>Contract Type</label>
           <select
@@ -195,6 +182,18 @@ const PostContractBoxForm = ({ contractId, mode, initialData }) => {
             ))}
           </select>
         </div>
+        {/* Contract Description */}
+        <div className="form-group col-lg-12 col-md-12">
+          <label>Contract Description</label>
+          <textarea
+            name="description"
+            placeholder="Describe the contract requirements..."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+
+       
 
         {/* Min Experience */}
         <div className="form-group col-lg-6 col-md-12">
