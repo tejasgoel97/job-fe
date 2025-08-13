@@ -74,7 +74,7 @@ const [isEditing, setIsEditing] = useState(false);
         setCompanyList([res.data.company]);
         setMode("choose");
       } else {
-        toast.error(res?.data?.message || "Something went wrong");
+        toast.error(res?.data?.message ||res?.data?.error || "Something went wrong");
       }
     } catch (err) {
       console.error("Error fetching companies", err);
@@ -166,6 +166,7 @@ const [isEditing, setIsEditing] = useState(false);
             compnayVerifiedToUser={compnayVerifiedToUser}
             isEditing={isEditing}
             setIsEditing={setIsEditing}
+            linkUserToCompany={linkUserToCompany}
           />
           {/* End .row */}
         </div>
@@ -211,6 +212,7 @@ const ContentRenderer = ({
   linkingLoading,
   compnayVerifiedToUser,
   isEditing, setIsEditing
+, linkUserToCompany
 }) => {
   return (
     <div className="widget-content">
@@ -243,32 +245,45 @@ const ContentRenderer = ({
       )}
 
       {mode === "choose" && (
-        <div className="col-lg-12">
-          <div className="form-group">
-            <label>Select your Company</label>
-            <select
-              className="form-control"
-              value={selectedCompany || ""}
-              onChange={(e) => setSelectedCompany(e.target.value)}
-            >
-              <option value="">-- Select Company --</option>
-              {companyList.map((company) => (
-                <option key={company.companyId} value={company.companyId}>
-                  {company.infoData.companyName} -{" "}
-                  {company.contactData.addressLine1}, {company.contactData.city}
-                  , {company.contactData.state}, {company.contactData.pinCode}
-                </option>
-              ))}
-            </select>
-          </div>
-          <button
-            onClick={handleConfirmCompany}
-            className="theme-btn btn-style-one mt-2"
-            disabled={!selectedCompany || linkingLoading}
-          >
-            {linkingLoading ? "Sumbitting" : "Submit for Verification"}
-          </button>
+    <div className="col-lg-12">
+      <div className="form-group">
+        <label className="mb-2">Select your Company</label>
+        <div className="d-flex flex-wrap gap-3">
+          {companyList.map((company) => {
+            const isActive = selectedCompany === company.companyId;
+            return (
+              <div
+                key={company.companyId}
+                onClick={() => setSelectedCompany(company.companyId)}
+                className={`card p-3 text-center cursor-pointer shadow-sm ${
+                  isActive ? "border-primary border-3" : ""
+                }`}
+                style={{
+                  width: "300px",
+                  cursor: "pointer",
+                  marginBottom: "10px",
+                  height: "150px",
+                }}
+              >
+                {/* <FaBuilding size={32} className="text-primary mb-2" /> */}
+                <strong>{company.infoData.companyName}</strong>
+                <small className="text-muted d-block">
+                  {company.contactData.city}, {company.contactData.state}
+                </small>
+              </div>
+            );
+          })}
         </div>
+      </div>
+
+      <button
+        onClick={() => handleConfirmCompany(selectedCompany)}
+        className="theme-btn btn-style-one mt-3"
+        disabled={!selectedCompany || linkingLoading}
+      >
+        {linkingLoading ? "Submitting..." : "Submit for Verification"}
+      </button>
+    </div>
       )}
       {mode === "form" && !isEditing && (
   <div className="text-right">
@@ -388,21 +403,25 @@ const ContentRenderer = ({
 
 
       {mode === "status" && (
-        <div className="alert alert-info mt-3">
-          {!compnayVerifiedToUser && (
-            <>
-              <span>✅ Your company is submitted for verification.</span>
-              <div>Company Name: {infoData.companyName}</div>
-              <div>GST Number: {infoData.gstNo}</div>
-              <div>Contact Person: {infoData.contactPerson}</div>
-              <div>Contact Number: {infoData.contactNumber}</div>
-              <div>
-                Address: {contactData.addressLine1}, {contactData.city},{" "}
-                {contactData.state}, {contactData.pinCode}
-              </div>
-            </>
-          )}
-        </div>
+       <div className="alert alert-info mt-3">
+  {!compnayVerifiedToUser && (
+    <>
+      <span>⏳ Your request to join this company is pending verification.</span>
+      <div className="mt-2"><strong>Company Name:</strong> {infoData.companyName}</div>
+      <div><strong>GST Number:</strong> {infoData.gstNo}</div>
+      <div className="mt-2">
+        Please reach out to existing verified members of this company to approve your request.
+      </div>
+      <button
+        onClick={() => linkUserToCompany(companyId)}
+        className="theme-btn btn-style-one mt-3"
+      >
+        Send Verification Request Again
+      </button>
+    </>
+  )}
+</div>
+
       )}
     </div>
   );

@@ -22,8 +22,11 @@ const index = () => {
         const { data } = await axiosInstance.get("/resume/me");
         if (data && data.resume) {
           setResumeData(data.resume);
-        } else {
-          setResumeData(null); // No resume found for a new user
+        } else if(data.message === "No resume found for this user.") {
+          setResumeData(null); 
+          setMode("edit")// No resume found for a new user
+        } else{
+          setResumeData(null);
         }
       } catch (error) {
         if (error.response && error.response.status === 404) {

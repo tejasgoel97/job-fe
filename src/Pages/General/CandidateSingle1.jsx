@@ -6,6 +6,7 @@ import { useParams, Link } from "react-router-dom";
 import MetaComponent from "@/components/common/MetaComponent";
 import { useEffect, useState } from "react";
 import axiosInstance from "@/utils/api/axiosInstance";
+import { useHourlyPageView } from "@/utils/api/trackPageView";
 
 const metadata = {
   title: "Candidate Single Dynamic V3 || Unicron Apps - Job Portal",
@@ -15,6 +16,9 @@ const metadata = {
 const CandidateSingle1 = ({ candidateId }) => {
   let params = useParams();
   const id = candidateId ? candidateId : params.id;
+  const trackingNeeded = candidateId ? false : true;
+  useHourlyPageView(trackingNeeded ? "candidate" : "", id);
+
   const candidate = candidates.find((item) => item.id == id) || candidates[0];
   const [resumeData, setResumeData] = useState(null);
   const [loading, setLoading] = useState(true);

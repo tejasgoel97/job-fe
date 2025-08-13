@@ -1,35 +1,12 @@
-import candidatesData from "../../../../../data/candidates";
 import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
 import { Link } from "react-router-dom";
-
 import { useEffect, useState } from "react";
 import axiosInstance from "@/utils/api/axiosInstance";
 import { toast } from "react-toastify";
 
-const WidgetContentBox = ({jobId}) => {
-  const [applications, setApplications] = useState([
-    {
-      _id: "685adcc529867aba564eeb2a",
-      jobId: {
-        _id: "681dbff572697f8a3cf91710",
-        title: "Executive",
-      },
-      candidateId: {
-        _id: "685a4ac9724756c255d81156",
-        email: "test@test.com",
-      },
-      candidateResumeId: {
-        _id: "685adcb787250cf0f257809c",
-      },
-      companyId: "681dba739984a5c69804167e",
-      jobCreatorEmployerId: "67d3ddb10858a9eeabb3529d",
-      currentStatus: "applied",
-      createdAt: "2025-06-24T17:13:41.678Z",
-      updatedAt: "2025-06-24T17:13:41.678Z",
-      __v: 0,
-    },
-  ]);
-  const [jobTitle, setJobTitle] = useState("")
+const WidgetContentBox = ({ jobId }) => {
+  const [applications, setApplications] = useState([]);
+  const [jobTitle, setJobTitle] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -38,16 +15,13 @@ const WidgetContentBox = ({jobId}) => {
       setLoading(true);
       setError(null);
       let apiUrl = "/job-application/received-applications";
-      if(jobId){
-        apiUrl = `/job-application/received-applications-for-job/${jobId}`
+      if (jobId) {
+        apiUrl = `/job-application/received-applications-for-job/${jobId}`;
       }
-      console.log(apiUrl)
       try {
-        const response = await axiosInstance.get(
-       apiUrl
-        )
-        if(response.data && response.data.success){
-          setJobTitle(response.data.jobTitle)
+        const response = await axiosInstance.get(apiUrl);
+        if (response.data && response.data.success) {
+          setJobTitle(response.data.jobTitle || "");
           setApplications(response.data.applications || []);
         }
       } catch (err) {
@@ -59,299 +33,186 @@ const WidgetContentBox = ({jobId}) => {
     };
 
     fetchApplications();
-  }, []);
+  }, [jobId]);
+
   if (loading) return <p>Loading applications...</p>;
-  if (error) return <p>Error: {error}</p>;
+  if (error) return <p className="text-danger">{error}</p>;
   if (applications.length === 0) return <p>No applications found.</p>;
+
+  // Counts
   const total = applications.length;
-  const newA = applications.filter(
-    (application) => application.currentStatus === "applied"
-  ).length;
-  const approved = applications.filter(
-    (application) => application.currentStatus === "approved"
-  ).length;
-  const rejected = applications.filter(
-    (application) => application.currentStatus === "approved"
-  ).length;
+  const newA = applications.filter(a => a.currentStatus === "applied").length;
+  const approved = applications.filter(a => a.currentStatus === "approved").length;
+  const hold = applications.filter(a => a.currentStatus === "hold").length;
+  const rejected = applications.filter(a => a.currentStatus === "rejected").length;
 
   const handleStatusChange = async (applicationId, status) => {
-    const res = await axiosInstance.patch(
-      `/job-application/update-status/${applicationId}`,
-      {
-        status,
-        notesByEmployer:"",
+    try {
+      const res = await axiosInstance.patch(
+        `/job-application/update-status/${applicationId}`,
+        { status, notesByEmployer: "" }
+      );
+      if (res.status === 200 && res.data.success) {
+        toast.success("Status updated successfully");
+        // update UI without reloading
+        setApplications(prev =>
+          prev.map(app =>
+            app._id === applicationId ? { ...app, currentStatus: status } : app
+          )
+        );
       }
-    );
-    if (res.status === 200 && res.data.success) {
-
-      toast.success("Status updated successfully");
-
+    } catch (err) {
+      toast.error("Failed to update status");
     }
   };
+
+  // Reusable card
+  const renderApplications = apps => (
+    <div className="row">
+      {apps.map(application => (
+        <div
+          className="candidate-block-three col-lg-6 col-md-12 col-sm-12"
+          key={application._id}
+        >
+          <div className="inner-box">
+            <div className="content">
+              <figure className="image">
+                <img
+                  src={
+                    application.candidateResumeId.profileImageURL ||
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOH2aZnIHWjMQj2lQUOWIL2f4Hljgab0ecZQ&s"
+                  }
+                  alt="candidates"
+                />
+              </figure>
+              <div className="d-flex justify-content-between align-items-start">
+                <h4 className="name">
+                  <Link to={`/candidate/${application.candidateResumeId._id}`}>
+                    {application.candidateId.firstName}{" "}
+                    {application.candidateId.lastName}
+                  </Link>
+                </h4>
+                <span className="badge bg-secondary text-uppercase">
+                  {application.currentStatus}
+                </span>
+              </div>
+
+              <ul className="candidate-info">
+                <li className="designation">
+                  {application.candidateResumeId.currentDesignation}
+                </li>
+                <li>
+                  <span className="icon flaticon-map-locator"></span>{" "}
+                  {application.candidateResumeId.contactInfo.country}
+                </li>
+                <li>
+                  <span className="icon flaticon-money"></span> Rs.
+                  {application.candidateResumeId.currentSalary ||
+                    "Not Available"}
+                </li>
+              </ul>
+
+              <ul className="post-tags">
+                <li>
+                  Applied:{" "}
+                  {new Date(application.createdAt).toLocaleString()}
+                </li>
+              </ul>
+            </div>
+
+            <div className="option-box">
+              <ul className="option-list">
+                <li>
+                  <button data-text="View Application">
+                    <span className="la la-eye"></span>
+                  </button>
+                </li>
+                {application.currentStatus !== "approved" && (
+                  <li>
+                    <button
+                      data-text="Approve Application"
+                      onClick={() =>
+                        handleStatusChange(application._id, "approved")
+                      }
+                    >
+                      <span className="la la-check"></span>
+                    </button>
+                  </li>
+                )}
+                {application.currentStatus !== "rejected" && (
+                  <li>
+                    <button
+                      data-text="Reject Application"
+                      onClick={() =>
+                        handleStatusChange(application._id, "rejected")
+                      }
+                    >
+                      <span className="la la-times-circle"></span>
+                    </button>
+                  </li>
+                )}
+                {application.currentStatus !== "hold" && (
+                  <li>
+                    <button
+                      data-text="Hold Application"
+                      onClick={() =>
+                        handleStatusChange(application._id, "hold")
+                      }
+                    >
+                      <span className="la la-pause-circle"></span>
+                    </button>
+                  </li>
+                )}
+              </ul>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 
   return (
     <div className="widget-content">
       <div className="tabs-box">
         <Tabs>
           <div className="aplicants-upper-bar">
-            <h6>All Applications{jobTitle? ` for ${jobTitle}`:""}</h6>
-
+            <h5 className="py-2">
+              All Applications For Job Title:{" "}
+              <span className="text-primary fw-bold">
+                {jobTitle || ""}
+              </span>
+            </h5>
             <TabList className="aplicantion-status tab-buttons clearfix">
-              <Tab className="tab-btn totals"> Total(s): {total}</Tab>
-              <Tab className="tab-btn approved"> New: {newA}</Tab>
-              <Tab className="tab-btn approved"> Approved: {approved}</Tab>
-              <Tab className="tab-btn rejected"> Rejected(s): {rejected}</Tab>
+              <Tab>Total: {total}</Tab>
+              <Tab style={{color:"green"}}>New: {newA}</Tab>
+              <Tab style={{color:"green"}}>Approved: {approved}</Tab>
+              <Tab style={{color:"#ffc40c"}}>Hold: {hold}</Tab>
+              <Tab style={{color:"red"}}>Rejected: {rejected}</Tab>
             </TabList>
           </div>
 
           <div className="tabs-content">
+            <TabPanel>{renderApplications(applications)}</TabPanel>
             <TabPanel>
-              <div className="row">
-                {applications.map((application) => (
-                  <div
-                    className="candidate-block-three col-lg-6 col-md-12 col-sm-12"
-                    key={application._id}
-                  >
-                    <div className="inner-box">
-                      <div className="content">
-                        <figure className="image">
-                          <img
-                            src={
-                              application.avatar ||
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOH2aZnIHWjMQj2lQUOWIL2f4Hljgab0ecZQ&s"
-                            }
-                            alt="candidates"
-                          />
-                        </figure>
-                        <div className="d-flex justify-content-between align-items-top">
-                        <h4 className="name">
-                          <Link to={`/candidate/${application.candidateResumeId._id}`}>
-                            {application.candidateId.firstName}{" "}
-                            {application.candidateId.lastName}
-                          </Link>
-                        </h4>
-                        <span className="p-0.5 border rounded color-white text-uppercase">{application.currentStatus}</span>
-                            </div>
-                        <ul className="candidate-info">
-                          <li className="designation">
-                            {application.candidateResumeId.currentDesignation}
-                          </li>
-                          <li>
-                            <span className="icon flaticon-map-locator"></span>{" "}
-                            {application.candidateResumeId.contactInfo.country}
-                          </li>
-                          <li>
-                            <span className="icon flaticon-money"></span>Rs.
-                            {application.candidateResumeId.currentSalary ||
-                              "Not Available"}
-                          </li>
-                        </ul>
-                        {/* End candidate-info */}
-
-                        <ul className="post-tags">
-                          <li>
-                            <a href="#">
-                              Applied:{" "}
-                              {new Date(application.createdAt).toLocaleString()}
-                            </a>
-                          </li>
-                          {/* {application.tags.map((val, i) => (
-                            <li key={i}>
-                              <a href="#">{val}</a>
-                            </li>
-                          ))} */}
-                        </ul>
-                        {/* {application.applyingMessageByCandidate && (
-                          <div>
-                            Message: {application.applyingMessageByCandidate}
-                          </div>
-                        )} */}
-                      </div>
-                      {/* End content */}
-
-                      <div className="option-box">
-                        <ul className="option-list">
-                          <li>
-                            <button data-text="View Aplication">
-                              <span className="la la-eye"></span>
-                            </button>
-                          </li>
-                          {application.currentStatus !== "shortlisted" &&
-                            <li>
-                            <button data-text="Approve Aplication" onClick={() => handleStatusChange(application._id, "shortlisted")}>
-                              <span className="la la-check"></span>
-                            </button>
-                          </li>}
-                          <li>
-                            <button data-text="Reject Aplication" onClick={() => handleStatusChange(application._id, "rejected")}>
-                              <span className="la la-times-circle"></span>
-                            </button>
-                          </li>
-                          {application.currentStatus !== "hold" &&
-                            <li>
-                            <button data-text="Hold Aplication" onClick={() => handleStatusChange(application._id, "hold")}>
-                              <span className="la la-pause-circle"></span>
-                            </button>
-                          </li>}
-                        </ul>
-                      </div>
-                      {/* End admin options box */}
-                    </div>
-                  </div>
-                ))}
-              </div>
+              {renderApplications(
+                applications.filter(a => a.currentStatus === "applied")
+              )}
             </TabPanel>
-            {/* End total applicants */}
-
             <TabPanel>
-              <div className="row">
-                {applications.map((application) => (
-                  <div
-                    className="candidate-block-three col-lg-6 col-md-12 col-sm-12"
-                    key={application.id}
-                  >
-                    <div className="inner-box">
-                      <div className="content">
-                        <figure className="image">
-                          <img src={application.avatar} alt="candidates" />
-                        </figure>
-                        <h4 className="name">
-                          <Link to={`/candidates-single-v1/${application.id}`}>
-                            {application.name}
-                          </Link>
-                        </h4>
-
-                        <ul className="candidate-info">
-                          <li className="designation">
-                            {application.designation}
-                          </li>
-                          <li>
-                            <span className="icon flaticon-map-locator"></span>{" "}
-                            {application.location}
-                          </li>
-                          <li>
-                            <span className="icon flaticon-money"></span> $
-                            {application.hourlyRate} / hour
-                          </li>
-                        </ul>
-                        {/* End candidate-info */}
-
-                        {/* <ul className="post-tags">
-                          {application.tags.map((val, i) => (
-                            <li key={i}>
-                              <a href="#">{val}</a>
-                            </li>
-                          ))}
-                        </ul> */}
-                      </div>
-                      {/* End content */}
-
-                      <div className="option-box">
-                        <ul className="option-list">
-                          <li>
-                            <button data-text="View Aplication">
-                              <span className="la la-eye"></span>
-                            </button>
-                          </li>
-                          <li>
-                            <button data-text="Approve Aplication">
-                              <span className="la la-check"></span>
-                            </button>
-                          </li>
-                          <li>
-                            <button data-text="Reject Aplication">
-                              <span className="la la-times-circle"></span>
-                            </button>
-                          </li>
-                          <li>
-                            <button data-text="Delete Aplication">
-                              <span className="la la-trash"></span>
-                            </button>
-                          </li>
-                        </ul>
-                      </div>
-                      {/* End admin options box */}
-                    </div>
-                  </div>
-                ))}
-              </div>
+              {renderApplications(
+                applications.filter(a => a.currentStatus === "approved")
+              )}
             </TabPanel>
-            {/* End approved applicants */}
-
             <TabPanel>
-              <div className="row">
-                {applications.map((application) => (
-                  <div
-                    className="candidate-block-three col-lg-6 col-md-12 col-sm-12"
-                    key={application.id}
-                  >
-                    <div className="inner-box">
-                      <div className="content">
-                        <figure className="image">
-                          <img src={application.avatar} alt="candidates" />
-                        </figure>
-                        <h4 className="name">
-                          <Link to={`/candidates-single-v1/${application.id}`}>
-                            {application.name}
-                          </Link>
-                        </h4>
-
-                        <ul className="candidate-info">
-                          <li className="designation">
-                            {application.designation}
-                          </li>
-                          <li>
-                            <span className="icon flaticon-map-locator"></span>{" "}
-                            {application.location}
-                          </li>
-                          <li>
-                            <span className="icon flaticon-money"></span> $
-                            {application.hourlyRate} / hour
-                          </li>
-                        </ul>
-                        {/* End candidate-info */}
-
-                        {/* <ul className="post-tags">
-                          {application.tags.map((val, i) => (
-                            <li key={i}>
-                              <a href="#">{val}</a>
-                            </li>
-                          ))}
-                        </ul> */}
-                      </div>
-                      {/* End content */}
-
-                      <div className="option-box">
-                        <ul className="option-list">
-                          <li>
-                            <button data-text="View Aplication">
-                              <span className="la la-eye"></span>
-                            </button>
-                          </li>
-                          <li>
-                            <button data-text="Approve Aplication">
-                              <span className="la la-check"></span>
-                            </button>
-                          </li>
-                          <li>
-                            <button data-text="Reject Aplication">
-                              <span className="la la-times-circle"></span>
-                            </button>
-                          </li>
-                          <li>
-                            <button data-text="Delete Aplication">
-                              <span className="la la-trash"></span>
-                            </button>
-                          </li>
-                        </ul>
-                      </div>
-                      {/* End admin options box */}
-                    </div>
-                  </div>
-                ))}
-              </div>
+              {renderApplications(
+                applications.filter(a => a.currentStatus === "hold")
+              )}
             </TabPanel>
-            {/* End rejected applicants */}
+            <TabPanel>
+              {renderApplications(
+                applications.filter(a => a.currentStatus === "rejected")
+              )}
+            </TabPanel>
           </div>
         </Tabs>
       </div>

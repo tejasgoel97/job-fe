@@ -83,18 +83,18 @@ function Experience({ items: exps, setItems: setExps }) {
   }
 
   function validate(form) {
-    if (!form.title.trim()) return "Job Title is required.";
-    if (!form.company.trim()) return "Company Name is required.";
-    if (!form.country.trim()) return "Country is required.";
-    if (!form.fromMonth || !form.fromYear) return "From Date is required.";
-    if (!form.toMonth || !form.toYear) return "To Date is required.";
+    if (!form.title.trim()) return "Job Title is  .";
+    if (!form.company.trim()) return "Company Name is  .";
+    if (!form.country.trim()) return "Country is  .";
+    if (!form.fromMonth || !form.fromYear) return "From Date is  .";
+    if (!form.toMonth || !form.toYear) return "To Date is  .";
     const fromDate = new Date(`${form.fromYear}-${form.fromMonth}-01`);
     const toDate = new Date(`${form.toYear}-${form.toMonth}-01`);
     if (toDate < fromDate) return "To Date cannot be before From Date.";
     if (!form.achievements.filter((pt) => pt.trim()).length)
-      return "At least one Achievement is required.";
+      return "At least one Achievement is  .";
     if (!form.responsibilities.filter((pt) => pt.trim()).length)
-      return "At least one Responsibility is required.";
+      return "At least one Responsibility is  .";
     return null;
   }
 
@@ -257,7 +257,7 @@ function Experience({ items: exps, setItems: setExps }) {
                 {form.achievements.map((pt, idx) => (
                   <div className="d-flex align-items-center gap-2 mb-2" key={idx}>
                     <span className="fw-semibold text-secondary" style={{ minWidth: "2em", textAlign: "right" }}>{idx + 1}.</span>
-                    <input type="text" className="form-control" value={pt} onChange={e => handlePointChange("achievements", idx, e.target.value)} placeholder={`Achievement ${idx + 1}`} required />
+                    <input type="text" className="form-control" value={pt} onChange={e => handlePointChange("achievements", idx, e.target.value)} placeholder={`Achievement ${idx + 1}`}   />
                     <button type="button" className="btn btn-outline-danger btn-sm" onClick={() => handleRemovePoint("achievements", idx)} disabled={form.achievements.length === 1} title="Remove">&times;</button>
                   </div>
                 ))}
@@ -273,7 +273,7 @@ function Experience({ items: exps, setItems: setExps }) {
                 {form.responsibilities.map((pt, idx) => (
                   <div className="d-flex align-items-center gap-2 mb-2" key={idx}>
                     <span className="fw-semibold text-secondary" style={{ minWidth: "2em", textAlign: "right" }}>{idx + 1}.</span>
-                    <input type="text" className="form-control" value={pt} onChange={e => handlePointChange("responsibilities", idx, e.target.value)} placeholder={`Responsibility ${idx + 1}`} required />
+                    <input type="text" className="form-control" value={pt} onChange={e => handlePointChange("responsibilities", idx, e.target.value)} placeholder={`Responsibility ${idx + 1}`}   />
                     <button type="button" className="btn btn-outline-danger btn-sm" onClick={() => handleRemovePoint("responsibilities", idx)} disabled={form.responsibilities.length === 1} title="Remove">&times;</button>
                   </div>
                 ))}

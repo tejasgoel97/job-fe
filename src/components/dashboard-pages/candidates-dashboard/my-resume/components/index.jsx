@@ -18,9 +18,9 @@ const Resume = ({ initialData, user, setMode }) => {
     initialData?.lookingForChange ?? false
   );
 
-  const [cvFileURL, setCvFileURL] = useState(initialData.cvFileURL || "");
+  const [cvFileURL, setCvFileURL] = useState(initialData?.cvFileURL || "");
   const [profileImageURL, setProfileImageURL] = useState(
-    initialData.profileImageURL || ""
+    initialData?.profileImageURL || ""
   );
   const [firstName, setFirstName] = useState(user?.firstName || "");
   const [lastName, setLastName] = useState(user?.lastName || "");

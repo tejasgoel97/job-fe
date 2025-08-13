@@ -9,7 +9,7 @@ import WidgetContentBoxContractor from "./components/WidgetContentBoxContractor"
 const index = ({type, id}) => {
   return (
     <div className="page-wrapper dashboard">
-      <span className="header-span"></span>
+      {/* <span className="header-span"></span> */}
       {/* <!-- Header Span for hight --> */}
 
       <DashboardEmployerSidebar />
@@ -18,7 +18,7 @@ const index = ({type, id}) => {
       {/* <!-- Dashboard --> */}
       <section className="user-dashboard">
         <div className="dashboard-outer">
-          <BreadCrumb title="All Applicants!" />
+          {/* <BreadCrumb title="All Applicants!" /> */}
           {/* breadCrumb */}
 
           <MenuToggler />
@@ -30,7 +30,7 @@ const index = ({type, id}) => {
               <div className="ls-widget">
                 <div className="tabs-box">
                   <div className="widget-title">
-                    <h4>Applicant</h4>
+                    {/* <h4>Applicant</h4> */}
                     {!id &&<WidgetTopFilterBox />}
                   </div>
                   {/* End top widget filter bar */}

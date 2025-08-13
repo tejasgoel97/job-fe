@@ -52,6 +52,7 @@ import AppliedContractsPage from "./Pages/contractor-dashboard/applied-contracts
 import ContractorProfile from "./Pages/General/ContractorProfileSingle";
 import ApplicantsByJob from "./Pages/employers-dashboard/applicants-by-job";
 import ApplicantsByContract from "./Pages/employers-dashboard/applicants-by-contract";
+import JobAlertPage from "./Pages/CandidateDashboard/job-alerts";
 
 
 
@@ -152,7 +153,7 @@ function App() {
                     path="change-password"
                     element={<ChangePasswordPage />}
                   /> */}
-                  {/* <Route path="job-alerts" element={<JobAlertPage />} /> */}
+                  <Route path="job-alerts" element={<JobAlertPage />} />
 
 
                   {/* Will Remove This */}

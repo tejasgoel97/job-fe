@@ -70,10 +70,10 @@ function Education({ items: educations, setItems: setEducations }) {
   }
 
   function validateEducation(edu) {
-    if (!edu.degreeType.trim()) return "Degree Type is required.";
-    if (!edu.degree.trim()) return "Degree is required.";
-    if (!edu.institution.trim()) return "Institution is required.";
-    if (!edu.country.trim()) return "Country is required.";
+    if (!edu.degreeType.trim()) return "Degree Type is  .";
+    if (!edu.degree.trim()) return "Degree is  .";
+    if (!edu.institution.trim()) return "Institution is  .";
+    if (!edu.country.trim()) return "Country is  .";
     if (!edu.toYear.trim()) return "To Year is mandatory.";
     if (!/^\d{4}$/.test(edu.toYear)) return "To Year must be a 4-digit year.";
     if (edu.fromYear && !/^\d{4}$/.test(edu.fromYear))
@@ -195,7 +195,7 @@ function Education({ items: educations, setItems: setEducations }) {
                     <select
                       value={form.degreeType}
                       onChange={e => handleFormChange("degreeType", e.target.value)}
-                      required
+                       
                     >
                       <option value="">Select Degree Type</option>
                       {degreeTypeOptions.map((dt) => (
@@ -209,7 +209,7 @@ function Education({ items: educations, setItems: setEducations }) {
                       type="text"
                       value={form.degree}
                       onChange={e => handleFormChange("degree", e.target.value)}
-                      required
+                       
                     />
                   </div>
                   <div>
@@ -218,7 +218,7 @@ function Education({ items: educations, setItems: setEducations }) {
                       type="text"
                       value={form.institution}
                       onChange={e => handleFormChange("institution", e.target.value)}
-                      required
+                       
                     />
                   </div>
                   <div>
@@ -234,7 +234,7 @@ function Education({ items: educations, setItems: setEducations }) {
                     <select
                       value={form.country}
                       onChange={e => handleFormChange("country", e.target.value)}
-                      required
+                       
                     >
                       <option value="">Select Country</option>
                       {countryOptions.map((c) => (
@@ -268,7 +268,7 @@ function Education({ items: educations, setItems: setEducations }) {
                       min="1900"
                       max="2100"
                       maxLength="4"
-                      required
+                       
                     />
                   </div>
                   <div>

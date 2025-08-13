@@ -321,7 +321,7 @@ const AddPortfolio = ({
           <div
             className="cv-uploadButton"
             onClick={() => cvInputRef.current.click()}
-            style={{ height: 300, width: "100%", cursor: "pointer" }}
+            style={{ height: 200, width: "100%", cursor: "pointer" }}
           >
             <input
               className="uploadButton-input"
