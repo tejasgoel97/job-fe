@@ -3,14 +3,25 @@ import FilterJobBox from "./FilterJobBox";
 import Breadcrumb from "@/components/common/Breadcrumb";
 import CallToActions from "@/components/job-listing-page/CallToActions";
 import SearchForm3 from "./SearchForm3";
+import ActiveFilters from "@/components/job-listing-page/ActiveFilters";
+import JobSorting from "@/components/job-listing-page/JobSorting";
 // import CallToAction from "../../call-to-action/CallToAction";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import axiosInstance from "@/utils/api/axiosInstance";
+import useFilterStore from "@/store/useFilterStore";
+
 const index = () => {
-   const location = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
+  const filters = useFilterStore((state) => state.filters);
+  const resetFilters = useFilterStore((state) => state.resetFilters);
+
+  // Reset filters when component mounts
+  useEffect(() => {
+    resetFilters();
+  }, []);
 
   // Get initial query params
   const queryParams = new URLSearchParams(location.search);
@@ -33,6 +44,15 @@ const index = () => {
             searchText: initialJobTitle,
             locationText: initialLocation,
             expertise: intialExpertise,
+            jobType: filters.jobType,
+            datePosted: filters.datePosted,
+            experienceFrom: filters.experienceLevel.from,
+            experienceTo: filters.experienceLevel.to,
+            salaryMin: filters.salaryRange.min,
+            salaryMax: filters.salaryRange.max,
+            salaryCurrency: filters.salaryRange.currency,
+            tags: filters.tags,
+            sortBy: filters.sortBy,
           },
         });
         setJobs(response.data.jobs);
@@ -44,7 +64,7 @@ const index = () => {
     };
 
     fetchJobs();
-  }, [location.search]);
+  }, [location.search, filters]);
 
   // Handle form submit and update URL
 
@@ -74,6 +94,12 @@ const index = () => {
             {/* <!-- End Filters Column --> */}
               
             <div className="content-column col-lg-12">
+              <div className="d-flex justify-content-between align-items-center mb-4">
+                <ActiveFilters filters={filters} />
+                <div className="sorting-wrapper">
+                  <JobSorting />
+                </div>
+              </div>
               <FilterJobBox jobs={jobs} loading={loading} />
             </div>
             {/* <!-- End Content Column --> */}
