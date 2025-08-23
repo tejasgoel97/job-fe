@@ -152,7 +152,7 @@ const CandidateSingle1 = ({ candidateId }) => {
                 <figure className="image">
                   <img
                     src={
-                      r.profileImageURL || "/images/resource/candidate-1.png"
+                      r.profileImageURL || "https://img.freepik.com/vector-premium/icono-avatar0002_750950-43.jpg?w=2000"
                     }
                     alt="profile avatar"
                   />

@@ -132,7 +132,7 @@ const handleShare = async () => {
             <div className="inner-box"> 
               <div className="content">
                 <span className="company-logo d-flex align-items-center justify-content-center">
-                  <img src={job.companyDetails?.infoData?.logo || "https://img.freepik.com/free-vector/abstract-company-logo_53876-120501.jpg?semt=ais_items_boosted&w=740"} alt="logo" />
+                  <img src={job.companyDetails?.infoData?.logo || "https://static.vecteezy.com/system/resources/previews/000/390/524/original/modern-company-logo-design-vector.jpg"} alt="logo" />
                 </span>
                 <h4>{job?.title}</h4>
 
@@ -294,7 +294,7 @@ const handleShare = async () => {
                   <div className="widget-content">
                     <div className="company-title">
                       <div className="company-logo">
-                        <img src={company.logo} alt="resource" />
+                        <img src={company.logo || "https://static.vecteezy.com/system/resources/previews/000/390/524/original/modern-company-logo-design-vector.jpg"} alt="resource" />
                       </div>
                       <h5 className="company-name">{job?.companyDetails?.infoData?.companyName || "null"}</h5>
                       <Link to={`/company/${job?.companyDetails?._id}`} className="profile-link">

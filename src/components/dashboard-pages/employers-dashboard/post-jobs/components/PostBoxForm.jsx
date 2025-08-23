@@ -78,7 +78,7 @@ const [expTo, setExpTo] = useState("");
       setFormData({
         description: initialData.description || "",
         jobType: initialData.jobType || "",
-        minExperience: initialData.minExperience || "",
+        minExperience: initialData.minExperience || "1",
         // salaryFrom: initialData.salaryFrom || "",
         // salaryTo: initialData.salaryTo || "",
         deadline: initialData.deadline ? initialData.deadline.split("T")[0] : "",
@@ -402,7 +402,7 @@ if (!expFrom || !expTo) {
         {renderError("salary")}
 
         {/* Experience */}
-        <div className="form-group col-lg-6 col-md-12">
+        {/* <div className="form-group col-lg-6 col-md-12">
           <label>Minimum Experience (Years)</label>
           <select
             className="form-select"
@@ -423,7 +423,7 @@ if (!expFrom || !expTo) {
             ))}
           </select>
           {renderError("minExperience")}
-        </div>
+        </div> */}
 {/* Age From / To Dropdowns */}
 <div className="form-group col-lg-3 col-md-6">
   <label>Age From</label>

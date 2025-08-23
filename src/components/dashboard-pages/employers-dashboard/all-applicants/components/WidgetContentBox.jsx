@@ -130,9 +130,9 @@ const WidgetContentBox = ({ jobId }) => {
                 {application.currentStatus !== "approved" && (
                   <li>
                     <button
-                      data-text="Approve Application"
+                      data-text="Shortlist Application"
                       onClick={() =>
-                        handleStatusChange(application._id, "approved")
+                        handleStatusChange(application._id, "shortlisted")
                       }
                     >
                       <span className="la la-check"></span>
