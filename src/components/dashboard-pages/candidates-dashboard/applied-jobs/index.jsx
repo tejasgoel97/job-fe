@@ -71,14 +71,6 @@ const index = () => {
               </div>
             </div>
           </div>
-          <div className="row">
-            <div className="col-lg-12">
-              {/* <!-- Ls widget --> */}
-              <div className="ls-widget">
-                <JobListingsTable />
-              </div>
-            </div>
-          </div>
           {/* End .row */}
         </div>
         {/* End dashboard-outer */}

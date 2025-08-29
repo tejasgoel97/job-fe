@@ -127,13 +127,14 @@ const DashboardCandidatesHeader = () => {
           {/* End .nav-outer */}
 
           <div className="outer-box">
+            {/* these are buttons for heart and alert bell */}
             <button className="menu-btn">
-              <span className="count">1</span>
-              <span className="icon la la-heart-o"></span>
+              {/* <span className="count">1</span> */}
+              {/* <span className="icon la la-heart-o"></span> */}
             </button>
 
             <button className="menu-btn">
-              <span className="icon la la-bell"></span>
+              {/* <span className="icon la la-bell"></span> */}
             </button>
             {/* End notification-icon */}
 
@@ -148,7 +149,7 @@ const DashboardCandidatesHeader = () => {
                 <img
                   alt="avatar"
                   className="thumb"
-                  src="/images/resource/candidate-1.png"
+                  src="https://img.freepik.com/vector-premium/icono-avatar0002_750950-43.jpg?w=2000"
                 />
                 <span className="name">My Account</span>
               </a>

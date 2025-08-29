@@ -153,7 +153,7 @@ const JobFilterTab = () => {
                   <div className="inner-box">
                     <div className="content">
                       <span className="company-logo">
-                        <img src={companyLogo} alt="item brand" />
+                        <img src={ "https://static.vecteezy.com/system/resources/previews/000/390/524/original/modern-company-logo-design-vector.jpg"} alt="item brand" />
                       </span>
                       <h4>
                         <Link to={`/job/${id}`}>
@@ -190,9 +190,9 @@ const JobFilterTab = () => {
                         {expertiseBadges.map((ex, i) => (
                           <li key={i} className="time">
                             {ex?.category || "Expertise"}
-                            {Array.isArray(ex?.subcategories) && ex.subcategories.length
+                            {/* {Array.isArray(ex?.subcategories) && ex.subcategories.length
                               ? ` • ${ex.subcategories.join(", ")}`
-                              : ""}
+                              : ""} */}
                           </li>
                         ))}
                       </ul>
