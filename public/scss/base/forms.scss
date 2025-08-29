@@ -601,7 +601,7 @@ input {
         color: var(--primary-color);
         padding: 0 25px 0 10px;
         border-radius: 10px;
-        background: rgba(25, 103, 210, 0.1);
+        background: var(--primary-light-bg-color2);
         margin-top: 15px;
         .search-choice-close {
           &:before {

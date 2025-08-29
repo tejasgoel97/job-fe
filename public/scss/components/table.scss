@@ -19,7 +19,7 @@ default table
 }
 
 .default-table thead {
-  background: #f5f7fc;
+  background: var(--primary-very-light-bg-color);
   border-radius: 8px;
   color: #ffffff;
 }

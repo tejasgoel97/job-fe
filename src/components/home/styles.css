@@ -1,0 +1,56 @@
+.title-overlay {
+  color: #fff;
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.8);
+}
+
+.text-overlay {
+  color: #f8f9fa; /* Bootstrap’s light text shade */
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.6);
+}
+.toggle-container {
+          display: flex;
+          position: relative;
+          background: #f0f0f0;
+          border-radius: 999px;
+          padding: 3px;
+          width: fit-content;
+          margin: 0 auto 20px;
+          height: 44px; /* Fixed height for the capsule */
+          overflow: hidden;
+          box-shadow: 0 0 0 1px #ccc;
+          width: 50%;
+        }
+        .toggle-option {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0 20px;
+          font-weight: 600;
+          color: #333;
+          cursor: pointer;
+          z-index: 2;
+          transition: color 0.3s ease;
+          font-size: 14px;
+          height: 100%;
+        }
+        .toggle-option.active {
+          color: white;
+        }
+        .slider {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 50%;
+          border-radius: 999px;
+          background-color: var(--primary-color);
+          z-index: 1;
+          height: 100%;
+          transition: all 0.3s ease;
+        }
+        .slider.job {
+          left: 0;
+        }
+        .slider.contract {
+          left: 50%;
+        }

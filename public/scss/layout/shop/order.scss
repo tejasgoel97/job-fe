@@ -108,7 +108,7 @@ CheckOut Page
 .order-box{
   position:relative;
   padding: 30px 30px;
-  background: #F5F7FC;
+  background: var(--primary-very-light-bg-color);
   border-radius: 8px;
   margin-bottom: 30px;
 }
@@ -175,7 +175,7 @@ CheckOut Page
 .payment-options{
   position:relative;
   padding: 30px 30px;
-  background-color: #F5F7FC;
+  background-color: var(--primary-very-light-bg-color);
   border-radius: 10px;
   margin-bottom: 30px;
 }
@@ -287,7 +287,7 @@ Order Slip
   -ms-flex-wrap: wrap;
   flex-wrap: wrap;
   padding: 40px 40px 0;
-  background: #F5F7FC;
+  background: var(--primary-very-light-bg-color);
   border-radius: 8px;
   margin-bottom: 60px;
   -webkit-box-pack: justify;

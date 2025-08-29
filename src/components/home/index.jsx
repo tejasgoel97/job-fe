@@ -1,6 +1,7 @@
 import Header from "./Header";
 import Footer from "./Footer";
 import Hero4 from "./Hero4";
+import Hero15 from "./Hero15";
 import JobFilterTab from "./JobFilterTab";
 import Block2 from "./Block2";
 import TopCompany from "./TopCompany";
@@ -20,8 +21,8 @@ const index = () => {
 
       {/* <MobileMenu /> */}
       {/* End MobileMenu */}
-
-      <Hero4 />
+      <Hero15 />
+      {/* <Hero4 /> */}
       {/* <!-- End Banner Section--> */}
 
       <section className="job-section alternate">

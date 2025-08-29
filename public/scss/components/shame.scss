@@ -775,8 +775,8 @@ Banner Section Eight
   width: 100%;
   bottom: 0;
   content: "";
-  background: -o-linear-gradient(191.23deg, #f5f7fc 0.12%, #f5f7fc 99.74%);
-  background: linear-gradient(258.77deg, #f5f7fc 0.12%, #f5f7fc 99.74%);
+  background: -o-linear-gradient(191.23deg, var(--primary-very-light-bg-color) 0.12%, var(--primary-very-light-bg-color) 99.74%);
+  background: linear-gradient(258.77deg, var(--primary-very-light-bg-color) 0.12%, var(--primary-very-light-bg-color) 99.74%);
 }
 
 .banner-section-eight .content-column {
@@ -1609,7 +1609,7 @@ Work Section
 }
 
 .work-section.style-two {
-  background: #f5f7fc;
+  background: var(--primary-very-light-bg-color);
 }
 
 .work-block {

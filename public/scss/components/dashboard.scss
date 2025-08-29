@@ -105,7 +105,7 @@
 .dashboard-option .dropdown-menu li.active a,
 .dashboard-option .dropdown-menu li:hover a {
   color: var(--primary-color);
-  background: rgba(25, 103, 210, 0.1);
+  background: var(--primary-light-bg-color2);
 }
 
 .dashboard-option .dropdown-menu li.active a i,
@@ -306,7 +306,7 @@ Dashboard
 
 .dashboard {
   position: relative;
-  background-color: #f5f7fc;
+  background-color: var(--primary-very-light-bg-color);
   padding-left: 365px;
   min-height: 100vh;
 }
@@ -383,7 +383,7 @@ Dashboard
   font-size: 40px;
   color: rgba(25, 103, 210, 1);
   text-align: center;
-  background-color: rgba(25, 103, 210, 0.1);
+  background-color: var(--primary-light-bg-color2);
   border-radius: 8px;
 }
 
@@ -1004,7 +1004,7 @@ User Sidebar
 .user-sidebar .navigation > li.active > a,
 .user-sidebar .navigation > li:hover > a {
   color: var(--primary-color);
-  background: rgba(25, 103, 210, 0.1);
+  background: var(--primary-light-bg-color2);
 }
 
 .user-sidebar .navigation li.active a i,
