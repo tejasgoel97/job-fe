@@ -52,7 +52,8 @@ function Education({ items: educations, setItems: setEducations }) {
         };
   }
 
-  function openAddModal() {
+  function openAddModal(e) {
+    e.preventDefault();
     setModalMode("add");
     setForm(initForm());
     setModalIdx(null);

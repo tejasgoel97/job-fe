@@ -188,7 +188,7 @@ const Resume = ({ initialData, user, setMode }) => {
       <div className="row">
         
         <div className="form-group col-lg-12 col-md-12">
-          <div className="form-group mb-3 p-3 bg-light border rounded shadow-sm d-flex align-items-center">
+          <div className="form-group mb-3 p-3  border rounded shadow-sm d-flex align-items-center">
             {/* Icon */}
             <i
               className="bi bi-briefcase-fill me-2 text-primary"
@@ -223,18 +223,21 @@ const Resume = ({ initialData, user, setMode }) => {
             </div>
           </div>
         </div>
-        <div className="form-group col-lg-6 col-md-12">
+                    <div className="edit-card skills-section">
+
           <AddPortfolio
             cvFileURL={cvFileURL}
             setCvFileURL={setCvFileURL}
             profileImageURL={profileImageURL}
             setProfileImageURL={setProfileImageURL}
           />
+
         </div>
-         <div className="form-group col-lg-6 col-md-12"></div>
 
         {/* <!-- Input --> */}
+        <div className="edit-card other-details-section">
 
+        
         <div className="form-group col-lg-6 col-md-6">
           <label>First Name</label>
           <input
@@ -259,7 +262,6 @@ const Resume = ({ initialData, user, setMode }) => {
             onChange={(e) => setLastName(e.target.value)}
           ></input>
         </div>
-
         <div className="form-group col-lg-12 col-md-12">
           <label>Description</label>
           <textarea
@@ -270,77 +272,82 @@ const Resume = ({ initialData, user, setMode }) => {
             placeholder="Description about yourself"
           ></textarea>
         </div>
+</div>
+        
         {/* <!-- About Company --> */}
-        <OtherDetails
-          age={age}
-          setAge={setAge}
-          totalExperienceYears={totalExperienceYears}
-          setTotalExperienceYears={setTotalExperienceYears}
-          totalExperienceMonths={totalExperienceMonths}
-          setTotalExperienceMonths={setTotalExperienceMonths}
-          currentlyWorking={currentlyWorking}
-          setCurrentlyWorking={setCurrentlyWorking}
-          languages={languages}
-          setLanguages={setLanguages}
-          currentSalary={currentSalary}
-          currentSalaryCurrency={currentSalaryCurrency}
-          setCurrentSalaryCurrency={setCurrentSalaryCurrency}
-          setCurrentSalary={setCurrentSalary}
-          expectedSalary={expectedSalary}
-          setExpectedSalary={setExpectedSalary}
-          expectedSalaryCurrency={expectedSalaryCurrency}
-          setExpectedSalaryCurrency={setExpectedSalaryCurrency}
-        />
-        <div className="form-group col-lg-12 col-md-12">
-          <Education items={education} setItems={setEducation} />
+        <div className="edit-card other-details-section">
+          <OtherDetails
+            age={age}
+            setAge={setAge}
+            totalExperienceYears={totalExperienceYears}
+            setTotalExperienceYears={setTotalExperienceYears}
+            totalExperienceMonths={totalExperienceMonths}
+            setTotalExperienceMonths={setTotalExperienceMonths}
+            currentlyWorking={currentlyWorking}
+            setCurrentlyWorking={setCurrentlyWorking}
+            languages={languages}
+            setLanguages={setLanguages}
+            currentSalary={currentSalary}
+            currentSalaryCurrency={currentSalaryCurrency}
+            setCurrentSalaryCurrency={setCurrentSalaryCurrency}
+            setCurrentSalary={setCurrentSalary}
+            expectedSalary={expectedSalary}
+            setExpectedSalary={setExpectedSalary}
+            expectedSalaryCurrency={expectedSalaryCurrency}
+            setExpectedSalaryCurrency={setExpectedSalaryCurrency}
+          />
+        </div>
+          <div className="edit-card education-section">
+            <Education items={education} setItems={setEducation} />
+          </div>
           {/* <!-- Resume / Education --> */}
 
-          <Experiences items={experiences} setItems={setExperiences} />
+          <div className="edit-card experience-section">
+            <Experiences items={experiences} setItems={setExperiences} />
+          </div>
           {/* <!-- Resume / Work & Experience --> */}
-        </div>
         {/* <!--  education and word-experiences --> */}
 
         {/* <!-- End more portfolio upload --> */}
 
-        <div className="form-group col-lg-12 col-md-12">
           {/* <!-- Resume / Awards --> */}
           {/* <Awards items={awards} setItems={setAwards} /> */}
-        </div>
         {/* <!-- End Award --> */}
 
         {/* <div className="form-group col-lg-6 col-md-12">
           <label>Skills </label>
           <SkillsMultiple value={skills} onChange={setSkills} />
         </div> */}
-        <div className="form-group col-lg-12 col-md-12">
-          <label>EXpertise selection </label>
-          <CandidateExpertiseSelector
-            initialExpertise={initialExpertise}
-            selectedExpertise={selectedExpertise}
-            setSelectedExpertise={setSelectedExpertise}
-          />
-        </div>
+        
+          <div className="edit-card skills-section">
+            <label>Expertise Selection</label>
+            <CandidateExpertiseSelector
+              initialExpertise={initialExpertise}
+              selectedExpertise={selectedExpertise}
+              setSelectedExpertise={setSelectedExpertise}
+            />
+          </div>
         {/* <!-- End Skills --> */}
 
         {/* <!-- Contact Info --> */}
-        <div className="form-group col-lg-12 col-md-12 resume-outer">
-          <div className="upper-title">
-            <h4>Contact Info </h4>
+          <div className="edit-card contact-info-section  col-lg-6 col-md-12" >
+            <div className="upper-title">
+              <h4>Contact Info</h4>
+            </div>
+            <ContactInfoBox
+              data={contactInfo}
+              onChange={handleContactInfoChange}
+            />
           </div>
-          <ContactInfoBox
-            data={contactInfo}
-            onChange={handleContactInfoChange}
-          />
-        </div>
-        <div className="form-group col-lg-12 col-md-12 resume-outer">
-          <div className="upper-title">
-            <h4>Social Network </h4>
+          <div className="edit-card social-network-section  col-lg-6 col-md-12">
+            <div className="upper-title">
+              <h4>Social Network</h4>
+            </div>
+            <SocialNetworkBox
+              data={socialNetworks}
+              onChange={handleSocialNetworkChange}
+            />
           </div>
-          <SocialNetworkBox
-            data={socialNetworks}
-            onChange={handleSocialNetworkChange}
-          />
-        </div>
         <div className="form-group col-lg-12 col-md-12">
           <button
             type="submit"

@@ -3,7 +3,7 @@ const SocialNetworkBox = ({ data, onChange }) => {
     <form className="default-form">
       <div className="row">
         {/* Facebook */}
-        <div className="form-group col-lg-6 col-md-12">
+        <div className="form-group  col-md-12">
           <label>Facebook</label>
           <input
             type="text"
@@ -16,7 +16,7 @@ const SocialNetworkBox = ({ data, onChange }) => {
         </div>
 
         {/* X (Twitter) */}
-        <div className="form-group col-lg-6 col-md-12">
+        <div className="form-group  col-md-12">
           <label>X (Twitter)</label>
           <input
             type="text"
@@ -29,7 +29,7 @@ const SocialNetworkBox = ({ data, onChange }) => {
         </div>
 
         {/* Linkedin */}
-        <div className="form-group col-lg-6 col-md-12">
+        <div className="form-group  col-md-12">
           <label>LinkedIn</label>
           <input
             type="text"
@@ -42,7 +42,7 @@ const SocialNetworkBox = ({ data, onChange }) => {
         </div>
 
         {/* Instagram */}
-        <div className="form-group col-lg-6 col-md-12">
+        <div className="form-group  col-md-12">
           <label>Instagram</label>
           <input
             type="text"

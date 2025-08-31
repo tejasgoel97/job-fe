@@ -33,7 +33,6 @@ import DashboardPage from "./Pages/CandidateDashboard/dashboard";
 // import AppliedJobsPage from "./Pages/CandidateDashboard/applied-jobs";
 // import ChangePasswordPage from "./Pages/CandidateDashboard/change-password";
 // import JobAlertPage from "./Pages/CandidateDashboard/job-alerts";
-import MyProfilePage from "./Pages/CandidateDashboard/my-profile";
 import MyResumePage from "./Pages/CandidateDashboard/my-resume";
 import CandidateSingle1 from "./Pages/General/CandidateSingle1";
 import CompanySingle1 from "./Pages/General/CompanySingle1";
@@ -154,10 +153,6 @@ function App() {
                     element={<ChangePasswordPage />}
                   /> */}
                   <Route path="job-alerts" element={<JobAlertPage />} />
-
-
-                  {/* Will Remove This */}
-                  <Route path="my-profile" element={<MyProfilePage />} /> 
                   
                   <Route path="my-resume" element={<MyResumePage />} />
                 </Route>
