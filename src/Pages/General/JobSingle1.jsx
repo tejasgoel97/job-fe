@@ -10,6 +10,9 @@ import axiosInstance from "../../utils/api/axiosInstance"; // Import axiosInstan
 import { Link, useParams } from "react-router-dom";
 import useAuthStore from "@/utils/authStoreZusland";
 
+import { currencyOptions } from "@/utils/constants/Options";
+import { readableCurrency } from "@/utils/helpers/readableCurrency";
+
 const JobSingle1 = () => {
   const { id } = useParams();
   const [job, setJob] = useState({});
@@ -122,7 +125,9 @@ const handleShare = async () => {
       }
     }
   };
-
+  const currencySymbol = currencyOptions.find(
+    (option) => option.value === job.salaryCurrency
+  )?.symbol || "₹"; // Default to ₹ if not found
 
   return (
     <section className="job-detail-section">
@@ -151,7 +156,7 @@ const handleShare = async () => {
                   </li>
                   <li>
                     <span className="icon flaticon-money"></span>
-                    Salary: {job.fromSalary} - {job.toSalary}
+                    Salary: {readableCurrency(job.fromSalary, job.salaryCurrency)} - {readableCurrency(job.toSalary, job.salaryCurrency)}
                   </li>
                   {/* salary info */}
                 </ul>
@@ -242,7 +247,7 @@ const handleShare = async () => {
             <div className="content-column col-lg-8 col-md-12 col-sm-12">
               <ExpertiseList expertise={job.expertise} />
               {/* End jobdetails content */}
-              <JobDetailsDescriptions description={job.description} />
+              <JobDetailsDescriptions description={job.description} keyResponsibilities={job.keyResponsibilities} requiredSkills={job.requiredSkills}/>
               {/* End jobdetails content */}
 
               <div className="other-options">
@@ -264,10 +269,10 @@ const handleShare = async () => {
                   <h4 className="widget-title">Job Overview</h4>
                   <JobOverView job={job} />
 
-                  <h4 className="widget-title">Job Skills</h4>
+                  {/* <h4 className="widget-title">Job Skills</h4>
                   <div className="widget-content">
                     <JobSkills />
-                  </div>
+                  </div> */}
                   {/* <!-- Job Skills --> */}
                 </div>
                 {/* End .sidebar-widget */}
@@ -306,14 +311,14 @@ const handleShare = async () => {
                     <CompanyInfo companyDetails={job.companyDetails}/>
 
                     <div className="btn-box">
-                      <a
-                        href="#"
-                        target="_blank"
+                      <Link to={`/company/${job?.companyDetails?._id}`}
+              
+                        // target="_blank"
                         rel="noopener noreferrer"
                         className="theme-btn btn-style-three"
                       >
-                        {company?.link}
-                      </a>
+                        View Company
+                      </Link>
                     </div>
                     {/* End btn-box */}
                   </div>

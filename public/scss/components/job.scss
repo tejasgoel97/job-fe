@@ -517,7 +517,7 @@ Job Section
 }
 
 .job-other-info li.time {
-  background: rgba(25, 103, 210, 0.15);
+  background: var(--primary-light-bg-color);
   color: var(--primary-color);
 }
 

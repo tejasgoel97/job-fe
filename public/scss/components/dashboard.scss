@@ -381,7 +381,7 @@ Dashboard
   width: 70px;
   line-height: 70px;
   font-size: 40px;
-  color: rgba(25, 103, 210, 1);
+  color: var(--primary-color);
   text-align: center;
   background-color: var(--primary-light-bg-color2);
   border-radius: 8px;
@@ -1719,7 +1719,7 @@ Chat Widget
   top: 0;
   height: 35px;
   width: 35px;
-  background: rgba(25, 103, 210, 0.15);
+  background: var(--primary-light-bg-color);
   color: var(--primary-color);
   text-align: center;
   line-height: 35px;

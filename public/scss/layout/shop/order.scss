@@ -253,7 +253,7 @@ Order Slip
   display: inline-block;
   height: 80px;
   width: 80px;
-  color: rgba(25, 103, 210, 1);
+  color: var(--primary-color);
   background: rgba(25, 103, 210, .1);
   border-radius: 50%;
   line-height: 80px;

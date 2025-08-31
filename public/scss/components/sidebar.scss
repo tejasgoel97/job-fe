@@ -106,7 +106,7 @@
   padding: 5px 20px;
   border-radius: 50px;
   margin-bottom: 10px;
-  background: rgba(25, 103, 210, 0.15);
+  background: var(--primary-light-bg-color);
   color: var(--primary-color);
 }
 
@@ -173,12 +173,12 @@
 .company-widget .btn-box .theme-btn {
   display: block;
   width: 100%;
-  background: rgba(25, 103, 210, 0.15);
+  background: var(--primary-light-bg-color);
   border-radius: 8px;
 }
 
 .company-widget .btn-box .theme-btn:hover {
-  background: rgba(25, 103, 210, 1);
+  background: var(--primary-color);
 }
 
 .sidebar-widget.contact-widget .theme-btn {

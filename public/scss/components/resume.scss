@@ -131,7 +131,7 @@
   height: 80px;
   width: 80px;
   font-size: 40px;
-  background: rgba(25, 103, 210, 0.15);
+  background: var(--primary-light-bg-color);
   color: var(--primary-color);
   border-radius: 50%;
   line-height: 80px;
@@ -438,17 +438,17 @@
   border-radius: 8px;
   margin-right: 10px;
   min-width: auto;
-  color: rgba(25, 103, 210, 1);
+  color: var(--primary-color);
 }
 
 .resume-outer.theme-blue .resume-block .edit-box .year,
 .resume-outer.theme-blue .resume-block .name {
   background: #eff4fc;
-  color: rgba(25, 103, 210, 1);
+  color: var(--primary-color);
 }
 
 .resume-outer.theme-blue .resume-block .info-box span {
-  color: rgba(25, 103, 210, 1);
+  color: var(--primary-color);
 }
 
 .resume-outer.theme-yellow .resume-block .edit-box .year,

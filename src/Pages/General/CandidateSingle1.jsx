@@ -42,10 +42,28 @@ const CandidateSingle1 = ({ candidateId }) => {
     }
   }, [id]);
 
-  // Helper to safely display currencies
+  // Helper to safely display currencies with formatting
   function formatCurrency(amount, currency) {
     if (!amount) return "N/A";
-    return currency ? `${amount} ${currency}` : amount;
+    
+    // Format the number with commas for thousands
+    const formattedAmount = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    
+    // Add currency symbol/code
+    if (currency) {
+      // You can add more currency symbols here
+      const symbols = {
+        'USD': '$',
+        'EUR': '€',
+        'INR': '₹',
+        'GBP': '£',
+      };
+      
+      const symbol = symbols[currency] || currency;
+      return `${symbol} ${formattedAmount}`;
+    }
+    
+    return formattedAmount;
   }
 
   // Helper for experience dates
@@ -145,71 +163,171 @@ const CandidateSingle1 = ({ candidateId }) => {
       <MetaComponent meta={metadata} />
       <span className="header-span"></span>
       <section className="candidate-detail-section style-three">
-        <div className="upper-box">
+        <div className="upper-box" style={{ 
+            background: 'linear-gradient(to bottom, #f3f2f0 0%, #ffffff 100%)',
+            paddingBottom: '2rem'
+          }}>
           <div className="auto-container">
             <div className="candidate-block-six">
-              <div className="inner-box">
-                <figure className="image">
-                  <img
-                    src={
-                      r.profileImageURL || "https://img.freepik.com/vector-premium/icono-avatar0002_750950-43.jpg?w=2000"
-                    }
-                    alt="profile avatar"
-                  />
-                </figure>
-                <h4 className="name">
-                  {`${r.firstName || ""} ${r.lastName || ""}`.trim() ||
-                    "No Name"}
-                </h4>
-                <span className="designation">
-                  {r.currentDesignation || "N/A"}
-                </span>
-                <div className="content">
-                  <ul className="post-tags">
-                    {r.skills?.map((skill, i) => (
-                      <li key={i}>{skill}</li>
-                    ))}
-                  </ul>
-                  <ul className="candidate-info">
-                    <li>
-                      <span className="icon flaticon-map-locator"></span>
-                      {r.contactInfo?.city || "N/A"},{" "}
-                      {r.contactInfo?.country || ""}
-                    </li>
-                    <li>
-                      <span className="icon flaticon-mail"></span>
-                      {r.contactInfo?.email || "N/A"}
-                    </li>
-                    <li>
-                      <span className="icon flaticon-clock"></span>
-                      Member Since,{" "}
-                      {r.createdAt
-                        ? new Date(r.createdAt).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                          })
-                        : "N/A"}
-                    </li>
-                  </ul>
-                  <div className="btn-box">
-                    {r.cvFileURL && (
-                      <a
-                        className="theme-btn btn-style-one"
-                        href={r.cvFileURL}
-                        download
-                      >
-                        Download CV
-                      </a>
-                    )}
-                    <button className="bookmark-btn">
-                      <i className="flaticon-bookmark"></i>
-                    </button>
+              <div className="inner-box" style={{ position: 'relative' }}>
+                {/* Cover Image */}
+                <div 
+                  className="cover-image" 
+                  style={{ 
+                    height: '200px', 
+                    width: '100%',
+                    background: r.coverImageURL 
+                      ? `url(${r.coverImageURL}) center/cover no-repeat`
+                      : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    borderRadius: '8px 8px 0 0',
+                    marginBottom: '60px'
+                  }}
+                />
+
+                {/* Main Content */}
+                <div className="profile-content" style={{ padding: '0 2rem' }}>
+                  {/* Profile Image */}
+                  <figure 
+                    className="image" 
+                    style={{ 
+                      position: 'absolute',
+                      top: '120px',
+                      left: '2rem',
+                      width: '160px',
+                      height: '160px',
+                      margin: 0,
+                      border: '4px solid white',
+                      borderRadius: '50%',
+                      boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                      background: 'white',
+                      overflow: 'hidden'
+                    }}
+                  >
+                    <img
+                      src={r.profileImageURL || "https://img.freepik.com/vector-premium/icono-avatar0002_750950-43.jpg?w=2000"}
+                      alt="profile avatar"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  </figure>
+
+                  {/* Header Content */}
+                  <div className="header-content" style={{ marginLeft: '180px', paddingTop: '1rem' }}>
+                    <div className="title-box d-flex justify-content-start align-items-start">
+                      <div>
+                        <h4 className="name mb-1" style={{ fontSize: '26px', fontWeight: '600' }}>
+                          {`${r.firstName || ""} ${r.lastName || ""}`.trim() || "No Name"}
+                          
+                        </h4>
+                        <div className="designation mb-2" style={{ fontSize: '16px', color: '#666' }}>
+                          
+                          {r.currentDesignation || "N/A"}
+                          {r.currentlyWorking !== undefined && (
+                            <span
+                              className={`ms-2 ${
+                                r.currentlyWorking ? "text-success" : "text-muted"
+                              }`}
+                              style={{ fontSize: '0.9em' }}
+                            >
+                              • {r.currentlyWorking ? "Currently Active" : "Not Working"}
+                            </span>
+                          )}
+                        </div>
+                        <ul className="candidate-info" style={{ margin: '0', padding: '0', listStyle: 'none' }}>
+                          <li className="d-inline-block me-4" style={{ fontSize: '14px' }}>
+                            <span className="icon flaticon-map-locator me-1"></span>
+                            {r.contactInfo?.city || "N/A"}, {r.contactInfo?.country || ""}
+                          </li>
+                          <li className="d-inline-block me-4" style={{ fontSize: '14px' }}>
+                            <span className="icon flaticon-mail me-1"></span>
+                            {r.contactInfo?.email || "N/A"}
+                          </li>
+                          <li className="d-inline-block" style={{ fontSize: '14px', color: '#666' }}>
+                            <span className="icon flaticon-clock me-1"></span>
+                            Joined{" "}
+                            {r.createdAt
+                              ? new Date(r.createdAt).toLocaleDateString("en-US", {
+                                  year: "numeric",
+                                  month: "long",
+                                })
+                              : "N/A"}
+                          </li>
+                        </ul>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="btn-box d-flex gap-2">
+                        {r.cvFileURL && (
+                          <a
+                            className="theme-btn btn-style-one"
+                            href={r.cvFileURL}
+                            download
+                            style={{ 
+                              borderRadius: '24px',
+                              padding: '8px 20px',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '8px',
+                              transition: 'all 0.3s ease'
+                            }}
+                          >
+                            <i className="fas fa-download"></i>
+                            Download CV
+                          </a>
+                        )}
+                        <button 
+                          className="bookmark-btn"
+                          style={{ 
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '50%',
+                            border: '2px solid #e0e0e0',
+                            background: 'white',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            transition: 'all 0.3s ease'
+                          }}
+                        >
+                          <i className="flaticon-bookmark"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Skills Section */}
+                    <div className="skills-box mt-4">
+                      {r.skills?.length > 0 && (
+                        <div style={{ 
+                          display: 'flex', 
+                          flexWrap: 'wrap', 
+                          gap: '8px',
+                          marginTop: '1rem'
+                        }}>
+                          {r.skills.map((skill, i) => (
+                            <span 
+                              key={i}
+                              style={{
+                                background: '#f3f2f0',
+                                padding: '6px 16px',
+                                borderRadius: '16px',
+                                fontSize: '14px',
+                                color: '#666',
+                                transition: 'all 0.3s ease'
+                              }}
+                              className="hover:bg-gray-200"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+
 
         <div className="candidate-detail-outer">
           <div className="auto-container">
@@ -239,31 +357,55 @@ const CandidateSingle1 = ({ candidateId }) => {
                         <li>
                           <i className="icon icon-rate"></i>
                           <h5>Current Salary:</h5>
-                          <span>
-                            {formatCurrency(
-                              r.currentSalary,
-                              r.currentSalaryCurrency
+                          <div>
+                            <span className="d-block">
+                              {formatCurrency(
+                                r.currentSalary,
+                                r.currentSalaryCurrency
+                              )}
+                            </span>
+                            {r.currentSalaryType && (
+                              <small className="text-muted">
+                                per {r.currentSalaryType}
+                              </small>
                             )}
-                          </span>
+                          </div>
                         </li>
                         <li>
                           <i className="icon icon-salary"></i>
                           <h5>Expected Salary:</h5>
-                          <span>
-                            {formatCurrency(
-                              r.expectedSalary,
-                              r.expectedSalaryCurrency
+                          <div>
+                            <span className="d-block">
+                              {formatCurrency(
+                                r.expectedSalary,
+                                r.expectedSalaryCurrency
+                              )}
+                            </span>
+                            {r.expectedSalaryType && (
+                              <small className="text-muted">
+                                per {r.expectedSalaryType}
+                              </small>
                             )}
-                          </span>
+                          </div>
                         </li>
                         <li>
                           <i className="icon icon-language"></i>
-                          <h5>Language:</h5>
-                          <span>
-                            {r.languages?.length
-                              ? r.languages.join(", ")
-                              : "N/A"}
-                          </span>
+                          <h5>Languages:</h5>
+                          {r.languages?.length ? (
+                            <div className="language-list">
+                              {r.languages.map((lang, index) => (
+                                <span
+                                  key={index}
+                                  className="badge bg-light text-dark me-2 mb-1"
+                                  style={{ fontSize: "0.85em" }}
+                                >
+                                  {lang}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <span>N/A</span>
+                          )}
                         </li>
                         <li>
                           <i className="icon icon-degree"></i>
@@ -345,12 +487,12 @@ const CandidateSingle1 = ({ candidateId }) => {
                   )}
 
                   {/* Portfolio */}
-                  <div className="portfolio-outer mt-5">
+                  {/* <div className="portfolio-outer mt-5">
                     <h4>Portfolio</h4>
                     <div className="row">
                       <GalleryBox />
                     </div>
-                  </div>
+                  </div> */}
 
                   {/* Education */}
                   {r.education?.length > 0 && (
