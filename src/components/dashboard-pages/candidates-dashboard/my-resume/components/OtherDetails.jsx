@@ -111,9 +111,9 @@ const OtherDetails = (props) => {
   };
 
   return (
-    <>
+    <div className="row g-3">
       {/* Age */}
-      <div className="form-group col-lg-4 col-md-12">
+      <div className="form-group col-lg-6 col-md-12">
         <label>Age</label>
           <Select
             value={ageOptions.find((opt) => opt.value === Number(age))}
@@ -130,7 +130,7 @@ const OtherDetails = (props) => {
       </div>
 
       {/* Total Experience (Years) */}
-      <div className="form-group col-lg-4 col-md-12">
+      <div className="form-group col-lg-6 col-md-12">
         <label>Total Experience (Years)</label>
           <Select
             value={expOptions.find(
@@ -272,7 +272,7 @@ const OtherDetails = (props) => {
           }}
         />
       </div>
-    </>
+    </div>
   );
 };
 

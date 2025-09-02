@@ -186,7 +186,6 @@ const Resume = ({ initialData, user, setMode }) => {
   return (
     <form className="default-form" onSubmit={handleSubmit}>
       <div className="row">
-        
         <div className="form-group col-lg-12 col-md-12">
           <div className="form-group mb-3 p-3  border rounded shadow-sm d-flex align-items-center">
             {/* Icon */}
@@ -223,57 +222,61 @@ const Resume = ({ initialData, user, setMode }) => {
             </div>
           </div>
         </div>
-                    <div className="edit-card skills-section">
-
+        <div className="edit-card skills-section">
           <AddPortfolio
             cvFileURL={cvFileURL}
             setCvFileURL={setCvFileURL}
             profileImageURL={profileImageURL}
             setProfileImageURL={setProfileImageURL}
           />
-
         </div>
 
         {/* <!-- Input --> */}
         <div className="edit-card other-details-section">
+          <div className="form-group col-lg-6 col-md-6">
+            <label>First Name</label>
+            <input
+              required
+              type="text"
+              name="first Name"
+              placeholder=""
+              value={firstName}
+              disabled
+              onChange={(e) => setFirstName(e.target.value)}
+            ></input>
+          </div>
+          <div className="form-group col-lg-6 col-md-6">
+            <label>Last Name</label>
+            <input
+              required
+              type="text"
+              name="last Name"
+              placeholder=""
+              disabled
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            ></input>
+          </div>
+          <div className="form-group col-lg-12 col-md-12">
+            <label>Description</label>
+            <textarea
+              required
+              name="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Description about yourself"
+            ></textarea>
+          </div>
+        </div>
+        <div className="edit-card education-section">
+          <Education items={education} setItems={setEducation} />
+        </div>
+        {/* <!-- Resume / Education --> */}
 
-        
-        <div className="form-group col-lg-6 col-md-6">
-          <label>First Name</label>
-          <input
-            required
-            type="text"
-            name="first Name"
-            placeholder=""
-            value={firstName}
-            disabled
-            onChange={(e) => setFirstName(e.target.value)}
-          ></input>
+        <div className="edit-card experience-section">
+          <Experiences items={experiences} setItems={setExperiences} />
         </div>
-        <div className="form-group col-lg-6 col-md-6">
-          <label>Last Name</label>
-          <input
-            required
-            type="text"
-            name="last Name"
-            placeholder=""
-            disabled
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-          ></input>
-        </div>
-        <div className="form-group col-lg-12 col-md-12">
-          <label>Description</label>
-          <textarea
-            required
-            name="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Description about yourself"
-          ></textarea>
-        </div>
-</div>
-        
+        {/* <!-- Resume / Work & Experience --> */}
         {/* <!-- About Company --> */}
         <div className="edit-card other-details-section">
           <OtherDetails
@@ -297,57 +300,49 @@ const Resume = ({ initialData, user, setMode }) => {
             setExpectedSalaryCurrency={setExpectedSalaryCurrency}
           />
         </div>
-          <div className="edit-card education-section">
-            <Education items={education} setItems={setEducation} />
-          </div>
-          {/* <!-- Resume / Education --> */}
 
-          <div className="edit-card experience-section">
-            <Experiences items={experiences} setItems={setExperiences} />
-          </div>
-          {/* <!-- Resume / Work & Experience --> */}
         {/* <!--  education and word-experiences --> */}
 
         {/* <!-- End more portfolio upload --> */}
 
-          {/* <!-- Resume / Awards --> */}
-          {/* <Awards items={awards} setItems={setAwards} /> */}
+        {/* <!-- Resume / Awards --> */}
+        {/* <Awards items={awards} setItems={setAwards} /> */}
         {/* <!-- End Award --> */}
 
         {/* <div className="form-group col-lg-6 col-md-12">
           <label>Skills </label>
           <SkillsMultiple value={skills} onChange={setSkills} />
         </div> */}
-        
-          <div className="edit-card skills-section">
-            <label>Expertise Selection</label>
-            <CandidateExpertiseSelector
-              initialExpertise={initialExpertise}
-              selectedExpertise={selectedExpertise}
-              setSelectedExpertise={setSelectedExpertise}
-            />
-          </div>
+
+        <div className="edit-card skills-section">
+          <label>Expertise Selection</label>
+          <CandidateExpertiseSelector
+            initialExpertise={initialExpertise}
+            selectedExpertise={selectedExpertise}
+            setSelectedExpertise={setSelectedExpertise}
+          />
+        </div>
         {/* <!-- End Skills --> */}
 
         {/* <!-- Contact Info --> */}
-          <div className="edit-card contact-info-section  col-lg-6 col-md-12" >
-            <div className="upper-title">
-              <h4>Contact Info</h4>
-            </div>
-            <ContactInfoBox
-              data={contactInfo}
-              onChange={handleContactInfoChange}
-            />
+        <div className="edit-card contact-info-section  col-lg-6 col-md-12">
+          <div className="upper-title">
+            <h4>Contact Info</h4>
           </div>
-          <div className="edit-card social-network-section  col-lg-6 col-md-12">
-            <div className="upper-title">
-              <h4>Social Network</h4>
-            </div>
-            <SocialNetworkBox
-              data={socialNetworks}
-              onChange={handleSocialNetworkChange}
-            />
+          <ContactInfoBox
+            data={contactInfo}
+            onChange={handleContactInfoChange}
+          />
+        </div>
+        <div className="edit-card social-network-section  col-lg-6 col-md-12">
+          <div className="upper-title">
+            <h4>Social Network</h4>
           </div>
+          <SocialNetworkBox
+            data={socialNetworks}
+            onChange={handleSocialNetworkChange}
+          />
+        </div>
         <div className="form-group col-lg-12 col-md-12">
           <button
             type="submit"

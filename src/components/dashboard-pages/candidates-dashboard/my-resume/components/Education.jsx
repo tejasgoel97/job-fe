@@ -1,17 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
+import ReactModal from "react-modal";
 import "./styles.css";
 
-// Bootstrap 5 Modal helpers
-const showBsModal = (modalRef) => {
-  if (window.bootstrap && modalRef.current) {
-    window.bootstrap.Modal.getOrCreateInstance(modalRef.current).show();
-  }
-};
-const hideBsModal = (modalRef) => {
-  if (window.bootstrap && modalRef.current) {
-    window.bootstrap.Modal.getOrCreateInstance(modalRef.current).hide();
-  }
-};
+// accessibility root (change if your app root is different)
+ReactModal.setAppElement?.("#root");
 
 const degreeTypeOptions = [
   { value: "diploma", label: "Diploma" },
@@ -30,10 +22,10 @@ const countryOptions = [
 ];
 
 function Education({ items: educations, setItems: setEducations }) {
-  const [modalMode, setModalMode] = useState(""); // "add" or "edit"
-  const [modalIdx, setModalIdx] = useState(null); // index of education being edited
+  const [modalMode, setModalMode] = useState(""); // "add" | "edit" | ""
+  const [modalIdx, setModalIdx] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
   const [form, setForm] = useState(initForm());
-  const modalRef = useRef();
 
   function initForm(edu = null) {
     return edu
@@ -53,17 +45,20 @@ function Education({ items: educations, setItems: setEducations }) {
   }
 
   function openAddModal(e) {
-    e.preventDefault();
+    e?.preventDefault?.();
     setModalMode("add");
     setForm(initForm());
     setModalIdx(null);
-    setTimeout(() => showBsModal(modalRef), 1);
+    setIsOpen(true);
   }
-  function openEditModal(idx) {
+
+  function openEditModal(e, idx) {
+        e?.preventDefault?.();
+
     setModalMode("edit");
     setForm(initForm(educations[idx]));
     setModalIdx(idx);
-    setTimeout(() => showBsModal(modalRef), 1);
+    setIsOpen(true);
   }
 
   function handleFormChange(field, value) {
@@ -71,18 +66,15 @@ function Education({ items: educations, setItems: setEducations }) {
   }
 
   function validateEducation(edu) {
-    if (!edu.degreeType.trim()) return "Degree Type is  .";
-    if (!edu.degree.trim()) return "Degree is  .";
-    if (!edu.institution.trim()) return "Institution is  .";
-    if (!edu.country.trim()) return "Country is  .";
+    if (!edu.degreeType.trim()) return "Degree Type is mandatory.";
+    if (!edu.degree.trim()) return "Degree is mandatory.";
+    if (!edu.institution.trim()) return "Institution is mandatory.";
+    if (!edu.country.trim()) return "Country is mandatory.";
     if (!edu.toYear.trim()) return "To Year is mandatory.";
     if (!/^\d{4}$/.test(edu.toYear)) return "To Year must be a 4-digit year.";
     if (edu.fromYear && !/^\d{4}$/.test(edu.fromYear))
       return "From Year must be a 4-digit year.";
-    if (
-      edu.fromYear &&
-      parseInt(edu.toYear) < parseInt(edu.fromYear)
-    )
+    if (edu.fromYear && parseInt(edu.toYear) < parseInt(edu.fromYear))
       return "To Year cannot be before From Year.";
     if (edu.marks && isNaN(Number(edu.marks)))
       return "Marks should be a number.";
@@ -98,15 +90,10 @@ function Education({ items: educations, setItems: setEducations }) {
       return;
     }
     if (modalMode === "add") {
-      setEducations((prev) => [
-        { ...form, id: Date.now() },
-        ...prev,
-      ]);
+      setEducations((prev) => [{ ...form, id: Date.now() }, ...prev]);
     } else if (modalMode === "edit" && modalIdx !== null) {
       setEducations((prev) =>
-        prev.map((edu, idx) =>
-          idx === modalIdx ? { ...form, id: edu.id } : edu
-        )
+        prev.map((edu, idx) => (idx === modalIdx ? { ...form, id: edu.id } : edu))
       );
     }
     handleModalClose();
@@ -116,7 +103,7 @@ function Education({ items: educations, setItems: setEducations }) {
     setModalMode("");
     setModalIdx(null);
     setForm(initForm());
-    hideBsModal(modalRef);
+    setIsOpen(false);
   }
 
   function handleDelete(idx) {
@@ -127,6 +114,35 @@ function Education({ items: educations, setItems: setEducations }) {
 
   return (
     <div className="resume-outer">
+      {/* Local styles ONLY for the modal shell; your .edit-card/.edit-grid remain untouched */}
+      <style>{`
+        .rm-edu-overlay {
+          position: fixed;
+          inset: 0;
+          background: rgba(0,0,0,.5);
+          z-index: 1055;
+        }
+        .rm-edu-content {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: min(92vw, 860px);
+          max-height: calc(100vh - 4rem);
+          overflow: hidden;
+          background: #fff;
+          border: 1px solid rgba(0,0,0,.2);
+          border-radius: .75rem;
+          box-shadow: 0 .5rem 1rem rgba(0,0,0,.15);
+          padding: 0; /* We'll use header/body/footer structure below */
+        }
+        .rm-edu-body {
+          overflow: auto;
+          max-height: calc(100vh - 12rem);
+          padding: 1rem 1.25rem;
+        }
+      `}</style>
+
       <div className="upper-title d-flex align-items-center justify-content-between">
         <h4>Education</h4>
         <button className="add-info-btn" onClick={openAddModal}>
@@ -137,6 +153,7 @@ function Education({ items: educations, setItems: setEducations }) {
       {educations.length === 0 && (
         <div className="alert alert-secondary">No education added.</div>
       )}
+
       {educations.map((edu, idx) => (
         <div className="resume-block" key={edu.id}>
           <div className="inner">
@@ -164,7 +181,7 @@ function Education({ items: educations, setItems: setEducations }) {
                   )}
                 </span>
                 <div className="edit-btns">
-                  <button onClick={() => openEditModal(idx)}>
+                  <button onClick={(e) => openEditModal(e,idx)}>
                     <span className="la la-pencil"></span>
                   </button>
                   <button onClick={() => handleDelete(idx)}>
@@ -173,162 +190,199 @@ function Education({ items: educations, setItems: setEducations }) {
                 </div>
               </div>
             </div>
-            <div className="text">
-              <p>{edu.description}</p>
-            </div>
+            {edu.description && (
+              <div className="text">
+                <p>{edu.description}</p>
+              </div>
+            )}
           </div>
         </div>
       ))}
 
-      {/* Modal */}
-      <div className="modal fade" tabIndex={-1} ref={modalRef}>
-        <div className="modal-dialog modal-lg modal-dialog-centered">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">{modalMode === "edit" ? "Edit Education" : "Add Education"}</h5>
-              <button type="button" className="btn-close" onClick={handleModalClose}></button>
-            </div>
-            <div className="modal-body">
-              <div className="edit-card">
-                <div className="edit-grid">
-                  <div>
-                    <label>Degree Type <span style={{ color: "red" }}>*</span></label>
-                    <select
-                      value={form.degreeType}
-                      onChange={e => handleFormChange("degreeType", e.target.value)}
-                       
-                    >
-                      <option value="">Select Degree Type</option>
-                      {degreeTypeOptions.map((dt) => (
-                        <option key={dt.value} value={dt.value}>{dt.label}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label>Degree <span style={{ color: "red" }}>*</span></label>
-                    <input
-                      type="text"
-                      value={form.degree}
-                      onChange={e => handleFormChange("degree", e.target.value)}
-                       
-                    />
-                  </div>
-                  <div>
-                    <label>Institution <span style={{ color: "red" }}>*</span></label>
-                    <input
-                      type="text"
-                      value={form.institution}
-                      onChange={e => handleFormChange("institution", e.target.value)}
-                       
-                    />
-                  </div>
-                  <div>
-                    <label>Region/State</label>
-                    <input
-                      type="text"
-                      value={form.region}
-                      onChange={e => handleFormChange("region", e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label>Country <span style={{ color: "red" }}>*</span></label>
-                    <select
-                      value={form.country}
-                      onChange={e => handleFormChange("country", e.target.value)}
-                       
-                    >
-                      <option value="">Select Country</option>
-                      {countryOptions.map((c) => (
-                        <option key={c} value={c}>{c}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label>From Year</label>
-                    <input
-                      type="number"
-                      value={form.fromYear}
-                      onChange={e =>
-                        handleFormChange("fromYear", e.target.value.replace(/\D/, ""))
-                      }
-                      placeholder="e.g. 2019"
-                      min="1900"
-                      max="2100"
-                      maxLength="4"
-                    />
-                  </div>
-                  <div>
-                    <label>To Year <span style={{ color: "red" }}>*</span></label>
-                    <input
-                      type="number"
-                      value={form.toYear}
-                      onChange={e =>
-                        handleFormChange("toYear", e.target.value.replace(/\D/, ""))
-                      }
-                      placeholder="e.g. 2023"
-                      min="1900"
-                      max="2100"
-                      maxLength="4"
-                       
-                    />
-                  </div>
-                  <div>
-                    <label>Marks/CGPA</label>
-                    <input
-                      type="number"
-                      value={form.marks}
-                      onChange={e =>
-                        handleFormChange("marks", e.target.value.replace(/[^\d.]/g, ""))
-                      }
-                      placeholder="e.g. 89"
-                      min="0"
-                      max="100"
-                    />
-                  </div>
-                </div>
-                <div style={{ marginTop: "1rem" }}>
-                  <label>Description</label>
-                  <textarea
-                    value={form.description}
-                    onChange={e => handleFormChange("description", e.target.value)}
-                    style={{ width: "100%", minHeight: 60 }}
-                  />
-                  <div style={{ marginTop: "10px", display: "flex", gap: "1rem" }}>
-                    <button
-                      style={{
-                        backgroundColor: "#d9230f",
-                        color: "#fff",
-                        padding: "8px 16px",
-                        fontWeight: "bold",
-                        border: "none",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                      }}
-                      onClick={handleSave}
-                    >
-                      Save
-                    </button>
-                    <button
-                      style={{
-                        background: "#eee",
-                        color: "#333",
-                        padding: "8px 16px",
-                        fontWeight: "bold",
-                        border: "none",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                      }}
-                      onClick={handleModalClose}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+      {/* REACT-MODAL */}
+      <ReactModal
+        isOpen={isOpen}
+        onRequestClose={handleModalClose}
+        shouldCloseOnEsc
+        shouldCloseOnOverlayClick
+        overlayClassName="rm-edu-overlay"
+        className="rm-edu-content"
+        contentLabel={modalMode === "edit" ? "Edit Education" : "Add Education"}
+      >
+        {/* Header — keep Bootstrap classes for look consistency */}
+        <div className="modal-header px-4 py-2 border-bottom">
+          <h5 className="modal-title">
+            {modalMode === "edit" ? "Edit Education" : "Add Education"}
+          </h5>
+          <button type="button" className="btn-close" aria-label="Close" onClick={handleModalClose}></button>
         </div>
+
+        {/* Body — your existing .edit-card / .edit-grid styles */}
+<div className="rm-edu-body">
+  <div className="p-4">
+    <div className="edit-grid">
+      <div className="">
+        <label className="form-label">
+          Degree Type <span className="text-danger">*</span>
+        </label>
+        <select
+          className="form-select"
+          value={form.degreeType}
+          onChange={(e) => handleFormChange("degreeType", e.target.value)}
+        >
+          <option value="">Select Degree Type</option>
+          {degreeTypeOptions.map((dt) => (
+            <option key={dt.value} value={dt.value}>
+              {dt.label}
+            </option>
+          ))}
+        </select>
       </div>
+
+      <div className="">
+        <label className="form-label">
+          Degree <span className="text-danger">*</span>
+        </label>
+        <input
+          className="form-control"
+          type="text"
+          value={form.degree}
+          onChange={(e) => handleFormChange("degree", e.target.value)}
+        />
+      </div>
+
+      <div className="">
+        <label className="form-label">
+          Institution <span className="text-danger">*</span>
+        </label>
+        <input
+          className="form-control"
+          type="text"
+          value={form.institution}
+          onChange={(e) => handleFormChange("institution", e.target.value)}
+        />
+      </div>
+
+      <div className="">
+        <label className="form-label">Region/State</label>
+        <input
+          className="form-control"
+          type="text"
+          value={form.region}
+          onChange={(e) => handleFormChange("region", e.target.value)}
+        />
+      </div>
+
+      <div className="">
+        <label className="form-label">
+          Country <span className="text-danger">*</span>
+        </label>
+        <select
+          className="form-select"
+          value={form.country}
+          onChange={(e) => handleFormChange("country", e.target.value)}
+        >
+          <option value="">Select Country</option>
+          {countryOptions.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="">
+        <label className="form-label">From Year</label>
+        <input
+          className="form-control"
+          type="number"
+          value={form.fromYear}
+          onChange={(e) =>
+            handleFormChange(
+              "fromYear",
+              e.target.value.replace(/\D/g, "").slice(0, 4)
+            )
+          }
+          placeholder="e.g. 2019"
+          min="1900"
+          max="2100"
+        />
+      </div>
+
+      <div className="">
+        <label className="form-label">
+          To Year <span className="text-danger">*</span>
+        </label>
+        <input
+          className="form-control"
+          type="number"
+          value={form.toYear}
+          onChange={(e) =>
+            handleFormChange(
+              "toYear",
+              e.target.value.replace(/\D/g, "").slice(0, 4)
+            )
+          }
+          placeholder="e.g. 2023"
+          min="1900"
+          max="2100"
+        />
+      </div>
+
+      <div className="">
+        <label className="form-label">Marks/CGPA/Percentage</label>
+        <input
+          className="form-control"
+          type="text"
+          value={form.marks}
+          onChange={(e) =>
+            handleFormChange("marks", e.target.value.replace(/[^\d.]/g, ""))
+          }
+          placeholder="e.g. 89%"
+
+        />
+      </div>
+
+      {/* <div className="">
+        <label className="form-label">CGPA</label>
+        <input
+          className="form-control"
+          type="number"
+          value={form.cgpa}
+          onChange={(e) =>
+            handleFormChange("cgpa", e.target.value.replace(/[^\d.]/g, ""))
+          }
+          placeholder="0 - 10"
+          min="0"
+          max="10"
+          step="0.01"
+        />
+      </div> */}
+    </div>
+
+    <div className="mt-3">
+      <label className="form-label">Description</label>
+      <textarea
+        className="form-control"
+        value={form.description}
+        onChange={(e) => handleFormChange("description", e.target.value)}
+        rows={3}
+      />
+      <div className="mt-3 d-flex gap-3">
+        <button className="btn btn-danger" onClick={handleSave}>
+          Save
+        </button>
+        <button className="btn btn-outline-secondary" onClick={handleModalClose}>
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+        {/* Footer (empty—actions are inside .edit-card to match your current layout) */}
+      </ReactModal>
     </div>
   );
 }

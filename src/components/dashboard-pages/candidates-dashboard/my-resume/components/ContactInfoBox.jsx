@@ -50,7 +50,7 @@ const ContactInfoBox = ({ data, onChange }) => {
         <div className="form-group col-lg-12 col-md-12">
           <label>Phone Number</label>
           <input
-            type="tel"
+            type="text"
             name="phoneNumber"
             pattern="[0-9]*"
             maxLength={15}
